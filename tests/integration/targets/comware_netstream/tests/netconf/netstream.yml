@@ -1,0 +1,34 @@
+---
+
+  - name: Comware netstream automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: netstream config
+        h3c_open.comware.comware_netstream:
+          netstream: enable
+          rate: 10
+          timeout: 1
+          max_entry: 2
+          vxlan_udp: 8000
+          aggregation: prefix
+          host: 192.168.1.43
+          udp: 29
+          state: present
+        register: results
+
+      - name: delete netstream config
+        h3c_open.comware.comware_netstream:
+          netstream: enable
+          rate: 10
+          timeout: 1
+          max_entry: 2
+          vxlan_udp: 8000
+          aggregation: prefix
+          host: 192.168.1.43
+          udp: 29
+          state: absent
+        register: results

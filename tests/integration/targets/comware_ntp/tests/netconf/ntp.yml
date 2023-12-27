@@ -1,0 +1,48 @@
+---
+
+  - name: Comware ntp automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: configure NTP authentication
+        h3c_open.comware.comware_ntp:
+          service: ntp
+          keyid: 42
+          authmode: md5
+          authkey: anicekey
+          reliable: true
+        register: results
+
+      - name: configure NTP reference clock
+        h3c_open.comware.comware_ntp:
+          stratum: 2
+        register: results
+
+      - name: configure NTP client
+        h3c_open.comware.comware_ntp:
+          service: ntp
+          keyid: 42
+          hostmode: client
+          ipadd: 10.1.1.1
+          name: HundredGigE1/0/25
+        register: results
+
+      - name: delete trusted keys alone
+        h3c_open.comware.comware_ntp:
+          state: absent
+          del_rel_alone: true
+          service: ntp
+          keyid: 42
+          reliable: false
+        register: results
+
+      - name: delete all verfication keys
+        h3c_open.comware.comware_ntp:
+          state: absent
+          service: ntp
+          keyid: 42
+          del_auth_all: true
+        register: results

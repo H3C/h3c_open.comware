@@ -1,0 +1,140 @@
+---
+
+  - name: Comware File Copying
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    # The source files must exist and be readable for these tasks to succeed.
+    tasks:
+      # to flash
+      - name: Delete file to prep
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'delete smallfile'
+        register: results
+        tags: delete
+
+      - name: Basic file copy - local relative path
+        h3c_open.comware.comware_file_copy:
+          file: ../smallfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - assert:
+          that:
+          - "results.source_file == '../smallfile'"
+          - "results.destination_file == 'flash:/smallfile'"
+
+
+      - name: Idempotency test - remote absolute path
+        h3c_open.comware.comware_file_copy:
+          file: ../smallfile
+          remote_path: flash:/smallfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - assert:
+          that:
+          - "results.source_file == '../smallfile'"
+          - "results.destination_file == 'flash:/smallfile'"
+          - "results.changed == false"
+
+      - name: Delete file to cleanup
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'delete smallfile'
+        register: results
+
+
+      # to special directory
+      - name: Delete file to special dir to prep
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'delete flash:/test/myfile'
+        register: results
+
+      - name: Delete remote directory
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'rmdir flash:/test'
+        register: results
+
+      - name: Basic file copy - local relative path
+        h3c_open.comware.comware_file_copy:
+          file: ../smallfile
+          remote_path: flash:/test/myfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - assert:
+          that:
+          - "results.source_file == '../smallfile'"
+          - "results.destination_file == 'flash:/test/myfile'"
+
+      - name: Idempotency test - remote absolute path
+        h3c_open.comware.comware_file_copy:
+          file: ../smallfile
+          remote_path: flash:/test/myfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - assert:
+          that:
+          - "results.source_file == '../smallfile'"
+          - "results.destination_file == 'flash:/test/myfile'"
+          - "results.changed == false"
+
+      - name: Delete file to cleanup
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'delete flash:/test/myfile'
+        register: results
+
+      - name: Delete directory to cleanup
+        h3c_open.comware.comware_command:
+          type: display
+          command: 'rmdir flash:/test/'
+        register: results
+
+      # fail because file not found
+      - name: Local file not found test
+        h3c_open.comware.comware_file_copy:
+          file: ../notfile
+          remote_path: flash:/notfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+        ignore_errors: true
+        tags: nf
+
+      - assert:
+          that:
+          - "results.failed == true"
+        tags: nf
+
+      # fail - file too big
+      - name: File too big test
+        h3c_open.comware.comware_file_copy:
+          file: ../bigfile
+          remote_path: flash:/bigfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+        ignore_errors: true
+        tags: big
+
+      - assert:
+          that:
+          - "results.failed == true"
+        tags: big

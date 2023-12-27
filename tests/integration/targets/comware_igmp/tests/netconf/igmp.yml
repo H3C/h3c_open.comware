@@ -1,0 +1,41 @@
+---
+
+  - name: Comware igmp
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: config port to be L3
+        h3c_open.comware.comware_interface:
+          name: Twenty-FiveGigE1/0/22
+          type: routed
+      - name: create IGMP and configure IGMP version
+        h3c_open.comware.comware_igmp: 
+          name: Twenty-FiveGigE1/0/22 
+          igstate: enabled 
+          version: version1 
+          state: present
+      - name: delete IGMP ,delete IGMP version
+        h3c_open.comware.comware_igmp: 
+          name: Twenty-FiveGigE1/0/22 
+          igstate: disabled 
+          state: absent 
+      - name: configure PIM mode
+        h3c_open.comware.comware_igmp: 
+          name: Twenty-FiveGigE1/0/22 
+          mode: dm 
+          state: present
+      - name: delete PIM mode
+        h3c_open.comware.comware_igmp: 
+          name: Twenty-FiveGigE1/0/22 
+          mode: dm 
+          state: absent
+      - name: configure IMGP-Snooping
+        h3c_open.comware.comware_igmp: 
+          snstate: enable 
+          state: present
+      - name: delete IMGP-Snooping
+        h3c_open.comware.comware_igmp: 
+          snstate: disable 
+          state: absent

@@ -1,0 +1,23 @@
+---
+
+  - name: Comware snmp_community
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: "Config SNMP community"
+        h3c_open.comware.comware_snmp_community:
+          state=present 
+          access_right=read 
+          community_mib_view=view 
+          community_name=ansible_gqy 
+          acl_number=3000
+        
+      - name: "Undo SNMP community"
+        h3c_open.comware.comware_snmp_community:
+          state=absent 
+          access_right=write 
+          community_mib_view=view 
+          community_name=ansible_gqy 
+          acl_number=3000

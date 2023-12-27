@@ -1,0 +1,239 @@
+---
+
+  - name: Comware switchport automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: ensure layer 2
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/29
+          type: bridged
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.type == 'bridged'"
+
+      - name: ensure VLAN 3 exists
+        h3c_open.comware.comware_vlan:
+          vlanid: 3
+          name: VLAN3_TEST
+          descr: 'vlan 3 for testing'
+          state: present
+        register: results
+
+      - assert:
+          that:
+            - results.end_state.vlanid == '3'
+            - results.end_state.name == 'VLAN3_TEST'
+            - results.end_state.descr == 'vlan 3 for testing'
+
+      - name: ensure VLAN 5 exists
+        h3c_open.comware.comware_vlan:
+          vlanid: 5
+          name: VLAN5_TEST
+          descr: 'vlan 5 for testing'
+          state: present
+        register: results
+
+      - assert:
+          that:
+            - results.end_state.vlanid == '5'
+            - results.end_state.name == 'VLAN5_TEST'
+            - results.end_state.descr == 'vlan 5 for testing'
+
+      - name: Basic access config
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: access
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'access'"
+
+
+      - name: Basic trunk config
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: trunk
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'trunk'"
+
+
+      - name: Switch to access with pvid
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: access
+          pvid: 3
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'access'"
+            - "results.end_state.pvid == '3'"
+
+      - name: Access Idempotency check
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: access
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'access'"
+            - "results.end_state.pvid == '3'"
+            - "results.changed == false"
+
+      - name: Access new pvid
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: access
+          pvid: 5
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'access'"
+            - "results.end_state.pvid == '5'"
+
+      - name: Trunk with permitted list
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: trunk
+          pvid: 5
+          permitted_vlans: '1-5'
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'trunk'"
+            - "results.end_state.pvid == '5'"
+            - "results.end_state.permitted_vlans == '1-5'"
+
+      - name: Trunk idempotency check
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          link_type: trunk
+          pvid: 5
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'trunk'"
+            - "results.end_state.pvid == '5'"
+            - "results.end_state.permitted_vlans == '1-5'"
+            - "results.changed == false"
+
+      # State=default
+      - name: Default test
+        h3c_open.comware.comware_switchport:
+          state: default
+          name: HundredGigE1/0/29
+          pvid: 3
+          link_type: trunk
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.link_type == 'access'"
+            - "results.end_state.pvid == '1'"
+
+      # Failures
+      - name: access mixed with permitted_vlans
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          pvid: 3
+          link_type: access
+          permitted_vlans: 1-5
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: vlan doesn't exists
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          pvid: 1021
+          link_type: access
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: portchannel setup
+        h3c_open.comware.comware_portchannel:
+          group: 10
+          members:
+            - HundredGigE1/0/29
+          type: bridged
+          mode: static
+          min_ports: 2
+          max_ports: 6
+          state: present
+        register: data
+        tags: fails
+
+      - name: interface is part of portchannel
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          pvid: 3
+          link_type: access
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: portchannel removal
+        h3c_open.comware.comware_portchannel:
+          group: 10
+          type: bridged
+          state: absent
+        register: data
+        tags: fails
+
+      - name: confirm portchannel removal
+        assert:
+          that:
+            - data.changed == true
+            - data.end_state == {}
+        tags: fails
+
+      - name: Prep for routed test
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/29
+          type: routed
+        register: results
+        tags: fails
+
+      - name: interface must be in bridged mode
+        h3c_open.comware.comware_switchport:
+          name: HundredGigE1/0/29
+          pvid: 3
+          link_type: access
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails

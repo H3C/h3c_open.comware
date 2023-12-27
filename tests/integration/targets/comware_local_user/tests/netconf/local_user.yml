@@ -1,0 +1,14 @@
+---
+
+  - name: Comware local_user
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: Basic Ethernet config
+        h3c_open.comware.comware_local_user:
+          localusername: test123
+          server_ftp: True
+          local_user_level: 15
+

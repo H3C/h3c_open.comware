@@ -1,0 +1,273 @@
+---
+
+  - name: Comware vxlan automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+
+      # ENSURE L2VPN IS ENABLED
+      #########################
+
+      - name: ensure L2VPN is enabled
+        h3c_open.comware.comware_l2vpn_global:
+          state: enabled
+        register: data
+        tags: l2vpn
+
+      #  DEPLOY VXLAN TUNNEL INTERFACES (PREP FOR REAL TESTS)
+      #################################
+      - h3c_open.comware.comware_vxlan_tunnel:
+          tunnel: 20
+          global_src: 10.10.10.10
+          src: 10.1.1.1
+          dest: 10.1.1.2
+        register: data
+        tags: tunnel
+
+      - h3c_open.comware.comware_vxlan_tunnel:
+          tunnel: 21
+          src: 10.1.1.1
+          dest: 10.1.1.2
+        register: data
+        tags: tunnel
+
+      - h3c_open.comware.comware_vxlan_tunnel:
+          tunnel: 22
+          src: 10.1.1.1
+          dest: 10.1.1.2
+        register: data
+        tags: tunnel
+
+      - h3c_open.comware.comware_vxlan_tunnel:
+          tunnel: 23
+          src: 10.1.1.1
+          dest: 10.1.1.2
+        register: data
+        tags: tunnel
+
+      - h3c_open.comware.comware_vxlan_tunnel:
+          tunnel: 24
+          src: 10.1.1.1
+          dest: 10.1.1.2
+        register: data
+        tags: tunnel
+
+      # CREATE VSI/VXLAN MAPPING AND ASSIGN TUNNELS TO VXLAN TESTING
+      #############################################################
+
+      - name: ensure VXLAN and VSI do not exist to get started
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: 20
+          state: absent
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state == {}
+        tags: vxlan
+
+      - name: ensure VXLAN 100 exists and is mapped to VSI VSI_VXLAN_100 with only tunnel interface 20
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: 20
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state.tunnels == ['20']
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.vxlan == '100'
+        tags: vxlan
+
+      - name: checking idempotency
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: 20
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.changed == false
+
+      - name: adding two more tunnels
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: ['20', '21', '22']
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state.tunnels == ['20', '21', '22']
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.vxlan == '100'
+
+      - name: showing that this removes 2 tunnels
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: ['20']
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state.tunnels == ['20']
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.vxlan == '100'
+
+      - name: removing the VSI/VXLAN
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          state: absent
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state == {}
+            - data.changed == true
+
+      - name: re-adding for testing
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: ['20', '21', '22']
+        register: data
+        tags: vxlan
+
+      - assert:
+          that:
+            - data.end_state.tunnels == ['20', '21', '22']
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.vxlan == '100'
+
+      #### CREATING SECOND VXLAN / VSI
+      - name: adding another mapping
+        h3c_open.comware.comware_vxlan:
+          vxlan: 200
+          vsi: VSI_VXLAN_200
+          tunnels: ['23', '24']
+        register: data
+        tags: vxlan
+
+
+      ##### FAILURE TESTS
+      ##### VERIFY FAIL OCCURS WHEN L2VPN IS NOT ENABLED
+
+      - name: ensure L2VPN is disabled to run failure test
+        h3c_open.comware.comware_l2vpn_global:
+          state: disabled
+        ignore_errors: true
+        register: data
+        tags: f1
+
+      - name: ensure VXLAN 100 exists and is mapped to VSI VSI_VXLAN_100 with only tunnel interface 20
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: 20
+        ignore_errors: true
+        register: data
+        tags: f1
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f1
+
+      - name: re-enabling L2VPN
+        h3c_open.comware.comware_l2vpn_global:
+          state: enabled
+        ignore_errors: true
+        register: data
+        tags: f1
+
+      #### VERIFY FAIL OCCURS WHEN TUNNEL DOESN'T EXIST FIRST
+
+      - name: ensure tunnels need to exist first
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_200
+          tunnels: ['45']
+        register: data
+        ignore_errors: true
+        tags: f2
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f2
+
+      #### VERIFY FAIL OCCURS WHEN VXLAN ALREADY MAPPED TO ANOTHER VSI
+
+      - name: removing the VSI/VXLAN to clean up before this test
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          state: absent
+        tags: f3
+
+      - name: removing the VSI/VXLAN to clean up before this test
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSITEST
+          state: absent
+        tags: f3
+
+      - name: ensure 100 is mapped to VSITEST
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSITEST
+          tunnels: ['21']
+        register: data
+        ignore_errors: true
+        tags: f3
+
+      - name: ensure this fails since 100 is already mapped to VSITEST
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          tunnels: ['21']
+        register: data
+        ignore_errors: true
+        tags: f3
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f3
+
+      # CANNOT REMOVE A VXLAN that is mapped to another VSI
+
+      - name: ensure fails since 100 is already mapped to VSITEST
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSI_VXLAN_100
+          state: absent
+        tags: f4
+        ignore_errors: true
+        register: data
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f4
+
+      - name: removing the VSI/VXLAN
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100
+          vsi: VSITEST
+          state: absent
+        tags: f4

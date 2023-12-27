@@ -1,0 +1,54 @@
+---
+
+  - name: Comware vlan automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: config bgp and create group
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          group: evpn
+          group_type: internal
+        register: results
+
+      - name: config peer connet interface
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          peer: evpn
+          peer_connect_intf: LoopBack0
+        register: results
+
+      - name: join peer in the group
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          peer: 1.1.1.1
+          peer_in_group: evpn
+        register: results
+
+      - name: join peer in the group
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          peer: 3.3.3.3
+          peer_in_group: evpn
+        register: results
+
+      - name: create address-family view and config it
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          address_family: l2vpn
+          evpn: true
+          policy_vpn_target: disable
+          peer: evpn
+          reflect_client: true
+          peer_group_state: true
+        register: results
+
+      - name: remove bgp
+        h3c_open.comware.comware_bgp_group:
+          bgp_as: 200
+          state: default
+        register: results
+

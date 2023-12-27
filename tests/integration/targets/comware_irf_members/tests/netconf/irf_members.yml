@@ -1,0 +1,18 @@
+---
+
+  - name: Comware irf members automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: irf members
+        h3c_open.comware.comware_irf_members:
+          member_id: 1
+          state: present
+          auto_update: disable
+          domain_id: 1
+          priority: 4
+          descr: My description
+          reboot: no

@@ -1,0 +1,232 @@
+---
+
+  - name: Comware ipinterface automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: ensure layer 3
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          type: routed
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.type == 'routed'"
+
+      - name: Basic IPv4 config
+        h3c_open.comware.comware_ipinterface:
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 255.255.255.0
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '192.168.3.5'"
+            - "results.end_state.mask == '255.255.255.0'"
+
+      - name: IPv4 idempotency
+        h3c_open.comware.comware_ipinterface:
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 255.255.255.0
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '192.168.3.5'"
+            - "results.end_state.mask == '255.255.255.0'"
+            - "results.changed == false"
+
+      - name: IPv4 idempotency prefix notation
+        h3c_open.comware.comware_ipinterface:
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 24
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '192.168.3.5'"
+            - "results.end_state.mask == '255.255.255.0'"
+            - "results.changed == false"
+
+      - name: IPv4 change mask
+        h3c_open.comware.comware_ipinterface:
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 28
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '192.168.3.5'"
+            - "results.end_state.mask == '255.255.255.240'"
+            - "results.changed == true"
+
+      - name: Basic IPv6 config
+        h3c_open.comware.comware_ipinterface:
+          version: v6
+          name: HundredGigE1/0/25
+          addr: 2001:DB8::1
+          mask: 10
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '2001:DB8::1'"
+            - "results.end_state.mask == '10'"
+
+      - name: IPv6 idempotency
+        h3c_open.comware.comware_ipinterface:
+          version: v6
+          name: HundredGigE1/0/25
+          addr: 2001:DB8::1
+          mask: 10
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '2001:DB8::1'"
+            - "results.end_state.mask == '10'"
+            - "results.changed == false"
+
+      - name: IPv6 add another
+        h3c_open.comware.comware_ipinterface:
+          version: v6
+          name: HundredGigE1/0/25
+          addr: 2001:DB8::2
+          mask: 10
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.addr == '2001:DB8::2'"
+            - "results.end_state.mask == '10'"
+
+      # state = absent
+      - name: IPv6 remove the first one
+        h3c_open.comware.comware_ipinterface:
+          state: absent
+          version: v6
+          name: HundredGigE1/0/25
+          addr: 2001:DB8::1
+          mask: 10
+        register: results
+
+      - assert:
+          that:
+            - "{} == results.end_state "
+            - "results.changed == true"
+
+      - name: IPv6 remove the second one
+        h3c_open.comware.comware_ipinterface:
+          state: absent
+          version: v6
+          name: HundredGigE1/0/25
+          addr: 2001:DB8::2
+          mask: 10
+        register: results
+
+      - assert:
+          that:
+            - "{} == results.end_state"
+            - "results.changed == true"
+
+      - name: IPv4 removal
+        h3c_open.comware.comware_ipinterface:
+          state: absent
+          version: v4
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 28
+        register: results
+
+      - assert:
+          that:
+            - "{} == results.end_state "
+            - "results.changed == true"
+
+      #failures
+      - name: Invalid IPv4 Address
+        h3c_open.comware.comware_ipinterface:
+          version: v4
+          name: HundredGigE1/0/25
+          addr: 192.168.256.5 mask=28
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Invalid IPv4 Mask
+        h3c_open.comware.comware_ipinterface:
+          version: v4
+          name: HundredGigE1/0/25
+          addr=: 92.168.3.5
+          mask: 33
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Invalid IPv6 Address
+        h3c_open.comware.comware_ipinterface:
+          version: v6
+          name: HundredGigE1/0/25
+          addr: g::1
+          mask: 28
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Invalid IPv6 Mask
+        h3c_open.comware.comware_ipinterface:
+          version: v6
+          name: HundredGigE1/0/25
+          addr: fe::03
+          mask: 129
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Setup for bridged test
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          type: bridged
+
+
+      - name: Interface not in routed mode
+        h3c_open.comware.comware_ipinterface:
+          name: HundredGigE1/0/25
+          addr: 192.168.3.5
+          mask: 28
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails

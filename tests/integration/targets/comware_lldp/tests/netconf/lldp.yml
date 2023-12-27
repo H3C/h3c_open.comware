@@ -1,0 +1,24 @@
+---
+
+- name: Comware lldp automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Config lldp
+      h3c_open.comware.comware_lldp:
+        fast_intervalId: 8
+        tx_intervalId: 4
+        multiplierId: 8
+        state: present
+      register: results
+
+    - name: Config fast-Interval and tx-interval into default state
+      h3c_open.comware.comware_lldp:
+        fast_intervalId: 5
+        tx_intervalId: 4
+        state: default
+      register: results

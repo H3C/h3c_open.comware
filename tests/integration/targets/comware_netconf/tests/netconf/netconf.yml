@@ -1,0 +1,28 @@
+---
+
+  - name: Comware netconf automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: netconf config
+        h3c_open.comware.comware_netconf:
+          source: all
+          operation: protocol-operation
+          opera_type: action
+        register: results
+
+      - name: detele netconf config
+        h3c_open.comware.comware_netconf:
+          source: all
+          operation: protocol-operation
+          opera_type: action
+          state: absent
+        register: results
+
+      - name: netconf config http
+        h3c_open.comware.comware_netconf:
+          soap: http
+        register: results

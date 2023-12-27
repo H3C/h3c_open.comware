@@ -1,0 +1,122 @@
+---
+
+  - name: Comware OS Installation automation
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: Basic Install OS IPE
+        h3c_open.comware.comware_install_os:
+          ipe_package: /tmp/S5570S_EI-CMW710-R1120.ipe
+          reboot: false
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - name: Basic Install OS IPE idempotency
+        h3c_open.comware.comware_install_os:
+          ipe_package: /tmp/S5570S_EI-CMW710-R1120.ipe
+          reboot: false
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+
+      - assert:
+          that:
+            - "results.transfered == false"
+
+      - name: Basic Install OS Boot/Sys
+        h3c_open.comware.comware_install_os:
+          reboot: false
+          boot: /tmp/s5570s_ei-cmw710-boot-r1120.bin
+          system: /tmp/s5570s_ei-cmw710-system-r1120.bin
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+
+      - name: Basic Install OS Boot/Sys idempotency
+        h3c_open.comware.comware_install_os:
+          reboot: false
+          boot: /tmp/s5570s_ei-cmw710-boot-r1120.bin
+          system: /tmp/s5570s_ei-cmw710-system-r1120.bin
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+
+
+      - assert:
+          that:
+            - "results.transfered == false"
+
+      # failures
+      - name: boot/sys and ipe used together
+        h3c_open.comware.comware_install_os:
+          reboot: no
+          ipe_package: /tmp/S5570S_EI-CMW710-R1120.ipe
+          system: /tmp/s5570s_ei-cmw710-system-r1122.bin
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+        ignore_errors: true
+        tags: fail
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fail
+
+      - name: just system without boot
+        h3c_open.comware.comware_install_os:
+          reboot: no
+          system: /tmp/s5570s_ei-cmw710-system-r1122.bin
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+        ignore_errors: true
+        tags: fail
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fail
+
+      - name: file doesn't exist locally
+        h3c_open.comware.comware_install_os:
+          reboot: no
+          ipe_package: /tmp/notfile
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: results
+        ignore_errors: true
+        tags: fail
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fail
+
+      # reboot attempt
+      - name: Reboot attempt
+        h3c_open.comware.comware_install_os:
+          reboot: yes
+          boot: /tmp/s5570s_ei-cmw710-boot-r1120.bin
+          system: /tmp/s5570s_ei-cmw710-system-r1120.bin
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        vars:
+          ansible_command_timeout: 1200
+        register: results
+        tags: reboot
+
+      - assert:
+          that:
+            - "results.reboot_attempt == 'yes'"
+        tags: reboot

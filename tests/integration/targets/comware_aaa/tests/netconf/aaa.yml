@@ -1,0 +1,24 @@
+---
+
+  - name: Comware aaa automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      # Basic Ethernet config
+      - name: create domain myserver and config it
+        h3c_open.comware.comware_aaa:
+          domain_name: myserver
+          aaa_type: authentication
+          access_type: default
+          scheme_list: radius
+          scheme_name_list: test
+        register: results
+
+      - name: delete domain name myserver relates
+        h3c_open.comware.comware_aaa:
+          domain_name: myserver
+          state: default
+        register: results

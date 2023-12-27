@@ -1,0 +1,25 @@
+---
+
+- name: Comware vsi_intf automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Config vsi interface
+      h3c_open.comware.comware_vsi_intf:
+        vsi_intf: Vsi-interface1
+        binding: ali1
+        macaddr: 01a-101a-40fa
+        local_proxy: arp
+        distribute_gateway: local
+      register: results
+
+    - name: Delete vsi interface
+      h3c_open.comware.comware_vsi_intf:
+        vsi_intf: Vsi-interface1
+        binding: ali1
+        state: absent
+      register: results

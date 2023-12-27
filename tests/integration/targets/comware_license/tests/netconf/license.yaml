@@ -1,0 +1,22 @@
+---
+
+- name: Comware license automation testing
+  hosts: comware
+  gather_facts: false
+  connection: local
+
+
+  tasks:
+
+    - name: License activate
+      h3c_open.comware.comware_license:
+        license: H3CVS7002023122010560173160.ak
+        license_chk: false
+        slot: 1
+
+    - name: License activate check
+      h3c_open.comware.comware_license:
+        license: H3CVS7002023122010560173160.ak
+        license_chk: true
+        slot : 1
+      register: results

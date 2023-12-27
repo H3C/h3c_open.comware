@@ -1,0 +1,67 @@
+---
+
+  - name: Comware stp automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: MSTP
+          tc: true
+        register: results
+
+      - name: delete Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: MSTP
+          tc: true
+          state: absent
+        register: results
+
+      - name: Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: STP
+          tc: true
+        register: results
+
+      - name: delete Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: STP
+          tc: true
+          state: absent
+        register: results
+
+      - name: Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: PVST
+          tc: true
+        register: results
+
+      - name: delete Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: PVST
+          tc: true
+          state: absent
+        register: results
+
+      - name: Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: RSTP
+          tc: true
+        register: results
+
+      - name: delete Basic stp config
+        h3c_open.comware.comware_stp:
+          bpdu: true
+          mode: RSTP
+          tc: true
+          state: absent

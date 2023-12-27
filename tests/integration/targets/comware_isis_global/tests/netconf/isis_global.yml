@@ -1,0 +1,32 @@
+---
+
+  - name: Comware isis global automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: create isis 4 and related params.
+        h3c_open.comware.comware_isis_global:
+          isisID: 4
+          level: level-2
+          cost_style: narrow-compatible
+          spf_limit: true
+          network: 10.0001.1010.1020.1030.00
+          add_family: ipv4
+          preference: 25
+          state: present
+        register: results
+
+      - name: delete isis 4
+        h3c_open.comware.comware_isis_global:
+          isisID: 4
+          level: level-2
+          cost_style: narrow-compatible
+          spf_limit: true
+          network: 10.0001.1010.1020.1030.00
+          add_family: ipv4
+          preference: 25
+          state: absent
+        register: results

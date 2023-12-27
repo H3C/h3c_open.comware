@@ -1,0 +1,13 @@
+---
+
+  - name: Comware clean erase automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: factory default and reboot immediately
+        h3c_open.comware.comware_clean_erase:
+          factory_default: true
+        register: results

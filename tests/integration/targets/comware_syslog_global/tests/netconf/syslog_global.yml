@@ -1,0 +1,60 @@
+---
+
+  - name: Comware syslog_global automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: timestamps and level config
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: debugging
+        register: results
+
+      - name: Restore timestamps and level to default state
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: debugging
+          state: absent
+        register: results
+
+      - name: timestamps and level config
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: alert
+        register: results
+
+      - name:  Restore timestamps and level to default state
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: alert
+          state: absent
+        register: results
+
+      - name: timestamps and level config
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: critical
+        register: results
+
+      - name: Restore timestamps and level to default state
+        h3c_open.comware.comware_syslog_global:
+          timestamps: boot
+          level: critical
+          state: absent
+        register: results
+
+      - name: timestamps and level config
+        h3c_open.comware.comware_syslog_global:
+          timestamps: date
+          level: emergency
+        register: results
+
+      - name: Restore timestamps and level to default state
+        h3c_open.comware.comware_syslog_global:
+          timestamps: date
+          level: emergency
+          state: absent
+        register: results

@@ -1,0 +1,23 @@
+---
+
+  - name: Comware sflow
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: Basic  config
+        h3c_open.comware.comware_sflow:
+          collectorID: 1 
+          vpn: 1 
+          addr: 1.1.1.1 
+          data_size: 500 
+          descr: netserver 
+          time_out: 1200
+      
+      - name: delete config
+        h3c_open.comware.comware_sflow:
+          collectorID: 1 
+          addr: 1.1.1.1 
+          state: absent 
+      

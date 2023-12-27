@@ -1,0 +1,19 @@
+---
+
+  - name: Comware sflow_intf
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: netstream config
+        h3c_open.comware.comware_sflow_intf:
+          intf_name: test
+          rate: 1000
+          collector: 2
+      - name: delete netstream config
+        h3c_open.comware.comware_sflow_intf:
+          intf_name: test
+          rate: 1000
+          collector: 2
+          state: absent

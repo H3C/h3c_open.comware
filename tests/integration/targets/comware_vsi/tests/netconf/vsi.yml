@@ -1,0 +1,25 @@
+---
+
+  - name: Comware vsi
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+
+      - name: config vsi
+        h3c_open.comware.comware_vsi:
+          vsi: vpna
+          gateway_intf: Vsi-interface1
+          gateway_subnet: 10.1.1.0
+          gateway_mask: 0.0.0.255
+          vxlan: 10
+          encap: true
+          rd: auto
+          vpn_target_auto: both
+
+      - name: delete vsi configs
+        h3c_open.comware.comware_vsi:
+          vsi: vpna
+          state: absent
+

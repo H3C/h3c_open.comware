@@ -1,0 +1,58 @@
+---
+
+  - name: Comware snmp_group
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: Config SNMP group
+        h3c_open.comware.comware_snmp_group:
+          state: present 
+          version: v2c 
+          group_name: wdz_group 
+          security_level: noAuthNoPriv 
+          acl_number: 2000
+        
+      - name: Undo SNMP group
+        h3c_open.comware.comware_snmp_group:
+          state: absent  
+          version: v2c 
+          group_name: wdz_group 
+          security_level: noAuthNoPriv 
+          acl_number: 2000
+          
+      - name: Config SNMP V3 group
+        h3c_open.comware.comware_snmp_group:
+          state: present 
+          group_name: test_wl 
+          version: v3 
+          security_level: authentication  
+          acl_number: 3000 
+          write_view: 'testv3c'
+            
+      - name: Undo SNMP V3 group
+        h3c_open.comware.comware_snmp_group:
+          state: absent 
+          group_name: test_wl 
+          version: v3 
+          security_level: authentication  
+          acl_number: 3000 
+          write_view: 'testv3c'
+        
+      - name: Config SNMP group
+        h3c_open.comware.comware_snmp_group:
+          state: present 
+          version: v2c 
+          group_name: wdz_group 
+          security_level: authentication 
+          acl_number: 2000
+        
+        register: data
+        ignore_errors: true
+        tags: fail
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: fail

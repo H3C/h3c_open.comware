@@ -1,0 +1,28 @@
+---
+
+  - name: Comware startup automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: Basic Install OS Bootsys
+        h3c_open.comware.comware_startup:
+          boot: 'flash:/s5570s_ei-cmw710-boot-r1122.bin'
+          system: 'flash:/s5570s_ei-cmw710-system-r1122.bin'
+          patch: 'flash:/s5570s_ei-cmw710-system-patch-r6555p01h31.bin'
+
+      - name: Basic Install OS IPE
+        h3c_open.comware.comware_startup:
+          ipe_package: 'flash:/S5570S_EI-CMW710-R1120.ipe'
+
+
+      - name: Config next startup file
+        h3c_open.comware.comware_startup:
+          nextstartupfile: 'flash:/123.cfg'
+
+      - name: Show content for the existing config file
+        h3c_open.comware.comware_startup:
+          filename: 'flash:/123.cfg'
+          show_file: '/tmp/123.cfg'

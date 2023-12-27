@@ -1,0 +1,33 @@
+---
+
+  - name: Comware isis interface automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+
+      - name: create isis 4 and releated params.
+        h3c_open.comware.comware_isis_interface:
+          name: vlan-interface1
+          isisID: 4
+          level: level-2
+          networkType: p2p
+          cost: 5
+          routerid: level-2
+          silent: true
+          state: present
+        register: results
+
+      - name: delete isis 4
+        h3c_open.comware.comware_isis_interface:
+          name: vlan-interface1
+          isisID: 4
+          level: level-2
+          networkType: p2p
+          cost: 5
+          routerid: level-2
+          silent: true
+          state: absent
+        register: results

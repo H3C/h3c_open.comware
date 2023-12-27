@@ -1,0 +1,43 @@
+---
+
+  - name: Comware install_config testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+
+      - name: install config file that will be the new running config
+        h3c_open.comware.comware_install_config:
+          config_file: '/home/d13589/PycharmProjects/ansible/diffcheck.cfg'
+          diff_file: '/home/d13589/PycharmProjects/ansible/diff1.diff'
+          commit_changes: true
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: data
+
+      - assert:
+          that:
+            - data.config_file == '/home/d13589/PycharmProjects/ansible/diffcheck.cfg'
+            - data.diff_file == '/home/d13589/PycharmProjects/ansible/diff1.diff'
+            - data.commit_changes == true
+            - data.changed == true
+            - data.active_files.config_applied == 'flash:/diffcheck.cfg'
+
+      - name: install config file that will be the new running config
+        h3c_open.comware.comware_install_config:
+          config_file: '/home/d13589/PycharmProjects/ansible/diffcheck.cfg'
+          commit_changes: false
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          hostname: "{{ ansible_host }}"
+        register: data
+
+      - assert:
+          that:
+            - data.config_file == '/home/d13589/PycharmProjects/ansible/diffcheck.cfg'
+            - data.diff_file == none
+            - data.commit_changes == false
+            - data.changed == false
+            - data.active_files.config_applied == 'flash:/diffcheck.cfg'

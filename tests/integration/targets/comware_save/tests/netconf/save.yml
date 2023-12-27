@@ -1,0 +1,18 @@
+---
+
+- name: Comware save automation testing
+  hosts: comware
+  gather_facts: false
+  connection: local
+
+
+  tasks:
+
+    - name: Save as myfile.cfg (in flash)
+      h3c_open.comware.comware_save:
+        filename: myfile.cfg
+      register: results
+
+    - name: Save as startup.cfg (in flash)
+      h3c_open.comware.comware_save:
+      register: results

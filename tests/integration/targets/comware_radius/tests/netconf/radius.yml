@@ -1,0 +1,20 @@
+---
+
+- name: Comware radius automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Basic radius config
+      h3c_open.comware.comware_radius:
+        radius_scheme: test
+      register: results
+
+    - name: Delete radius config
+      h3c_open.comware.comware_radius:
+        radius_scheme: test
+        state: default
+      register: results

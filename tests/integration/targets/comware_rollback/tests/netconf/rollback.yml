@@ -1,0 +1,36 @@
+---
+
+- name: Comware rollback automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Rollback config to myfile.cfg (in flash)
+      h3c_open.comware.comware_rollback:
+        filename: netconf.cfg
+      register: results
+
+    - name: Rollback config to startup.cfg (in flash)
+      h3c_open.comware.comware_rollback:
+      register: results
+
+    - name: Save as 123.cfg (in flash)
+      h3c_open.comware.comware_save:
+        filename: 123.cfg
+      register: results
+
+    - name: Delete rollback point 123.cfg (in flash)
+      h3c_open.comware.comware_rollback:
+        filename: 123.cfg
+        clean: true
+      register: results
+
+    - name: Files compared
+      h3c_open.comware.comware_rollback:
+        filename: 1.cfg
+        comparefile: netconf.cfg
+        diff_file: '../diffs.diff'
+      register: results

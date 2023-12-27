@@ -1,0 +1,245 @@
+---
+
+  - name: Comware interface automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: Change just type to 'routed'
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          type: routed
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.type == 'routed'"
+
+
+      - name: Change just type to 'bridged'
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          type: bridged
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.type == 'bridged'"
+            - "results.changed == true"
+
+      - name: 'Basic Ethernet config'
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          admin: up
+          description: mydesc
+          duplex: auto
+          speed: 40000
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.admin == 'up'"
+            - "results.end_state.description == 'mydesc'"
+            - "results.end_state.speed == '40000'"
+            - "results.end_state.duplex == 'auto'"
+
+
+      - name: 'Basic Ethernet idempotency'
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          admin: up
+          description: mydesc
+          duplex: auto
+          speed: 40000
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.admin == 'up'"
+            - "results.end_state.description == 'mydesc'"
+            - "results.end_state.speed == '40000'"
+            - "results.end_state.duplex == 'auto'"
+            - "results.changed == false"
+
+
+      - name: 'Basic Ethernet alternate parameters'
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          admin: down
+          description: newdesc
+          duplex: full
+          speed: auto
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.admin == 'down'"
+            - "results.end_state.speed == 'auto'"
+            - "results.end_state.duplex == 'full'"
+            - "results.end_state.description == 'newdesc'"
+            - "results.changed == true"
+
+
+      - name: Type param with other params fails
+        h3c_open.comware.comware_interface:
+          name: HundredGigE2/0/25
+          type: bridged
+          admin: up
+        register: results
+        ignore_errors: yes
+
+      - assert:
+          that:
+            - "results.failed == true"
+
+
+      - name: 'Virtual Interface'
+        h3c_open.comware.comware_interface:
+          name: bridge-aggregation36
+          admin: up
+          description: virtdesc
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.admin == 'up'"
+            - "results.end_state.description == 'virtdesc'"
+
+
+      - name: 'Virtual Interface 2'
+        h3c_open.comware.comware_interface:
+          name: LoopBack29
+          admin: up
+          description: virtdesc
+        register:
+
+      - assert:
+          that:
+            - "results.end_state.admin == 'up'"
+            - "results.end_state.description == 'virtdesc'"
+
+    #State=absent
+      - name: 'Ethernet gets defaulted'
+        h3c_open.comware.comware_interface:
+          state: absent
+          name: HundredGigE1/0/25
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.description == 'HundredGigE1/0/25 Interface'"
+
+
+      - name: 'Virtual gets removed'
+        h3c_open.comware.comware_interface:
+          state: absent
+          name: bridge-aggregation36
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state == {}"
+
+    #State=defaults
+      - name: 'Ethernet gets defaulted'
+        h3c_open.comware.comware_interface:
+          state: default
+          name: HundredGigE1/0/25
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.description == 'HundredGigE1/0/25 Interface'"
+
+      - name: 'Virtual gets defaulted'
+        h3c_open.comware.comware_interface:
+          state: default
+          name: Loopback29
+        register: results
+
+      - assert:
+          that:
+            - "results.end_state.description == 'LoopBack29 Interface'"
+
+    #Failures
+      - name: Type parameter with other parameters
+        h3c_open.comware.comware_interface:
+          name: HundredGigE1/0/25
+          type: routed
+          speed: 10000
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Invalid iface type
+        h3c_open.comware.comware_interface:
+          name: Megabit1/0/5
+          description: mydesc
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Physical doesn't exist
+        h3c_open.comware.comware_interface:
+          name: FortyGigE1/0/999
+          description: mydesc
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Speed or duplex on logical
+        h3c_open.comware.comware_interface:
+          name: bridge-aggregation36
+          description: mydesc
+          speed: 1000
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Vlan interface of non-existing vlan
+        h3c_open.comware.comware_interface:
+          name: Vlan-interface1021
+          description: mydesc
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails
+
+      - name: Can't create loopback
+        h3c_open.comware.comware_interface:
+          name: LoopBack102123434
+          description: mydesc
+        register: results
+        ignore_errors: true
+        tags: fails
+
+      - assert:
+          that:
+            - "results.failed == true"
+        tags: fails

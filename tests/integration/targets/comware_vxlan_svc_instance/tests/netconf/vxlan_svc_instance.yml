@@ -1,0 +1,355 @@
+---
+
+  - name: Comware vxlan automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+
+      - name: ensure L2VPN is enabled for testing
+        h3c_open.comware.comware_l2vpn_global:
+          state: enabled
+        ignore_errors: true
+        register: data
+        tags: l2vpn
+
+      # PREP
+
+      # TUNNELS
+      - name: ensure tunnel 20 exists for testing
+        h3c_open.comware.comware_vxlan_tunnel:
+          tunnel=20 
+          src=10.1.1.1 
+          dest=10.1.1.2
+        register: data
+        tags: tunnel
+
+      - name: ensure tunnel 21 exists for testing
+        h3c_open.comware.comware_vxlan_tunnel:
+          tunnel=21 
+          src=10.1.1.1 
+          dest=10.1.1.2
+        register: data
+        tags: tunnel
+
+      # CREATE VSI/VXLAN MAPPING AND ASSIGN TUNNELS
+      #############################################################
+
+      - name: ensure VXLAN and VSI do not exist to get started
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100 
+          vsi: VSI_VXLAN_100 
+          tunnels: 20 
+          state: absent
+        register: data
+        tags: vxlan
+
+      - name: ensure VXLAN 100 exists and is mapped to VSI VSI_VXLAN_100 with only tunnel interface 20
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100 
+          vsi: VSI_VXLAN_100 
+          tunnels: 20
+        register: data
+        tags: vxlan
+
+      # CORE TESTS
+
+      ##### MAPPING VXLAN/VSI to ETH Service instance and creating AC
+      ###############################################################
+      - name: config port to be L2
+        h3c_open.comware.comware_interface:
+          name=HundredGigE1/0/32
+          type=bridged
+        register: data
+        tags: map
+
+      - name: ensure it doesn't exist before starting
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          state: absent
+        register: data
+        tags: map
+      - assert:
+          that:
+            - data.end_state == {}
+      - name: iniital deployment of and mapping of vxlan/vsi to eth service instance
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: default 
+          access_mode: vlan
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.changed == true
+            - data.end_state.encap == 'default'
+            - data.end_state.access_mode == 'vlan'
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.instance == '100'
+
+      - name: remoing config to make a change to encap/mode
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          state: absent
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.end_state == {}
+            - data.changed == true
+
+      - name: updated with new encap and access_mode
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: tagged 
+          access_mode: ethernet
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.changed == true
+            - data.end_state.encap == 'tagged'
+            - data.end_state.access_mode == 'ethernet'
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.instance == '100'
+
+
+      - name: removing to make change
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          state: absent
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.end_state == {}
+            - data.changed == true
+
+      - name: testing only-tagged as encap
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: only-tagged 
+          vlanid: 10 
+          state: present
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.changed == true
+            - data.end_state.encap == 'only-tagged'
+            - data.end_state.access_mode == 'vlan'
+            - data.end_state.vlanid == '10'
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.instance == '100'
+
+      - name: removing to make change
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          state: absent
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.end_state == {}
+            - data.changed == true
+
+
+      - name: testing encap is default and access_mode is vlan
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: default 
+          access_mode: vlan
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.changed == true
+            - data.end_state.encap == 'default'
+            - data.end_state.access_mode == 'vlan'
+            - data.end_state.vsi == 'VSI_VXLAN_100'
+            - data.end_state.instance == '100'
+
+      - name: removing to make change
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          state: absent
+        register: data
+        tags: map
+
+      - assert:
+          that:
+            - data.end_state == {}
+            - data.changed == true
+
+      ##### FAILURE TESTS
+
+      ##### VERIFY FAIL OCCURS WHEN L2VPN IS NOT ENABLED
+
+      - name: ensure L2VPN is disabled to run failure test
+        h3c_open.comware.comware_l2vpn_global:
+          state: disabled
+        register: data
+        tags: f1
+
+      - name: ensure L2VPN needs to be enabled
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: default 
+          access_mode: vlan
+        register: data
+        ignore_errors: true
+        tags: f1
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f1
+
+      - name: enabling L2VPN
+        h3c_open.comware.comware_l2vpn_global:
+          state: enabled
+        register: data
+        tags: f1
+
+      #### VERIFY FAIL OCCURS WHEN INTERFACE IS A L3 PORT
+
+      - name: config port to be L3
+        h3c_open.comware.comware_interface:
+          name=HundredGigE1/0/32 
+          type=routed
+        register: data
+        tags: f2
+
+      - name: ensuring the interface needs to be a L2 port
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: default 
+          access_mode: vlan
+        register: data
+        ignore_errors: true
+        tags: f2
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f2
+
+      - name: ensure interface is back to L2
+        h3c_open.comware.comware_interface:
+          name=HundredGigE1/0/32 
+          type=bridged
+        register: data
+        tags: f2
+
+      #### VERIFY FAIL OCCURS WHEN VSI IS NOT YET CREATED
+
+      - name: removing VSI and VXLAN mapping
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100 
+          vsi: VSI_VXLAN_100 
+          state: absent
+        register: data
+        tags: f3
+
+      - name: ensuring fail when VSI is not created
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32
+          vsi: VSI_VXLAN_100
+          instance: 100
+          encap: default
+          access_mode: vlan
+        register: data
+        ignore_errors: true
+        tags: f3
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f3
+
+      ##### VERIFY FAIL OCCOURS SINCE ENCAP CANNOT BE CHANGED UNLESS IT'S REMOVED FIRST (state: ABSENT)
+
+      - name: ensure VXLAN and VSI exist again
+        h3c_open.comware.comware_vxlan:
+          vxlan: 100 
+          vsi: VSI_VXLAN_100 
+          state: present
+        register: data
+        tags: f4
+
+      - name: ensure service instance is in a configured stated
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32
+          vsi: VSI_VXLAN_100
+          instance: 100
+          encap: tagged
+          access_mode: ethernet
+        register: data
+        tags: f4
+
+
+      - name: ensure that encap can only be changed by removing it first
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: only-tagged 
+          vlanid: 10 
+          state: present
+        register: data
+        ignore_errors: true
+        tags: f4
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f4
+
+      #### VERIFY FAIL OCCURS SINCE ACCESS_MODE CAN NOT BE CHANGED UNLESS IT'S REMOVED FIRST (state: ABSENT)
+
+      - name: ensure access_mode can only be changed by removing it first
+        h3c_open.comware.comware_vxlan_svc_instance:
+          interface: HundredGigE1/0/32 
+          vsi: VSI_VXLAN_100 
+          instance: 100 
+          encap: tagged 
+          access_mode: vlan
+        register: data
+        ignore_errors: true
+        tags: f5
+
+      - assert:
+          that:
+            - data.failed == true
+        tags: f5

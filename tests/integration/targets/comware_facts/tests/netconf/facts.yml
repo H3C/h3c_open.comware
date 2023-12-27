@@ -1,0 +1,12 @@
+---
+
+- name: Comware facts automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Get facts
+      h3c_open.comware.comware_facts:

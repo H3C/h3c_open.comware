@@ -1,0 +1,15 @@
+---
+
+  - name: Comware compare automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+
+      - name: compare
+        h3c_open.comware.comware_compare:
+          cmd: 'dis curr conf | include vlan'
+          result: '../result.txt'
+        register: results

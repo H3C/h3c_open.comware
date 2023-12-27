@@ -1,0 +1,299 @@
+---
+
+- name: Comware portchannel automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+    - name: Ensure ragg 100 does not exist
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        type: routed
+        state: absent
+      register: data
+
+    - name: Test for ragg100
+      assert:
+        that:
+          - data.end_state == {}
+
+    - name: Config 1
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members:
+          - HundredGigE1/0/27
+          - HundredGigE1/0/28
+          - HundredGigE1/0/29
+          - HundredGigE1/0/30
+        type: routed
+        mode: static
+        min_ports: 2
+        max_ports: 4
+        state: present
+      register: data
+
+    - name: Test 1
+      assert:
+        that:
+          - data.end_state.members == ["HundredGigE1/0/27", "HundredGigE1/0/28", "HundredGigE1/0/29", "HundredGigE1/0/30"]
+          - data.end_state.min_ports == '2'
+          - data.end_state.max_ports == '4'
+          - data.end_state.mode == 'static'
+
+    - name: Config 2
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members:
+          - HundredGigE1/0/27
+          - HundredGigE1/0/28
+        type: routed
+        mode: dynamic
+        lacp_mode: active
+        lacp_edge: enabled
+        min_ports: 2
+        max_ports: 4
+        state: present
+      register: data
+
+    - name: Test 2
+      assert:
+        that:
+          - data.end_state.members == ["HundredGigE1/0/27", "HundredGigE1/0/28"]
+          - data.end_state.min_ports == '2'
+          - data.end_state.max_ports == '4'
+          - data.end_state.lacp_edge == 'enabled'
+          - data.end_state.mode == 'dynamic'
+
+    - name: Config 3 - idempotent check
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members:
+          - HundredGigE1/0/27
+          - HundredGigE1/0/28
+        type: routed
+        mode: dynamic
+        lacp_mode: active
+        lacp_edge: enabled
+        min_ports: 2
+        max_ports: 4
+        state: present
+      register: data
+
+    - name: Test 3
+      assert:
+        that:
+          - data.changed == false
+
+    - name: Config 4 - removal
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        type: routed
+        state: absent
+      register: data
+
+    - name: Test 4
+      assert:
+        that:
+          - data.changed == true
+          - data.end_state == {}
+
+    - name: Ensure bagg 10 does not exist
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        type: bridged
+        state: absent
+      register: data
+
+    - name: Test for bagg10
+      assert:
+        that:
+          - data.end_state == {}
+
+    - name: Config 5 - config bagg
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        members:
+          - HundredGigE1/0/31
+          - HundredGigE1/0/32
+        type: bridged
+        mode: dynamic
+        lacp_mode: active
+        lacp_edge: enabled
+        min_ports: 2
+        max_ports: 8
+        state: present
+      register: data
+
+    - name: Test 5
+      assert:
+        that:
+          - data.end_state.members == ["HundredGigE1/0/31", "HundredGigE1/0/32"]
+          - data.end_state.min_ports == '2'
+          - data.end_state.max_ports == '8'
+          - data.end_state.lacp_edge == 'enabled'
+          - data.end_state.mode == 'dynamic'
+
+    - name: Config 6 - idempotent check
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        members:
+          - HundredGigE1/0/31
+          - HundredGigE1/0/32
+        type: bridged
+        mode: dynamic
+        lacp_mode: active
+        lacp_edge: enabled
+        min_ports: 2
+        max_ports: 8
+        state: present
+      register: data
+
+    - name: Test 6
+      assert:
+        that:
+          - data.changed == false
+
+    - name: Config 7
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        members:
+          - Twenty-FiveGigE1/0/1
+          - Twenty-FiveGigE1/0/2
+          - Twenty-FiveGigE1/0/3
+          - Twenty-FiveGigE1/0/4
+        type: bridged
+        mode: static
+        min_ports: 2
+        max_ports: 6
+        state: present
+      register: data
+
+    - name: Test 7
+      assert:
+        that:
+          - data.end_state.members == ["Twenty-FiveGigE1/0/1", "Twenty-FiveGigE1/0/2", "Twenty-FiveGigE1/0/3", "Twenty-FiveGigE1/0/4"]
+          - data.end_state.min_ports == '2'
+          - data.end_state.max_ports == '6'
+          - data.end_state.mode == 'static'
+
+
+    - name: Config 8 - idempotent check
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        members:
+          - Twenty-FiveGigE1/0/1
+          - Twenty-FiveGigE1/0/2
+          - Twenty-FiveGigE1/0/3
+          - Twenty-FiveGigE1/0/4
+        type: bridged
+        mode: static
+        lacp_mode: active
+        min_ports: 2
+        max_ports: 6
+        state: present
+      register: data
+
+    - name: Config 8
+      assert:
+        that:
+          - data.changed == false
+
+    - name: Config 9 - removal
+      h3c_open.comware.comware_portchannel:
+        group: 10
+        type: bridged
+        state: absent
+      register: data
+
+    - name: Test 9
+      assert:
+        that:
+          - data.changed == true
+          - data.end_state == {}
+
+    #### FAIL CONDITIONS
+
+    ### TRY AND PUT BRIDGED INTERFACES INTO A ROUTED AGG
+    - name: Try and create routed agg
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members:
+          - Twenty-FiveGigE1/0/1
+          - Twenty-FiveGigE1/0/2
+        type: routed
+        state: present
+      register: data
+      ignore_errors: true
+      tags: f1
+
+    - assert:
+        that:
+          - data.failed == true
+      tags: f1
+
+    ### TRY AND PUT MEMBERS INTO A LAGG THAT ARE ALREADY PART OF ANOTHER LAGG
+    - name: Created bridged agg 100
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members:
+          - Twenty-FiveGigE1/0/1
+          - Twenty-FiveGigE1/0/2
+        type: bridged
+        state: present
+      register: data
+      ignore_errors: true
+      tags: f2
+
+    # Ensure fail when interfaces are already part of another LAGG
+
+    - name: Created bridged agg 200 using interface already in another agg group
+      h3c_open.comware.comware_portchannel:
+        group: 200
+        members:
+          - Twenty-FiveGigE1/0/1
+          - Twenty-FiveGigE1/0/2
+        type: bridged
+        state: present
+      register: data
+      ignore_errors: true
+      tags: f2
+
+    - assert:
+        that:
+          - data.failed == true
+      tags: f2
+
+    # Members must be a List
+
+    - name: Try and send a non-list as members
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        members: Twenty-FiveGigE1/0/1
+        type: routed
+        state: present
+      register: data
+      ignore_errors: true
+      tags: f3
+
+    - assert:
+        that:
+          - data.failed == true
+      tags: f3
+
+    # Members must be sent when state is present
+
+    - name: Members param is required when state is present
+      h3c_open.comware.comware_portchannel:
+        group: 100
+        type: routed
+        state: present
+      register: data
+      ignore_errors: true
+      tags: f4
+
+    - assert:
+        that:
+          - data.failed == true
+      tags: f4

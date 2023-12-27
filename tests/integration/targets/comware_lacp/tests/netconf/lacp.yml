@@ -1,0 +1,22 @@
+---
+
+- name: Comware lacp automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+    - name: Lacp config
+      h3c_open.comware.comware_lacp:
+        priorityID: 8
+        sysmac: 2-2-2
+        state: present
+      register: results
+
+    - name: Lacp config
+      h3c_open.comware.comware_lacp:
+        priorityID: 32768
+        state: default
+      register: results

@@ -1,0 +1,41 @@
+---
+
+  - name: Comware log
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+    tasks:
+      - name: get diagnostic information to the file server(local)
+        h3c_open.comware.comware_log:
+          diag_dir: flash:/diaglog
+          service_dir: /home/d13589/ftp/files
+          ftpupload: true
+          server_name: "{{ ansible_user }}"
+          server_pwd: "{{ ansible_password }}"
+          server_hostname: "{{ ansible_host }}"
+
+      - name: upload diagnostic information to server by ftp
+        h3c_open.comware.comware_log:
+          state: loadtoserver
+          servertype: ftp
+          server_name: "{{ ansible_user }}"
+          server_pwd: "{{ ansible_password }}"
+          server_hostname: "{{ ansible_host }}"
+          diag_dir: flash:/diaglog
+          service_dir: /home/d13589/ftp/files
+          dst_dir: flash:/
+      - name: upload diagnostic information to server by scp
+        h3c_open.comware.comware_log:
+          state: loadtoserver
+          servertype: scp
+          server_name: "{{ ansible_user }}"
+          server_pwd: "{{ ansible_password }}"
+          server_hostname: "{{ ansible_host }}"
+          diag_dir: flash:/diaglog
+          service_dir: /home/d13589/ftp/files
+          dst_dir: flash:/
+      - name: delete diagnostic information in device
+        h3c_open.comware.comware_log:
+          diag_dir: flash:/diaglog
+          state: default

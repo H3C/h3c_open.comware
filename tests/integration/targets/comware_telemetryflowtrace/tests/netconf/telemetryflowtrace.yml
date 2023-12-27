@@ -1,0 +1,25 @@
+---
+
+  - name: Comware telmetryflowtrace automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: telemetryflowtrace basic config
+        h3c_open.comware.comware_telemetryflowtrace:
+          sourceID: 10.10.10.1
+          destinID: 10.10.10.2
+          sourcePort: 10
+          destinPort: 30
+        register: results
+
+      - name: telemetryflowtrace delete config
+        h3c_open.comware.comware_telemetryflowtrace:
+          sourceID: 10.10.10.1
+          destinID: 10.10.10.2
+          sourcePort: 10
+          destinPort: 30
+          state: absent
+        register: results

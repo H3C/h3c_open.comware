@@ -1,0 +1,48 @@
+---
+
+- name: Comware vrrp_global automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+      - name: Vrrp global config mode - standard
+        h3c_open.comware.comware_vrrp_global:
+          mode: standard
+        register: data
+
+      - assert:
+          that:
+            - data.end_state == 'standard'
+
+
+      - name: Idempotency
+        h3c_open.comware.comware_vrrp_global:
+          mode: standard
+        register: data
+
+      - assert:
+          that:
+            - data.changed == false
+
+      - name: Vrrp global config mode - LB
+        h3c_open.comware.comware_vrrp_global:
+          mode: load-balance
+        register: data
+
+      - assert:
+          that:
+            - data.end_state == 'load-balance'
+
+      - name: Revert back
+        h3c_open.comware.comware_vrrp_global:
+          mode: standard
+        register: data
+
+      - assert:
+          that:
+            - data.end_state == 'standard'
+            - data.changed == true
+

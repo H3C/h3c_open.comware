@@ -1,0 +1,12 @@
+---
+
+- name: Comware intfstate automation testing
+  hosts: comware
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+    - name: Check the port status
+      h3c_open.comware.comware_intfstate:
+      register: results

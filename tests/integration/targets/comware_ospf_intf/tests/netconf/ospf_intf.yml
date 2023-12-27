@@ -1,0 +1,27 @@
+---
+
+  - name: Comware ospf interface automation testing
+    hosts: comware
+    gather_facts: no
+    connection: local
+
+
+    tasks:
+      - name: Basic Ethernet config ensure name (interface name) exists in device and the interface support ospf setting.
+        h3c_open.comware.comware_ospf_intf:
+          name: HundredGigE1/0/27
+          ospfname: 1
+          area: 0
+          ospfcost: 10
+          network_type: p2p
+          keyid: 11
+          md5type: md5
+          md5pwdtype: plain
+          md5pwd: 1
+        register: results
+
+      - name: delete config
+        h3c_open.comware.comware_ospf_intf:
+          name: HundredGigE1/0/27
+          state: default
+        register: results
