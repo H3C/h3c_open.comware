@@ -1,7 +1,12 @@
 """Gather device facts on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import collections
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, data_elem_to_dict)
 
 
 class Facts(object):
@@ -61,14 +66,14 @@ class Facts(object):
         """
         E = self.em
         top = E.top(
-                E.Ifmgr(
-                    E.Interfaces(
-                        E.Interface(
-                            E.Name()
-                        )
+            E.Ifmgr(
+                E.Interfaces(
+                    E.Interface(
+                        E.Name()
                     )
                 )
             )
+        )
 
         nc_get_reply = self.device.get(('subtree', top))
 

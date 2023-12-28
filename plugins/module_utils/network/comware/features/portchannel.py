@@ -1,12 +1,17 @@
 """Manage portchannels on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import base64
 
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     InvalidPortType, AggregationGroupError
 )
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    operation_kwarg, reverse_value_map, config_params, find_in_config)
 
 
 class Portchannel(object):
@@ -302,17 +307,10 @@ class Portchannel(object):
                 This returns a list of interface names.
 
         """
-
-        # hex_value = base64.b64decode(bitmap).decode('utf-8')
-        print('bitmap = ', bitmap)
-        # bitmap = str(base64.b64encode(bitmap.encode("utf-8")), "utf-8")
-        # hex_value = str(base64.b64decode(bitmap), "utf-8")
         hex_value = base64.b64decode(bitmap).hex()
-        print('hex_value = ', hex_value)
         h_size = len(hex_value) * 4
         binary_value = (bin(int(hex_value, 16))[2:]).zfill(h_size)
 
-        print('binary_value = ', binary_value)
         members_by_index = []
         for index, bit in enumerate(binary_value):
             port = index + 1

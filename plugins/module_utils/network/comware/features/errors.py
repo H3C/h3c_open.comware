@@ -1,5 +1,8 @@
 """Feature-specific errors.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
@@ -89,7 +92,7 @@ class InterfaceMtuParamsError(InterfaceError):
         self.params = params
 
     def __repr__(self):
-        return 'MTU is not in the right range of interface.'.format(
+        return 'MTU is not in the right range of interface. name: {0}, params: {1}'.format(
             self.if_name, self.params)
 
     __str__ = __repr__
@@ -101,7 +104,7 @@ class InterfaceJumboParamsError(InterfaceError):
         self.params = params
 
     def __repr__(self):
-        return 'MTU is not in the right range of interface.'.format(
+        return 'MTU is not in the right range of interface. name: {0}, params: {1}'.format(
             self.if_name, self.params)
 
     __str__ = __repr__

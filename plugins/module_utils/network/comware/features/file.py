@@ -1,6 +1,10 @@
 """Operation for files in COM7 devices.
 """
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, action_element_maker)
 
 
 class File(object):
@@ -15,6 +19,7 @@ class File(object):
             object.
 
     """
+
     def __init__(self, device, filename, comparefile=None):
         self.device = device
         if filename:

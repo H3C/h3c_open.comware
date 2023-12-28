@@ -1,13 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_teleflowgroup_global
 short_description: Manage telemetry flow group agingtime on Comware 7 devices.The default value is Varies by device.
+description:
+    - Manage telemetry flow group agingtime on Comware 7 devices.The default value is Varies by device.
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 options:
     agtime:
         description:
@@ -19,6 +26,7 @@ options:
             - Desired state for the interface configuration
         required: false
         default: present
+        choices: ['present', 'default']
         type: str
 """
 
@@ -36,11 +44,11 @@ EXAMPLES = """
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.teleflowgroup_global import \
     Flowglobal
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -55,7 +63,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             agtime=dict(required=True, type='str'),
-            state=dict(choices=['present', 'default'], default='present'),
+            state=dict(choices=['present', 'default'], default='present', type='str'),
         ),
         supports_check_mode=True
     )

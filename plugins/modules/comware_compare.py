@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 
@@ -9,8 +15,7 @@ short_description: Enter the configuration command and compare it with the expec
 description:
     - when input command,you need  In single quotes.
 version_added: 1.0.0
-category: System (RW)
-author: gongqianyu
+author: gongqianyu(@gongqianyu)
 notes:
     - This modules Enter the configuration command and compare it with the expected result.
       For convenience, put the expected result into a text, and enter the text path and name into the result parameter.

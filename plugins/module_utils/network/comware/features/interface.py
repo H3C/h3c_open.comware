@@ -1,6 +1,9 @@
 """Manage interfaces on COM7 devices.
 Revised author: liudongxue
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import re
 
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
@@ -8,7 +11,9 @@ from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.f
     InterfaceAbsentError, InterfaceParamsError, InterfaceVlanMustExist
 )
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vlan import Vlan
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import reverse_value_map, \
+    data_element_maker, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker, \
+    config_params, operation_kwarg, action_element_maker, find_in_action
 
 
 class Interface(object):

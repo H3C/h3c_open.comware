@@ -7,7 +7,6 @@
 
 
   tasks:
-
     - name: License activate
       h3c_open.comware.comware_license:
         license: H3CVS7002023122010560173160.ak
@@ -18,5 +17,5 @@
       h3c_open.comware.comware_license:
         license: H3CVS7002023122010560173160.ak
         license_chk: true
-        slot : 1
+        slot: 1
       register: results

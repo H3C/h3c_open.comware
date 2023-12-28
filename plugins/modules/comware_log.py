@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,12 +14,11 @@ short_description: get the device diagnostic information and upload to file serv
 description:
     - get the device diagnostic information and upload to file server
 version_added: 1.0.0
-category: Feature (RW)
-author: null
+author: h3c (@h3c_open)
 notes:
     - Getting device diagnostic information will take some time , here give 300s to get the information,
       if result goes to time out , check the timeout 300s first.
-    - if state is present , you will get the diag file with .tar.gz , and it will upload to ansible 
+    - if state is present , you will get the diag file with .tar.gz , and it will upload to ansible
       server.
 options:
     service_dir:
@@ -64,6 +69,7 @@ options:
             - The state of operation
         required: false
         choices: ['present', 'default', 'loadtoserver']
+        default: present
         type: str
 """
 EXAMPLES = """
@@ -104,8 +110,8 @@ EXAMPLES = """
 
 import re
 import time
-import paramiko
-from scp import SCPClient
+import traceback
+from ansible.module_utils.basic import missing_required_lib
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
@@ -113,6 +119,24 @@ from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.c
 )
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.file_copy import FileCopy
+
+try:
+    import paramiko
+
+    HAS_PARAMIKO = True
+    PARAMIKO_IMPORT_ERROR = None
+except ImportError:
+    HAS_PARAMIKO = False
+    PARAMIKO_IMPORT_ERROR = traceback.format_exc()
+
+try:
+    from scp import SCPClient
+
+    HAS_SCP = True
+    SCP_IMPORT_ERROR = None
+except ImportError:
+    HAS_SCP = False
+    SCP_IMPORT_ERROR = traceback.format_exc()
 
 
 def main():
@@ -167,8 +191,8 @@ def main():
 
     if state == 'present':
         timenow = time.localtime()
-        timeinfo = str(timenow.tm_year) + str(timenow.tm_mon).zfill(2) + str(timenow.tm_mday).zfill(2) + \
-                   str(timenow.tm_hour).zfill(2) + str(timenow.tm_min).zfill(2) + str(timenow.tm_sec).zfill(2)
+        timeinfo = (str(timenow.tm_year) + str(timenow.tm_mon).zfill(2) + str(timenow.tm_mday).zfill(2) +
+                    str(timenow.tm_hour).zfill(2) + str(timenow.tm_min).zfill(2) + str(timenow.tm_sec).zfill(2))
         log_file_name = 'diag_H3C_' + timeinfo + '.tar.gz'
         src = service_dir + log_file_name
         dst = diag_dir + log_file_name
@@ -191,6 +215,14 @@ def main():
                 file = diag_dir + diag_name
                 service_file = service_dir + diag_name
                 if ftpupload:
+                    if not HAS_PARAMIKO:
+                        module.fail_json(
+                            msg=missing_required_lib('paramiko'),
+                            exception=PARAMIKO_IMPORT_ERROR)
+                    if not HAS_SCP:
+                        module.fail_json(
+                            msg=missing_required_lib('scp'),
+                            exception=SCP_IMPORT_ERROR)
                     ssh = paramiko.SSHClient()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     ssh.connect(hostname=server_hostname,

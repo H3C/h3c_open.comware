@@ -1,16 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_startup
 short_description: config the next restart file or ipe .   patch function not available,please use patch module
 description:
-    - Offers ability to config the restart file or config image or patch for the device.  
+    - Offers ability to config the restart file or config image or patch for the device.
       Supports using .ipe or .bin system and boot packages.
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 notes:
     - The parameters ipe_package and boot/system are
       mutually exclusive.
@@ -42,7 +47,7 @@ options:
               this specifies whether the .ipe file is deleted from the device
               after it is unpacked.
         required: false
-        deafult: false
+        default: false
         type: bool
     nextstartupfile:
         description:
@@ -64,33 +69,35 @@ options:
 EXAMPLES = """
 
 #Basic Install OS Bootsys
-  comware_startup:
+- name: Basic Install OS Bootsys
+  h3c_open.comware.comware_startup:
     boot='flash:/s9850_6850-cmw710-boot-r6555p01.bin'
     system='flash:/s9850_6850-cmw710-system-r6555p01.bin'
     patch='flash:/s9850_6850-cmw710-system-patch-r6555p01h31.bin'
-      
+
 #Basic Install OS IPE
+- name: Basic Install OS Bootsys
+  h3c_open.comware.comware_startup:
+    boot: 'flash:/s5570s_ei-cmw710-boot-r1122.bin'
+    system: 'flash:/s5570s_ei-cmw710-system-r1122.bin'
+    patch: 'flash:/s5570s_ei-cmw710-system-patch-r6555p01h31.bin'
 
-      - name: Basic Install OS Bootsys
-        h3c_open.comware.comware_startup:
-          boot: 'flash:/s5570s_ei-cmw710-boot-r1122.bin'
-          system: 'flash:/s5570s_ei-cmw710-system-r1122.bin'
-          patch: 'flash:/s5570s_ei-cmw710-system-patch-r6555p01h31.bin'
+- name: Basic Install OS IPE
+  h3c_open.comware.comware_startup:
+    ipe_package: 'flash:/S5570S_EI-CMW710-R1120.ipe'
 
-      - name: Basic Install OS IPE
-        h3c_open.comware.comware_startup:
-          ipe_package: 'flash:/S5570S_EI-CMW710-R1120.ipe'
-    
-      - name: Config next startup file
-        h3c_open.comware.comware_startup:
-          nextstartupfile: 'flash:/123.cfg'
+- name: Config next startup file
+  h3c_open.comware.comware_startup:
+    nextstartupfile: 'flash:/123.cfg'
 """
+import os
+import re
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.file import File
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.set_startup import SetStartup
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -128,8 +135,7 @@ def main():
             nextstartupfile=dict(required=False, default=None),
             filename=dict(required=False, default=None),
             show_file=dict(required=False, type='str'),
-            delete_ipe=dict(choices=BOOLEANS,
-                            type='bool',
+            delete_ipe=dict(type='bool',
                             default=False),
         ),
         supports_check_mode=True
@@ -176,8 +182,8 @@ def main():
             patch_basename = os.path.basename(patch)
             if ipe_package:
                 ipe_basename = os.path.basename(ipe_package)
-                ipe_boot_sys = re.split(r'-|\.', ipe_basename)[-3:-1]
-                patch_boot_sys = re.split(r'-|\.', patch_basename)[-3:-1]
+                ipe_boot_sys = re.split(r'[-.]', ipe_basename)[-3:-1]
+                patch_boot_sys = re.split(r'[-.]', patch_basename)[-3:-1]
                 if ipe_boot_sys:
                     if ipe_boot_sys[0].lower() in existing_boot.lower() \
                             and ipe_boot_sys[0].lower() in existing_system.lower() \
@@ -205,7 +211,7 @@ def main():
         else:
             if ipe_package:
                 ipe_basename = os.path.basename(ipe_package)
-                ipe_boot_sys = re.split(r'-|\.', ipe_basename)[-3:-1]
+                ipe_boot_sys = re.split(r'[-.]', ipe_basename)[-3:-1]
                 if ipe_boot_sys:
                     if ipe_boot_sys[0].lower() in existing_boot.lower() \
                             and ipe_boot_sys[0].lower() in existing_system.lower() \

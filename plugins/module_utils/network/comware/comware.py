@@ -31,14 +31,10 @@ from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.u
     NETCONFBASE_C
 
 try:
-    from lxml.etree import Element, SubElement
     from lxml.etree import tostring as xml_to_string
-
     HAS_LXML = True
 except ImportError:
-    from xml.etree.ElementTree import Element, SubElement
     from xml.etree.ElementTree import tostring as xml_to_string
-
     HAS_LXML = False
 
 
@@ -205,7 +201,6 @@ class Device(object):
 
         """
         self.connection.reboot()
-
 
     @staticmethod
     def _extract_config(xml_resp):

@@ -1,8 +1,13 @@
 """Manage switchports on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    config_params)
 
 
 class Lldp(object):
@@ -21,6 +26,7 @@ class Lldp(object):
         interface (comware.features.Interface): The associated
             ``Interface`` configuration object.
     """
+
     def __init__(self, device, interface_name):
         self.device = device
         self.interface = Interface(device, interface_name)
@@ -141,11 +147,11 @@ class Lldp(object):
                             EC.Interface(
                                 EC.IfIndex(self.interface.iface_index),
                                 *config_params(params, key_map)
-                                )
                             )
                         )
                     )
                 )
+            )
         elif interface_enable == 'disabled':
             if self.interface_enable != 'disabled':
                 self.convert_interface(interface_enable, stage=stage)
@@ -157,11 +163,11 @@ class Lldp(object):
                             EC.Interface(
                                 EC.IfIndex(self.interface.iface_index),
                                 *config_params(params, key_map)
-                                )
                             )
                         )
                     )
                 )
+            )
         else:
             return
         if params:

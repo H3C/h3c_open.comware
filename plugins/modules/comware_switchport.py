@@ -1,15 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_switchport
 short_description: Manage Layer 2 parameters on switchport interfaces
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 description:
     - Manage Layer 2 parameters on switchport interfaces
 version_added: 1.0.0
-category: Feature (RW)
 notes:
     - If the interface is configured to be a Layer 3 port, the module
       will fail and ask the user to use the comware_interface module
@@ -31,6 +36,7 @@ options:
         description:
             - Layer 2 mode of the interface
         required: true
+        choices: ['access', 'trunk', 'hybrid']
         type: str
     pvid:
         description:
@@ -49,7 +55,7 @@ options:
         required: false
         type: str
     untaggedvlan:
-        description: 
+        description:
             - Assign hybrid port to untagged VLANs
               E.g. 1-3,5,8-10
         required: false
@@ -64,6 +70,7 @@ options:
         description:
             - Desired state of the switchport
         required: false
+        choices: ['present', 'default', 'absent']
         default: present
         type: str
 
@@ -75,7 +82,7 @@ EXAMPLES = """
           name: HundredGigE1/0/29
           type: bridged
         register: results
-        
+
       - assert:
           that:
             - "results.end_state.type == 'bridged'"
@@ -101,10 +108,10 @@ EXAMPLES = """
           descr: 'vlan 5 for testing'
           state: present
         register: results
-        
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.switchport import Switchport
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vlan import Vlan
@@ -277,4 +284,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-print('*********************************')

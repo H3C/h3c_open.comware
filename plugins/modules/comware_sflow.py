@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -9,7 +15,7 @@ short_description: Manage sflow attributes for Comware 7 devices
 description:
     - Manage sflow attributes for Comware 7 devices
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 options:
     collectorID:
         description:
@@ -18,7 +24,7 @@ options:
         type: str
     addr:
         description:
-            - the ipv4 or ipv6 address 
+            - the ipv4 or ipv6 address
         required: true
         type: str
     vpn:
@@ -30,25 +36,23 @@ options:
         description:
             - Description for the collectorID.must be exit
         required: false
-        default: CLI Collector
         type: str
     time_out:
         description:
             - the collector's parameter aging time
         required: false
-        type: int
+        type: str
     Port:
         description:
             -   UDP port
         required: false
-        default: 6343
-        type: int
+        default: '6343'
+        type: str
     data_size:
         description:
             - the sflow datagram max size
         required: false
-        default: 1400
-        type: int
+        type: str
     agent_ip:
         description:
             - Configure the IP address of the sFlow agent.
@@ -64,29 +68,36 @@ options:
             - Configure the source IPV6 address of the sFlow message.
         required: false
         type: str
+    state:
+        description:
+            - Desired state for the sflow configuration
+        required: false
+        default: present
+        choices: ['present', 'absent']
+        type: str
 """
 EXAMPLES = """
 - name: Basic  config
   h3c_open.comware.comware_sflow:
-    collectorID: 1 
-    vpn: 1 
-    addr: 1.1.1.1 
-    data_size: 500 
-    descr: netserver 
+    collectorID: 1
+    vpn: 1
+    addr: 1.1.1.1
+    data_size: 500
+    descr: netserver
     time_out: 1200
 
 - name: delete config
   h3c_open.comware.comware_sflow:
-    collectorID: 1 
-    addr: 1.1.1.1 
-    state: absent 
+    collectorID: 1
+    addr: 1.1.1.1
+    state: absent
 """
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.sflow import SFlow
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.sflow import Sflow
 
@@ -103,7 +114,7 @@ def main():
             sourceIpv4IP=dict(type='str', required=False),
             sourceIpv6IP=dict(type='str', required=False),
             agent_ip=dict(type='str', required=False),
-            Port=dict(required=False),
+            Port=dict(required=False, type='str', default='6343'),
             state=dict(type='str', choices=['present', 'absent'], default='present'),
         ),
         supports_check_mode=True

@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Copy a local file to a remote Comware v7 device
 description:
     - Copy a local file to a remote Comware v7 device
 version_added: 1.0.0
-category: System (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
     - If the remote directory doesn't exist, it will be automatically
       created.
@@ -32,20 +37,21 @@ options:
               If no directory is included in remote_path, flash will be prepended.
               If remote_path is omitted, flash will be prepended to the source file name.
         required: false
-        default: flash:/<file>
         type: str
     ftpupload:
         description:
             - If you want to upload by FTP, change the params to true
         required: false
-        default: false
+        default: 'false'
         choices: ['true', 'false']
+        type: str
     ftpdownload:
         description:
             - If you want to download by FTP, change the params to true
         required: false
-        default: false
-        type: bool
+        choices: ['true', 'false'] 
+        default: 'false'
+        type: str
     hostname:
         description:
             - IP Address or hostname of the Comware v7 device that has
@@ -60,33 +66,33 @@ options:
     password:
         description:
             - Password used to login to the switch
-        required: true
+        required: false
         type: str
 """
 
 EXAMPLES = """
 
-- name: copy file
- comware_file_copy: 
-    file: /usr/smallfile 
-    remote_path: flash:/otherfile 
+- name: Copy file
+  h3c_open.comware.comware_file_copy:
+    file: /usr/smallfile
+    remote_path: flash:/otherfile
 
-- name: ftp upload 
-  comware_file_copy: 
-    file: /root/ansible_collections.h3c_open.comware.plugins.module_utils.network.comware-ansible-master/vlans.yml 
-    remote_path: flash:/ldx/vlans.yml 
+- name: Ftp upload
+  h3c_open.comware.comware_file_copy:
+    file: /root/ansible_collections.h3c_open.comware.plugins.module_utils.network.comware-ansible-master/vlans.yml
+    remote_path: flash:/ldx/vlans.yml
     ftpupload: true
-  
-- name: use FTP to download files to the server--module 1.3
-  comware_file_copy: 
-      file: /root/ansible_collections.h3c_open.comware.plugins.module_utils.network.comware-ansible-master/11.txt 
-      remote_path: flash:/llld/11.txt 
-      ftpdownload: true 
+
+- name: Use FTP to download files to the server--module 1.3
+  h3c_open.comware.comware_file_copy:
+      file: /root/ansible_collections.h3c_open.comware.plugins.module_utils.network.comware-ansible-master/11.txt
+      remote_path: flash:/llld/11.txt
+      ftpdownload: true
 """
 import socket
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.file_copy import FileCopy
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
@@ -96,12 +102,12 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             file=dict(required=True),
-            remote_path=dict(),
-            ftpupload=dict(required=False, default='false', choices=['true', 'false']),
-            ftpdownload=dict(required=False, default='false', choices=['true', 'false']),
-            hostname=dict(required=True),
-            username=dict(required=True),
-            password=dict(required=False, default=None),
+            remote_path=dict(type='str'),
+            ftpupload=dict(required=False, type='str', default='false', choices=['true', 'false']),
+            ftpdownload=dict(required=False, type='str', default='false', choices=['true', 'false']),
+            hostname=dict(required=True, type='str'),
+            username=dict(required=True, type='str'),
+            password=dict(required=False, type='str', default=None, no_log=True),
         ),
         supports_check_mode=False
     )

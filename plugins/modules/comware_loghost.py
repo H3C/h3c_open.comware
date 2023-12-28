@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,8 @@ short_description: Manage info-center log host and related parameters on V7 devi
 description:
     - Manage info-center log host and related parameters on V7 devices
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
+
 options:
     loghost:
         description:
@@ -25,14 +31,14 @@ options:
         description:
             - Port number of the log host.
         required: False
-        default: 514
+        default: '514'
         type: str
     facility:
         description:
             - Logging facility used by the log host.
         required: False
-        default: 184
-        choices: ['128', '136', '144', '152', '160', '168', '176', '184'] 
+        default: '184'
+        choices: ['128', '136', '144', '152', '160', '168', '176', '184']
                  # 128:local0, 136:local1 144:local2 152:local3 160:local4 168:local5 176:local6 184:local7
         type: str
     sourceID:
@@ -53,19 +59,19 @@ options:
 EXAMPLES = """
 - name: basic config
   h3c_open.comware.comware_loghost:
-    loghost: 3.3.3.7 
-    VRF: vpn2 
-    hostport: 512 
-    facility: 128 
+    loghost: 3.3.3.7
+    VRF: vpn2
+    hostport: 512
+    facility: 128
     sourceID: LoopBack0
 
 - name: delete config
   h3c_open.comware.comware_loghost:
-    loghost: 3.3.3.7 
-    VRF: vpn2 
-    hostport: 512 
-    facility: 128 
-    sourceID: LoopBack0 
+    loghost: 3.3.3.7
+    VRF: vpn2
+    hostport: 512
+    facility: 128
+    sourceID: LoopBack0
     state: absent
 """
 
@@ -83,7 +89,9 @@ def main():
             loghost=dict(required=True, type='str'),
             VRF=dict(required=True, type='str'),
             hostport=dict(required=False, type='str', default='514'),
-            facility=dict(required=False, choices=['128', '136', '144', '152', '160', '168', '176', '184'], type='str',
+            facility=dict(required=False,
+                          choices=['128', '136', '144', '152', '160', '168', '176', '184'],
+                          type='str',
                           default='184'),
             sourceID=dict(required=False, type='str'),
             state=dict(required=False, choices=['present', 'absent'],

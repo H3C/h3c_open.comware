@@ -1,22 +1,27 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
-module: comware_instance_rely
+module: comware_vpn_instance
 short_description: config instance rely ensure some instance configs can be set
 description:
-    - config instance rely ip vpn-instance and route-distinguisher 
+    - config instance rely ip vpn-instance and route-distinguisher
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
-    - some of the instance configs can be set before ip vpn-instance and route-distinguisher already 
-      exists . 
+    - some of the instance configs can be set before ip vpn-instance and route-distinguisher already
+      exists .
     - state default or absent will make the device default config , if you want delete instance insance
-      autonomous_system and instance_instance are both required . if  you want delete vpn_instance, 
+      autonomous_system and instance_instance are both required . if  you want delete vpn_instance,
       provide vpn_instance is OK.
-options:     
+options:
     vpn_instance:
         description:
             - Name of the VPN instance
@@ -49,7 +54,7 @@ options:
             - Desired state for the interface configuration
         required: false
         default: present
-        choices: ['present', 'absent', 'default']
+        choices: ['present', 'default']
         type: str
 """
 EXAMPLES = """
@@ -77,7 +82,7 @@ EXAMPLES = """
     vpn_instance: vpna
     state: default
   register: results
-        
+
 """
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (

@@ -1,64 +1,76 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_tele_stream
-short_description: Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id 
+short_description: Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id
                    on Comware 7 devices.Before config device-id,the timestamp must be enable.
+description:
+    - Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id
+      on Comware 7 devices.Before config device-id,the timestamp must be enable.
 version_added: 1.0.0
-category: Feature (RW)
-author: gongqianyu
+author: gongqianyu(@gongqianyu)
 options:
     glo_enable:
         description:
             - config global telemetry stream enable.The default state is enable.
         required: false
         default: enable
+        choices: ['enable', 'disable']
         type: str
     timestamp:
         description:
             - config telemetry stream timestamp enable.The default state is disable.
         required: false
         default: disable
+        choices: ['enable', 'disable']
         type: str
-    device-id:
+    deviceID:
         description:
             - config telemetry stream device-id.
         required: false
+        type: str
     state:
         description:
             - Recovering the default state of telemetry stream
         required: false
         default: present
+        choices: ['present', 'default']
         type: str
 """
 
 EXAMPLES = """
 
-       - name: telemetry config
-        h3c_open.comware.comware_tele_stream:
-          glo_enable: enable
-          timestamp: enable
-          deviceID: 10.10.10.1
-          state: present
-        register: results
+- name: telemetry config
+  h3c_open.comware.comware_tele_stream:
+    glo_enable: enable
+    timestamp: enable
+    deviceID: 10.10.10.1
+    state: present
+  register: results
 
 
-      - name: remove telemetry
-        h3c_open.comware.comware_tele_stream:
-          glo_enable: enable
-          timestamp: enable
-          deviceID: 10.10.10.1
-          state: default
-        register: results
+- name: remove telemetry
+  h3c_open.comware.comware_tele_stream:
+    glo_enable: enable
+    timestamp: enable
+    deviceID: 10.10.10.1
+    state: default
+  register: results
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.tele_stream import Telemetry
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -72,8 +84,8 @@ def safe_exit(module, **kwargs):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            timestamp=dict(required=False, choices=['enable', 'disable'], default='disable'),
-            glo_enable=dict(required=False, choices=['enable', 'disable'], default='enable'),
+            timestamp=dict(required=False, choices=['enable', 'disable'], default='disable', type='str'),
+            glo_enable=dict(required=False, choices=['enable', 'disable'], default='enable', type='str'),
             deviceID=dict(required=False, type='str'),
             state=dict(required=False, choices=['present', 'default'], default='present'),
         ),

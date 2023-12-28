@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,10 +14,10 @@ short_description: Manage VXLAN tunnels on Comware 7 devices
 description:
     - Manage VXLAN tunnels on Comware 7 devices
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c(@h3c_open)
 notes:
-  - state=absent removes the tunnel interface if it exists
-  - state=absent can also remove non-vxlan tunnel interfaces
+    - state=absent removes the tunnel interface if it exists
+    - state=absent can also remove non-vxlan tunnel interfaces
 options:
     tunnel:
         description:
@@ -45,23 +51,23 @@ options:
 EXAMPLES = """
 
 # ensure tunnel interface 20 exists for vxlan and configures a global source address (although it's not used here)
-- comware_vxlan_tunnel: 
-    tunnel: 20 
-    global_src: 10.10.10.10 
-    src: 10.1.1.1 
-    dest: 10.1.1.2 
+- comware_vxlan_tunnel:
+    tunnel: 20
+    global_src: 10.10.10.10
+    src: 10.1.1.1
+    dest: 10.1.1.2
 
 # ensure tunnel interface 21
-- comware_vxlan_tunnel: 
-    tunnel: 21 
-    src: 10.1.1.1 
-    dest: 10.1.1.2 
+- comware_vxlan_tunnel:
+    tunnel: 21
+    src: 10.1.1.1
+    dest: 10.1.1.2
 
 
 # ensure tunnel interface 21 does not exist (does not have to be a vxlan tunnel)
-- comware_vxlan_tunnel: 
-    tunnel: 21 
-    state: absent 
+- comware_vxlan_tunnel:
+    tunnel: 21
+    state: absent
 """
 
 from ansible.module_utils.basic import AnsibleModule

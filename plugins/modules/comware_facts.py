@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,15 @@ short_description: Gather facts of Comware 7 devices
 description:
     - Gather fact data (characteristics) of Comware 7 devices
 version_added: 1.0.0
-category: Read-Only
+author: h3c (@h3c_open)
+"""
+EXAMPLES = """
+
+  - name: Get facts
+    h3c_open.comware.comware_facts:
+
+"""
+RETURNS = """
 return_data:
     - vendor
     - model
@@ -19,14 +33,6 @@ return_data:
     - localtime
     - config (name of running config)
     - interface_list
-options:
-
-"""
-EXAMPLES = """
-
-  - name: Get facts
-    h3c_open.comware.comware_facts:
-
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -41,7 +47,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
         ),
-        supports_check_mode=False
+        supports_check_mode=True
     )
 
     device = get_device(module)

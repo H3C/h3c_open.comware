@@ -1,15 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_ospf
 short_description: Manage ospf
 description:
-    - 
+    - Manage ospf
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
 
 options:
@@ -23,6 +28,12 @@ options:
             - Router identifier.
         required: false
         type: str
+    import_route:
+        description:
+            - Import route type
+        required: false
+        choices: ['bgp', 'direct', 'isis', 'ospf', 'rip', 'static']
+        type: str
     area:
         description:
             - Area ID
@@ -32,6 +43,7 @@ options:
         description:
             - Area type
         required: false
+        choices: ['NSSA', 'Stub']
         type: str
     networkaddr:
         description:
@@ -73,8 +85,9 @@ options:
             - Desired state for the interface configuration
         required: false
         default: present
+        choices: ['present', 'default']
         type: str
-        
+
 """
 EXAMPLES = """
 
@@ -99,10 +112,10 @@ EXAMPLES = """
         register: results
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.ospf import Ospf
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -119,11 +132,12 @@ def main():
             ospfname=dict(required=True, type='str'),
             routerid=dict(type='str'),
             import_route=dict(choices=['bgp', 'direct', 'isis',
-                                       'ospf', 'rip', 'static']),
+                                       'ospf', 'rip', 'static'],
+                              type='str'),
             area=dict(required=False, type='str'),
             networkaddr=dict(type='str'),
             wildcardmask=dict(type='str'),
-            areatype=dict(choices=['NSSA', 'Stub']),
+            areatype=dict(choices=['NSSA', 'Stub'], type='str'),
             bandwidth=dict(type='str'),
             lsa_generation_max=dict(type='str'),
             lsa_generation_min=dict(type='str'),

@@ -1,7 +1,11 @@
 """Install an operating system on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, action_element_maker)
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.namespaces import NCDATA_C
 
 
 class InstallOs(object):
@@ -85,7 +89,7 @@ class InstallOs(object):
 
         Args:
             os_type (str): REQUIRED - 'ipe' (for IPE packages)
-                or 'bootsys' (for separate boot and system files.
+                or 'bootsys' (for separate boot and system files).
             ipe (str): REQUIRED if ``os_type`` is 'ipe'
                 - The full path of the remote IPE file.
             boot (str): REQUIRED if ``os_type`` is 'bootsys'

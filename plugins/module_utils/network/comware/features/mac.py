@@ -1,6 +1,11 @@
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
-class MacUnicastTable(object):
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data)
+
+
+class MacUnicastTable(object):
     """This class is used to get MacUnicastTable
 
     Args:
@@ -11,12 +16,12 @@ class MacUnicastTable(object):
     def __init__(self, device):
         self.device = device
 
-    def getMacTableTop(self):        
+    def getMacTableTop(self):
         """Build XML object for MacTable
 
         Returns:
             XML object for MacTable data
-        """        
+        """
         E = data_element_maker()
         top = E.top(
             E.MAC(
@@ -27,9 +32,9 @@ class MacUnicastTable(object):
         )
         return top
 
-    def getMacList(self):        
-        """get macList 
-        
+    def getMacList(self):
+        """get macList
+
         Returns:
             macList(list)
         """
@@ -42,18 +47,19 @@ class MacUnicastTable(object):
         portIndexList = findall_in_data('PortIndex', ruleTop.data_ele)
         statusList = findall_in_data('Status', ruleTop.data_ele)
         agingList = findall_in_data('Aging', ruleTop.data_ele)
-        
-        for vlanID,macAdd,portIndex,status,aging in zip(vlanIDList,macAddList,portIndexList,statusList,agingList):
+
+        for vlanID, macAdd, portIndex, status, aging in zip(vlanIDList, macAddList, portIndexList, statusList,
+                                                            agingList):
             macMap['vlanID'] = vlanID.text
             macMap['macAdd'] = macAdd.text
             macMap['portIndex'] = portIndex.text
             macMap['status'] = status.text
-            macMap['aging'] = aging.text 
+            macMap['aging'] = aging.text
             macList.append(macMap.copy())
-            macMap.clear()    
-        
-        for macTable in macList: 
-            ifIndexMap = self.getIfIndexMap(macTable.get('portIndex'))  
+            macMap.clear()
+
+        for macTable in macList:
+            ifIndexMap = self.getIfIndexMap(macTable.get('portIndex'))
             macTable['name'] = ifIndexMap.get('Name')
             if macTable['status'] == '0':
                 macTable['status'] = 'Other'
@@ -64,18 +70,17 @@ class MacUnicastTable(object):
             elif macTable['status'] == '3':
                 macTable['status'] = 'Static'
             elif macTable['status'] == '4':
-                macTable['status'] = 'Blackhole'  
+                macTable['status'] = 'Blackhole'
             del macTable['portIndex']
-        
-        
+
         return macList
 
-    def getIfIndexTop(self,ifIndex):        
+    def getIfIndexTop(self, ifIndex):
         """Build XML object for IfIndex data
 
         Returns:
             XML object for IfIndex data
-        """        
+        """
         E = data_element_maker()
         top = E.top(
             E.Ifmgr(
@@ -86,11 +91,11 @@ class MacUnicastTable(object):
                 )
             )
         )
-        return top 
-    
-    def getIfIndexMap(self,ifIndex):        
-        """get ifIndexMap 
-        
+        return top
+
+    def getIfIndexMap(self, ifIndex):
+        """get ifIndexMap
+
         Returns:
             ifIndexMap(map)
         """
@@ -99,19 +104,8 @@ class MacUnicastTable(object):
         ifIndexTop = self.getIfIndexTop(ifIndex)
         ruleTop = self.device.get(('subtree', ifIndexTop))
         ifIndexList = findall_in_data('IfIndex', ruleTop.data_ele)
-        nameList = findall_in_data('Name', ruleTop.data_ele) 
-        
+        nameList = findall_in_data('Name', ruleTop.data_ele)
+
         ifIndexMap['IfIndex'] = ifIndexList[0].text
-        ifIndexMap['Name'] = nameList[0].text  
+        ifIndexMap['Name'] = nameList[0].text
         return ifIndexMap
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

@@ -1,5 +1,8 @@
 """Manage VXLAN configurations on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import re
 
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import \
@@ -113,7 +116,7 @@ class VsiInterface(object):
 
             mac_num = re.sub('-', '', macaddr)
             for num in mac_num:
-                patten = '^[\d|A-F|a-f]*$'
+                patten = r'^[\d|A-F|a-f]*$'
                 res = re.search(patten, num)
                 if not res:
                     raise MacaddrParamsError(macaddr)

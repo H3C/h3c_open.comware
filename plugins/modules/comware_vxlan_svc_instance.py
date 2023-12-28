@@ -1,27 +1,33 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
-module: comware_vxlan_vsi
+module: comware_vxlan_svc_instance
 short_description: Manage mapping of an Ethernet Service to a VSI (VXLAN ID)
 description:
-  - Manage the mapping of an Ethernet Service to a VSI (VXLAN ID)
+    - Manage the mapping of an Ethernet Service to a VSI (VXLAN ID)
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
-  - VSI needs to be created before using this module (comware_vxlan)
-  - encap and xconnect access_mode cannot be altered once set
-    to change, use state=absent and re-configure
-  - state=absent removes the service instance for specified interface if
-    if it exists
-  - This should be the last VXLAN module used after comware_vxlan_tunnel,
-    and comware_vxlan.
+    - VSI needs to be created before using this module (comware_vxlan)
+    - encap and xconnect access_mode cannot be altered once set
+      to change, use state=absent and re-configure
+    - state=absent removes the service instance for specified interface if
+      if it exists
+    - This should be the last VXLAN module used after comware_vxlan_tunnel,
+      and comware_vxlan.
 options:
     vsi:
         description:
             - Name of the VSI
-        required: false
+        required: true
         type: str
     interface:
         description:
@@ -64,10 +70,10 @@ options:
 EXAMPLES = """
 
 # ensure the vsi is not mapped to the instance
-- comware_vxlan_svc_instance: 
-    interface: Fo1/0/32 
-    vsi: VSI_VXLAN_100 
-    instance: 100 
+- comware_vxlan_svc_instance:
+    interface: Fo1/0/32
+    vsi: VSI_VXLAN_100
+    instance: 100
     state: absent
 
 # ensure instance and vsi and configured with encap and access mode as specified

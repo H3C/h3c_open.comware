@@ -1,13 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_telemetryflowtrace
 short_description: Manage Package information of the message sent to the collector on V7 devices
+description:
+    - Manage Package information of the message sent to the collector on V7 devices
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 notes:
     - If state=absent, the config will be removed
 options:
@@ -36,9 +43,10 @@ options:
             - Desired state of the switch port
         required: false
         default: present
+        choices: ['present', 'absent']
         type: str
-     
-    
+
+
 """
 EXAMPLES = """
 
@@ -60,7 +68,7 @@ EXAMPLES = """
         register: results
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.telemetryflowtrace import (
     Telemetry)
@@ -121,10 +129,9 @@ def main():
                   descr='Error getting telemetry config.')
 
     if state == 'present':
-        #        delta = dict(set(proposed.iteritems()).difference(
-        #            existing.iteritems()))
-        #        if delta:
-        telemetry.build(stage=True)
+        delta = dict(set(proposed.items()).difference(existing.items()))
+        if delta:
+            telemetry.build(stage=True)
 
     elif state == 'absent':
         if existing:

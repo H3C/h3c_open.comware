@@ -1,4 +1,10 @@
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, nc_element_maker, config_element_maker,
+    operation_kwarg, config_params)
 
 
 class Lacp(object):

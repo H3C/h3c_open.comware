@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manages SNMP group configuration on H3C switches.
 description:
     - Manages SNMP group configuration on H3C switches.
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 options:
     acl_number:
         description:
@@ -20,17 +25,19 @@ options:
         description:
             - The security model by this user is provided.
         required: true
+        choices: ['v1', 'v2c', 'v3']
         type: str
     group_name:
         description:
             - Unique name for the group.
-        required: false
+        required: true
         type: str
     security_level:
         description:
             - Security level indicating whether to use authentication and encryption.
         required: false
-        choices: ['noAuthNoPriv', 'authentication']
+        choices: ['noAuthNoPriv', 'authentication', 'privacy']
+        default: noAuthNoPriv
         type: str
     read_view:
         description:
@@ -59,36 +66,36 @@ options:
 EXAMPLES = """
   - name: Config SNMP group
     comware_snmp_group:
-      state: present 
-      version: v2c 
-      group_name: wdz_group 
-      security_level: noAuthNoPriv 
+      state: present
+      version: v2c
+      group_name: wdz_group
+      security_level: noAuthNoPriv
       acl_number: 2000
-    
+
   - name: Undo SNMP group
     comware_snmp_group:
-      state: absent  
-      version: v2c 
-      group_name: wdz_group 
-      security_level: noAuthNoPriv 
+      state: absent
+      version: v2c
+      group_name: wdz_group
+      security_level: noAuthNoPriv
       acl_number: 2000
-      
+
   - name: Config SNMP V3 group
     comware_snmp_group:
-      state: present 
-      group_name: test_wl 
-      version: v3 
-      security_level: authentication  
-      acl_number: 3000 
+      state: present
+      group_name: test_wl
+      version: v3
+      security_level: authentication
+      acl_number: 3000
       write_view: 'testv3c'
-        
+
   - name: Undo SNMP V3 group
     comware_snmp_group:
-      state: absent 
-      group_name: test_wl 
-      version: v3 
-      security_level: authentication  
-      acl_number: 3000 
+      state: absent
+      group_name: test_wl
+      version: v3
+      security_level: authentication
+      acl_number: 3000
       write_view: 'testv3c'
 """
 

@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,14 +14,13 @@ short_description: Configure the EVPN issue to be applied to the device.
 description:
     -Configure the EVPN issue to be applied to the device.
 version_added: 1.0.0
-category: Feature (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
     - The asnum is unsigned integer,and the value range is 1 to 4294967295.
     - The type of vrf is string,the length is 1 to 31 characters.
     - The type of mask is Unsigned integer,and the value range is 0 to 128,or 255.
       For non-dynamic peers, this is 255.For IPv4 dynamic peers,this is 0 to 32.For IPv6 dynamic peers, \
-      this is 0 to 128. 
+      this is 0 to 128.
       Dynamic peers are not supported.
     - if you want to config bgp  evpn   ,please use comware_bgp_global.py to create bgp process first.
 
@@ -29,7 +34,6 @@ options:
         description:
             - VPN instance name.
         required: false
-        default: false
         type: str
     state:
         description:
@@ -42,7 +46,6 @@ options:
         description:
             - Route distinguisher
         required: false
-        default: false
         type: str
     rtentry:
         description:
@@ -61,11 +64,15 @@ options:
         required: false
         choices: ['import', 'export']
         type: str
+    bgp_name:
+        description:
+            - BGP name
+        required: false
+        type: str
     asnum:
         description:
             - Autonomous System number
         required: false
-        choices: ['md5', 'hmac_sha_1', 'hmac_sha_256', 'hmac_sha_384', 'hmac_sha_384']
         type: str
     sessaf:
         description:
@@ -87,21 +94,22 @@ options:
         description:
             - Address Family Identifier
         required: false
-        choices: ['ipv4uni','ipv4mul','mdt', 'vpnv4','ipv6uni','ipv6mul', 'vpnv6','l2vpn','l2vpn_evpn','link_state', 
+        choices: ['ipv4uni','ipv4mul','mdt', 'vpnv4','ipv6uni','ipv6mul', 'vpnv6','l2vpn','l2vpn_evpn','link_state',
                   'ipv4mvpn','ipv4flosp', 'vpnv4flosp', 'ipv6flosp', 'vpnv6flosp']
         type: str
     family:
         description:
             - Address Family Identifier of Neighbor
         required: false
-        choices: ['ipv4uni','ipv4mul','mdt', 'vpnv4','ipv6uni','ipv6mul', 'vpnv6','l2vpn','l2vpn_evpn','link_state', 
+        choices: ['ipv4uni','ipv4mul','mdt', 'vpnv4','ipv6uni','ipv6mul', 'vpnv6','l2vpn','l2vpn_evpn','link_state',
                   'ipv4mvpn','ipv4flosp', 'vpnv4flosp', 'ipv6flosp', 'vpnv6flosp']
         type: str
     del_bgp:
         description:
             - Whether delete BGP
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
 """
 EXAMPLES = """
 

@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,13 +14,12 @@ short_description: Manage stp config in interface
 description:
     - Manage stp config in interface
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - stp interface configs must be setting in l2 ethernet mode .
     - loop protect is conflict with edgeport and root protect , while loop protect
       exists , edgeport and root protect can not be set , vice versa.
-    
+
 options:
     name:
         description:
@@ -25,21 +30,25 @@ options:
         description:
             - Specify edge port
         required: false
+        choices: ['true', 'false']
         type: str
     loop:
         description:
             - Specify loop protection
         required: false
+        choices: ['true', 'false']
         type: str
     root:
         description:
             - Specify root protection
         required: false
+        choices: ['true', 'false']
         type: str
     tc_restriction:
         description:
             - Restrict propagation of TC message
         required: false
+        choices: ['true', 'false']
         type: str
     transmit_limit:
         description:
@@ -56,22 +65,22 @@ options:
 """
 EXAMPLES = """
 - name: Basic interface stp config
-  h3c_open.comware.comware_iface_stp: 
-    name: Twenty-FiveGigE1/0/22 
-    tc_restriction: true 
+  h3c_open.comware.comware_iface_stp:
+    name: Twenty-FiveGigE1/0/22
+    tc_restriction: true
     transmit_limit: 200
 
 - name: Delete interface stp config
-  h3c_open.comware.comware_iface_stp: 
-    name: Twenty-FiveGigE1/0/22  
+  h3c_open.comware.comware_iface_stp:
+    name: Twenty-FiveGigE1/0/22
     state: default
 
 - name: Interface stp full configuration
-  h3c_open.comware.comware_iface_stp: 
-    name: Ten-GigabitEthernet2/0/25 
-    edgedport: true 
-    root: true 
-    tc_restriction: true 
+  h3c_open.comware.comware_iface_stp:
+    name: Ten-GigabitEthernet2/0/25
+    edgedport: true
+    root: true
+    tc_restriction: true
     transmit_limit: 200
 """
 
@@ -136,7 +145,7 @@ def main():
         if delta:
             stp.build(stage=True, **delta)
 
-    elif state == 'default' or 'absent':
+    elif state == 'default' or state == 'absent':
         defaults = stp.get_default_config()
         delta = dict(set(existing.items()).difference(
             defaults.items()))

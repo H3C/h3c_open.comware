@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,14 +14,13 @@ short_description: Manages SNMP user configuration on H3c switches.
 description:
     - Manages SNMP community configuration on H3C switches.
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 options:
     acl_number:
         description:
             - Access control list number.
         required: false
-        type: int
+        type: str
     usm_user_name:
         description:
             - Unique name for the user.
@@ -36,10 +41,13 @@ options:
         description:
             - Authentication algorithm.
         required: false
+        choices: ['md5', 'sha']
+        type: str
     priv_protocol:
         description:
             - Encryption algorithm privacy.
         required: false
+        choices: ['3des', 'aes128', 'aes192', 'aes256', 'des56']
         type: str
     auth_key:
         description:
@@ -63,24 +71,24 @@ options:
 EXAMPLES = """
   - name: Config SNMP v3 User
     h3c_open.comware.comware_snmp_user:
-      state: present 
-      usm_user_name: gtest_w_ansible 
-      security_model: v3 
-      user_group: gtest_w_ansible 
-      auth_protocol: sha 
-      priv_protocol: 3des 
-      auth_key: gtest_w_ansible 
+      state: present
+      usm_user_name: gtest_w_ansible
+      security_model: v3
+      user_group: gtest_w_ansible
+      auth_protocol: sha
+      priv_protocol: 3des
+      auth_key: gtest_w_ansible
       priv_key: gtest_w_ansible
 
   - name: Undo SNMP v3 User
     h3c_open.comware.comware_snmp_user:
-      state: absent 
-      usm_user_name: gtest_w_ansible 
-      security_model: v3 
-      user_group: gtest_w_ansible 
-      auth_protocol: sha 
-      priv_protocol: 3des 
-      auth_key: gtest_w_ansible 
+      state: absent
+      usm_user_name: gtest_w_ansible
+      security_model: v3
+      user_group: gtest_w_ansible
+      auth_protocol: sha
+      priv_protocol: 3des
+      auth_key: gtest_w_ansible
       priv_key: gtest_w_ansible
 """
 
@@ -140,11 +148,11 @@ def main():
             acl_number=dict(type='str'),
             usm_user_name=dict(required=True, type='str'),
             user_group=dict(required=True, type='str'),
-            security_model=dict(required=True, choices=['v1', 'v2c', 'v3']),
-            auth_protocol=dict(choices=['md5', 'sha']),
-            priv_protocol=dict(choices=['3des', 'aes128', 'aes192', 'aes256', 'des56']),
-            auth_key=dict(type='str'),
-            priv_key=dict(type='str'),
+            security_model=dict(required=True, type='str', choices=['v1', 'v2c', 'v3']),
+            auth_protocol=dict(type='str', choices=['md5', 'sha']),
+            priv_protocol=dict(type='str', choices=['3des', 'aes128', 'aes192', 'aes256', 'des56']),
+            auth_key=dict(type='str', no_log=True),
+            priv_key=dict(type='str', no_log=True),
         ),
         supports_check_mode=True
     )
@@ -186,10 +194,10 @@ def main():
                              descr='Error getting existing config.')
 
         if state == 'present':
-            # delta = dict(set(proposed.iteritems()).difference(
-            #     existing.iteritems()))
-            # if delta:
-            snmp_user_obj.user_build(stage=True, **proposed)
+            delta = dict(set(proposed.items()).difference(
+                existing.items()))
+            if delta:
+                snmp_user_obj.user_build(stage=True, **proposed)
         elif state == 'absent':
             if existing:
                 snmp_user_obj.user_remove(stage=True, **proposed)

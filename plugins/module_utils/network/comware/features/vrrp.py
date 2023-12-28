@@ -1,5 +1,8 @@
 """Manage VRRP groups on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.templates import cli
 
 vrrp_tmpl = r"""Value VRID (\d+)

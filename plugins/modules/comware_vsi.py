@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,7 @@ short_description: Configure some command functions of vsi view
 description:
     - Configure some command functions of vsi view
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - l2vpn needs to enabled before config vsi view.
     - If you want to use vsi gateway interface, it must be exist , you can use interface module to create it.
@@ -21,12 +27,12 @@ options:
         type: str
     gateway_intf:
         description:
-            - vsi view Gateway configuration interface 
+            - vsi view Gateway configuration interface
         required: false
         type: str
     gateway_subnet:
         description:
-            - vsi view Gateway configuration subnet 
+            - vsi view Gateway configuration subnet
         required: false
         type: str
     gateway_mask:
@@ -41,7 +47,7 @@ options:
         type: str
     encap:
         description:
-            - Ethernet virtual private network module 
+            - Ethernet virtual private network module
         required: false
         type: bool
     rd:
@@ -65,27 +71,27 @@ options:
 """
 EXAMPLES = """
 - name:  config vsi
-  comware_vsi: 
-    vsi: vpna 
-    gateway_intf: Vsi-interface1 
-    gateway_subnet: 10.1.1.0 
-    gateway_mask: 0.0.0.255 
+  comware_vsi:
+    vsi: vpna
+    gateway_intf: Vsi-interface1
+    gateway_subnet: 10.1.1.0
+    gateway_mask: 0.0.0.255
     vxlan: 10
-    encap: true 
-    rd: auto 
-    vpn_target_auto: both 
-       
+    encap: true
+    rd: auto
+    vpn_target_auto: both
+
 - name: delete vsi configs
-  comware_vsi: 
-    vsi: vpna 
-    state: absent 
+  comware_vsi:
+    vsi: vpna
+    state: absent
 """
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.l2vpn import L2VPN
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vsi import Vsi
@@ -177,13 +183,12 @@ def main():
         vsi_ins = Vsi(device, vsi)
         existing = vsi_ins.get_config()
     except PYCW7Error as e:
-        module.fail_json(device, msg=str(e), descr='could not obtain existing')
+        module.fail_json(msg=str(e), descr='could not obtain existing')
 
     try:
         vsi_ins.param_check(**proposed)
     except PYCW7Error as e:
-        module.fail_json(device,
-                         descr='There was problem with the supplied parameters.',
+        module.fail_json(descr='There was problem with the supplied parameters.',
                          msg=str(e))
 
     if state == 'present':
@@ -209,7 +214,7 @@ def main():
                 device.execute_staged()
                 end_state = vsi_ins.get_config()
             except PYCW7Error as e:
-                module.fail_json(device, msg=str(e),
+                module.fail_json(msg=str(e),
                                  descr='failed during execution')
             changed = True
 

@@ -1,5 +1,10 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -15,7 +20,7 @@ description:
       factory-default settings. Deletes all files on an installed
       hot-swappable storage medium, such as a USB disk
 version_added: 1.0.0
-category: System (RW)
+author: h3c (@h3c_open)
 options:
     factory_default:
         description:
@@ -23,7 +28,8 @@ options:
               should be deleted and removed from the system
               and the device should be set to factory default
               settings
-        required: true
+        required: false
+        default: false
         type: bool
 
 """
@@ -36,10 +42,10 @@ EXAMPLES = """
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.cleanerase import CleanErase
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error, NCTimeoutError
 
 
 def safe_fail(module, **kwargs):
@@ -53,7 +59,7 @@ def safe_exit(module, **kwargs):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            factory_default=dict(default=False, choices=BOOLEANS, type='bool'),
+            factory_default=dict(default=False, type='bool'),
         ),
         supports_check_mode=True
     )

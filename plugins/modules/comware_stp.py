@@ -1,15 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_stp
 short_description: Manage stp global BPDU enable, working mode and tc-bpdu attack protection function.
 description:
-    - 
+    - Manage stp global BPDU enable, working mode and tc-bpdu attack protection function.
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
 
 options:
@@ -17,21 +22,25 @@ options:
         description:
             - Turn on the global BPDU protection function.
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     mode:
         description:
             - Configure the working mode of the spanning tree.
         required: false
+        choices: ['MSTP', 'PVST', 'RSTP', 'STP'] 
         type: str
     tc:
         description:
             - Enable anti tc-bpdu attack protection function.
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'absent', 'default'] 
         default: present
         type: str
 
@@ -53,10 +62,10 @@ EXAMPLES = """
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.stp import Stp
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -70,9 +79,9 @@ def safe_exit(module, **kwargs):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            bpdu=dict(required=False, choices=['true', 'false', ]),
-            mode=dict(required=False, choices=['MSTP', 'PVST', 'RSTP', 'STP']),
-            tc=dict(required=False, choices=['true', 'false', ]),
+            bpdu=dict(required=False, type='str', choices=['true', 'false']),
+            mode=dict(required=False, type='str', choices=['MSTP', 'PVST', 'RSTP', 'STP']),
+            tc=dict(required=False, type='str', choices=['true', 'false']),
             state=dict(choices=['present', 'absent', 'default'],
                        default='present'),
         ),
@@ -107,7 +116,7 @@ def main():
         if delta:
             stp.build(stage=True, **delta)
 
-    elif state == 'default' or 'absent':
+    elif state == 'default' or state == 'absent':
         defaults = stp.get_default_config()
         delta = dict(set(existing.items()).difference(
             defaults.items()))

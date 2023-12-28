@@ -51,4 +51,3 @@
           bgp_as: 200
           state: default
         register: results
-

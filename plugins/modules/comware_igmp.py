@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Configure the igmp issue to be applied to the interface.
 description:
     -Configure the acl igmp to be applied to the interface.
 version_added: 1.0.0
-category: Feature (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
     - When configuring IGMP,the interface must be a routing interface.
     - Parameter 'name' is required when deleting IGMP.
@@ -42,7 +47,7 @@ options:
         type: str
     snstate:
         description:
-            -  The state of igmp-snooping 
+            -  The state of igmp-snooping
         required: false
         default: disable
         choices: ['enable', 'disable']
@@ -56,33 +61,33 @@ options:
 """
 EXAMPLES = """
   - name: create IGMP and configure IGMP version
-    comware_igmp: 
-      name: Twenty-FiveGigE1/0/22 
-      igstate: enabled 
-      version: version1 
+    comware_igmp:
+      name: Twenty-FiveGigE1/0/22
+      igstate: enabled
+      version: version1
       state: present
   - name: delete IGMP ,delete IGMP version
-    comware_igmp: 
-      name: Twenty-FiveGigE1/0/22 
-      igstate: disabled 
-      state: absent 
+    comware_igmp:
+      name: Twenty-FiveGigE1/0/22
+      igstate: disabled
+      state: absent
   - name: configure PIM mode
-    comware_igmp: 
-      name: Twenty-FiveGigE1/0/22 
-      mode: dm 
+    comware_igmp:
+      name: Twenty-FiveGigE1/0/22
+      mode: dm
       state: present
   - name: delete PIM mode
-    comware_igmp: 
-      name: Twenty-FiveGigE1/0/22 
-      mode: dm 
+    comware_igmp:
+      name: Twenty-FiveGigE1/0/22
+      mode: dm
       state: absent
   - name: configure IMGP-Snooping
-    comware_igmp: 
-      snstate: enable 
+    comware_igmp:
+      snstate: enable
       state: present
   - name: delete IMGP-Snooping
-    comware_igmp: 
-      snstate: disable 
+    comware_igmp:
+      snstate: disable
       state: absent
 """
 

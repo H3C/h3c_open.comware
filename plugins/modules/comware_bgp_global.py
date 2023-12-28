@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: config bgp configs in the bgp instance view such as routerid
 description:
     - config bgp configs in the bgp instance view such as routerid
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - all the configs except bgp_as and bgp_instance are set in bgp instance view.
     - timer keepalive and time hold must be set together .
@@ -37,8 +42,9 @@ options:
         description:
             - Advertise the best route in IP routing table
         required: false
-        default: false
-        type: bool
+        default: 'false'
+        choices: ['true', 'false']
+        type: str
     timer_connect_retry:
         description:
             - Configure the session retry timer for all BGP peers
@@ -58,8 +64,9 @@ options:
         description:
             - Compare the MEDs of routes from different ASs
         required: false
-        default: false
-        type: bool
+        default: 'false'
+        choices: ['true', 'false']
+        type: str
     peer_ip:
         description:
             - Specify BGP peers IPv4 address
@@ -79,25 +86,28 @@ options:
         description:
             - Specify an address family
         required: false
-        default: false
+        choices: ['l2vpn']
         type: str
     peer_ignore:
         description:
             - Disable session establishment with the peers
         required: false
-        default: false
-        type: bool
+        default: 'false'
+        choices: ['true', 'false']
+        type: str
     evpn:
         description:
             - Disable specify the EVPN address family
         required: false
-        default: false
-        type: bool
+        default: 'false'
+        choices: ['true', 'false']
+        type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
         default: present
+        choices: ['present', 'absent', 'default']
         type: str
 """
 EXAMPLES = """
@@ -116,14 +126,14 @@ EXAMPLES = """
           peer_as_num: 10
           peer_ignore: true
         register: results
-         
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.bgp_global import Bgp
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -141,22 +151,28 @@ def main():
             bgp_instance=dict(required=False, type='str'),
             router_id=dict(type='str'),
             advertise_rib_active=dict(choices=['true', 'false'],
-                                      default='false'),
+                                      default='false',
+                                      type='str'),
             timer_connect_retry=dict(type='str'),
             timer_keepalive=dict(type='str'),
             timer_hold=dict(type='str'),
             compare_as_med=dict(choices=['true', 'false'],
-                                default='false'),
+                                default='false',
+                                type='str'),
             peer_ip=dict(type='str'),
             peer_as_num=dict(type='str'),
             peer_ignore=dict(choices=['true', 'false'],
-                             default='false'),
+                             default='false',
+                             type='str'),
             peer_connect_intf=dict(type='str'),
-            address_family=dict(choices=['l2vpn']),
+            address_family=dict(choices=['l2vpn'],
+                                type='str'),
             evpn=dict(choices=['true', 'false'],
-                      default='false'),
+                      default='false',
+                      type='str'),
             state=dict(choices=['present', 'absent', 'default'],
-                       default='present'),
+                       default='present',
+                       type='str'),
         ),
         supports_check_mode=True
     )
@@ -237,7 +253,7 @@ def main():
         if delta:
             bgp.build_bgp_global(stage=True, **delta)
 
-    elif state == 'default' or 'absent':
+    elif state == 'default' or state == 'absent':
         default_bgp = dict(bgp_as=bgp_as,
                            bgp_instance=bgp_instance)
         bgp.remove_bgp(stage=True, **default_bgp)

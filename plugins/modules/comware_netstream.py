@@ -1,24 +1,35 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_netstream
-short_description: Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream 
-                aggregation destination-prefix enable, 
-                netstream statistics output message destination address and destination UDP port number configurationon 
+short_description: Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream
+                aggregation destination-prefix enable,
+                netstream statistics output message destination address and destination UDP port number configurationon
                 Comware 7 devices
+description:
+    - Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream
+      aggregation destination-prefix enable, netstream statistics output message destination address and
+      destination UDP port number configurationon Comware 7 devices
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - Before configuring netstream stream image, you need to enable the global netstream function.
-    - The default state is not open global netstream function.If you want to config interface netstream enable,the name 
+    - The default state is not open global netstream function.If you want to config interface netstream enable,the name
       parameter must be exit.If you config netstream statistics output message,host and udp paramaters must be exit.
 options:
     netstream:
         description:
             -  global netstream enable or disable
-        required: true
+        required: false
+        choices: ['enable', 'disabled']
         type: str
     rate:
         description:
@@ -30,7 +41,7 @@ options:
             -  Active aging time of configuration flow
         required: false
         type: str
-    max_enter:
+    max_entry:
         description:
             -  Active aging time of configuration flow
         required: false
@@ -49,6 +60,7 @@ options:
         description:
             - Sampler mode.if config sampler,this parameter is must be exit.
         required: false
+        choices: ['fixed', 'random']
         type: str
     sampler_rate:
         description:
@@ -59,20 +71,22 @@ options:
         description:
             - Configure autonomous system options for netstream version.
         required: false
-        default: 9
+        choices: ['5', '9', '10']
+        default: '9'
         type: str
     BGP:
         description:
-            - BGP next hop option.
+            - Configure bgp.
         required: false
+        choices: ['origin-as', 'peer-as', 'bgp-nexthop'] 
         type: str
     inactive:
-        description: 
+        description:
             - Configure Inactive aging time of flow.(10~600).
         required: false
         type: str
     source_intf:
-        description: 
+        description:
             - Configure the source interface of netstream statistical output message.
         required: false
         type: str
@@ -80,6 +94,9 @@ options:
         description:
             - Enter netstream aggregation view and enable it
         required: false
+        choices: ['as', 'destination-prefix', 'prefix', 'prefix-port', 'protocol-port',
+                  'source-prefix', 'tos-as', 'tos-bgp-nexthop', 'tos-destination-prefix',
+                  'tos-prefix', 'tos-protocol-port', 'tos-source-prefix']
         type: str
     name:
         description:
@@ -90,6 +107,7 @@ options:
         description:
             - manage interface netstream enable.To config this, name parameter must be exit.
         required: false
+        choices: ['inbound', 'outbound'] 
         type: str
     interface_sampler:
         description:
@@ -115,6 +133,7 @@ options:
         description:
             - Desired state for the interface configuration.
         required: false
+        choices: ['present', 'absent'] 
         default: present
         type: str
 """
@@ -146,10 +165,10 @@ EXAMPLES = """
           state: absent
 
 """
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.netstream import Netstream
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (get_device)
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -169,14 +188,14 @@ def main():
             max_entry=dict(required=False),
             vxlan_udp=dict(required=False),
             sampler=dict(required=False),
-            mode=dict(required=False, choice=['fixed', 'random']),
+            mode=dict(required=False, choices=['fixed', 'random']),
             sampler_rate=dict(required=False),
             aggregation=dict(required=False,
-                             choice=['as', 'destination-prefix', 'prefix', 'prefix-port', 'protocol-port',
+                             choices=['as', 'destination-prefix', 'prefix', 'prefix-port', 'protocol-port',
                                      'source-prefix', 'tos-as', 'tos-bgp-nexthop', 'tos-destination-prefix',
                                      'tos-prefix', 'tos-protocol-port', 'tos-source-prefix']),
-            version=dict(required=False, choice=['5', '9', '10'], default='9'),
-            BGP=dict(required=False, choice=['origin-as', 'peer-as', 'bgp-nexthop']),
+            version=dict(required=False, choices=['5', '9', '10'], default='9'),
+            BGP=dict(required=False, choices=['origin-as', 'peer-as', 'bgp-nexthop']),
             inactive=dict(required=False),
             source_intf=dict(required=False),
             name=dict(required=False),

@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manages SNMP user configuration on H3c switches.
 description:
     - Manages SNMP target host configuration on H3c switches.
 version_added: 1.0.0
-category: System (RW)  
-author: wangliang    
+author: wangliang (@wangliang)
 options:
     target_type:
         description:
@@ -31,11 +36,6 @@ options:
         description:
             - VRF instance name.
         required: false
-        type: str
-    user_group:
-        description:
-            - Unique name for the user group.
-        required: true
         type: str
     security_model:
         description:
@@ -62,54 +62,54 @@ options:
 EXAMPLES = """
   - name: Config SNMP v3 TargetHost
     h3c_open.comware.comware_snmp_target_host:
-      state: present 
-      target_type: trap 
+      state: present
+      target_type: trap
       server_address: 10.1.1.1
-      usm_user_name: Uv3 
-      security_model: v3 
-      security_level: authentication 
+      usm_user_name: Uv3
+      security_model: v3
+      security_level: authentication
       vpnname: testvpn
-        
+
   - name: Undo SNMP v3 TargetHost
     h3c_open.comware.comware_snmp_target_host:
-      state: absent 
-      target_type: trap 
-      server_address: 10.1.1.1 
-      usm_user_name: Uv3 
+      state: absent
+      target_type: trap
+      server_address: 10.1.1.1
+      usm_user_name: Uv3
       vpnname: testvpn
-  
+
   - name: Config SNMP v2c TargetHost
     h3c_open.comware.comware_snmp_target_host:
-      state: present 
-      target_type: trap 
-      server_address: 100.1.1.1 
-      usm_user_name: testuv2c 
+      state: present
+      target_type: trap
+      server_address: 100.1.1.1
+      usm_user_name: testuv2c
       security_model: v2c
-            
+
   - name: Undo SNMP v2c TargetHost
     h3c_open.comware.comware_snmp_target_host:
-      state: absent 
-      target_type: trap 
-      server_address: 100.1.1.1 
-      usm_user_name: testuv2c 
-      security_model: v2c 
-      vpnname: testvpn
-    
-  - name: Config SNMP TargetHost
-    h3c_open.comware.comware_snmp_target_host: 
-      state: present 
-      target_type: inform 
-      server_address: 100.1.1.1 
-      usm_user_name: testuv2c 
+      state: absent
+      target_type: trap
+      server_address: 100.1.1.1
+      usm_user_name: testuv2c
       security_model: v2c
-            
+      vpnname: testvpn
+
+  - name: Config SNMP TargetHost
+    h3c_open.comware.comware_snmp_target_host:
+      state: present
+      target_type: inform
+      server_address: 100.1.1.1
+      usm_user_name: testuv2c
+      security_model: v2c
+
   - name: Undo SNMP TagetHost
-    h3c_open.comware.comware_snmp_target_host: 
-      state: absent 
-      target_type: inform 
-      server_address: 100.1.1.1 
-      usm_user_name: testuv2c 
-      security_model: v2c 
+    h3c_open.comware.comware_snmp_target_host:
+      state: absent
+      target_type: inform
+      server_address: 100.1.1.1
+      usm_user_name: testuv2c
+      security_model: v2c
       vpnname: testvpn
 """
 

@@ -2,25 +2,38 @@
 for dealing with XML text and ``etree.Element``
 XML objects.
 """
-from lxml.builder import ElementMaker
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.namespaces import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.namespaces import NCCONFIG, \
+    NCDATA, NCACTION, NETCONFBASE, NETCONFBASE_C, NCDATA_C
+
+try:
+    from lxml.builder import ElementMaker
+
+    HAS_LXML = True
+except ImportError:
+    HAS_LXML = False
 
 
 def config_element_maker():
-    return ElementMaker(namespace=NCCONFIG, nsmap={None: NCCONFIG})
+    if HAS_LXML:
+        return ElementMaker(namespace=NCCONFIG, nsmap={None: NCCONFIG})
 
 
 def data_element_maker():
-    return ElementMaker(namespace=NCDATA, nsmap={None: NCDATA})
+    if HAS_LXML:
+        return ElementMaker(namespace=NCDATA, nsmap={None: NCDATA})
 
 
 def action_element_maker():
-    return ElementMaker(namespace=NCACTION, nsmap={None: NCACTION})
+    if HAS_LXML:
+        return ElementMaker(namespace=NCACTION, nsmap={None: NCACTION})
 
 
 def nc_element_maker():
-    return ElementMaker(namespace=NETCONFBASE, nsmap={None: NETCONFBASE})
+    if HAS_LXML:
+        return ElementMaker(namespace=NETCONFBASE, nsmap={None: NETCONFBASE})
 
 
 def config_params(pmap, key_map, value_map=None, E=config_element_maker(), fill_in=True):

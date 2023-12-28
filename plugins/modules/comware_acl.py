@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Configure the acl issue to be applied to the interface.
 description:
     - Configure the acl issue to be applied to the interface.
 version_added: 1.0.0
-category: Feature (RW)
-author: null
+author: h3c (@h3c_open)
 notes:
     - When using this feature, "acliid" and "groupcg" are required parameters.
     - You must select a groupcategory when configurating the acl.
@@ -25,7 +30,7 @@ options:
     aclid:
         description:
             - The ID of ACL
-        aclid: true
+        required: true
         type: str
     name:
         description:
@@ -36,6 +41,7 @@ options:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'absent']
         default: present
         type: str
     ruleid:
@@ -52,16 +58,19 @@ options:
         description:
             - Action of the rule
         required: false
+        choices: ['deny', 'permit']
         type: str
     appdirec:
         description:
             - Direction Applied to the interface
         required: false
+        choices: ['inbound', 'outbound']
         type: str
     groupcg:
         description:
             - ACL groupacategory
         required: false
+        choices: ['basic', 'advanced']
         type: str
 
 """
@@ -70,7 +79,7 @@ EXAMPLES = """
         h3c_open.comware.comware_acl:
           aclid: 3010
           groupcg: advanced
-        
+
 
       - name: deploy basic ACL (IPv4 basic ACL 2000 to 2999)
         h3c_open.comware.comware_acl:
@@ -81,13 +90,13 @@ EXAMPLES = """
         h3c_open.comware.comware_acl:
           aclid: 3010
           groupcg: advanced
-          state: absent 
+          state: absent
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.acl import Acl
 
 

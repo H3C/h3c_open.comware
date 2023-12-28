@@ -42,7 +42,7 @@ import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_native
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import NCTimeoutError
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import (
     NetconfBase,
     ensure_ncclient,
@@ -50,15 +50,13 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base imp
 
 try:
     from ncclient import manager
-    from ncclient.operations import RPCError
     from ncclient.transport.errors import SSHUnknownHostError
-    from ncclient.xml_ import new_ele, sub_ele, to_ele, to_xml
 
     HAS_NCCLIENT = True
 except (
         ImportError,
         AttributeError,
-):  # paramiko and gssapi are incompatible and raise AttributeError not ImportError
+):
     HAS_NCCLIENT = False
 
 
@@ -117,7 +115,7 @@ class Netconf(NetconfBase):
         m.close_session()
         return guessed_os
 
-    def execute(self, run_cmd_func, args=[], kwargs={}):
+    def execute(self, run_cmd_func, args=None, kwargs=None):
         """Safely execute the supplied function with args and kwargs.
         Args:
             run_cmd_func(executable): Function to be run.
@@ -129,6 +127,10 @@ class Netconf(NetconfBase):
             ConnectionClosedError: if the NETCONF session is closed.
         """
 
+        if kwargs is None:
+            kwargs = {}
+        if args is None:
+            args = []
         rsp = run_cmd_func(*args, **kwargs)
         if hasattr(rsp, "data_xml"):
             data = rsp.data_xml
@@ -163,7 +165,7 @@ class Netconf(NetconfBase):
     def save(self, filename=None):
         """Wrapper for ncclient.manger.save
         Args:
-            element: etree.Element sent to ncclient.manager.save
+            filename: file name
         Returns:
             The etree.Element returned from ncclient.manager.save
         """
@@ -173,7 +175,7 @@ class Netconf(NetconfBase):
     def rollback(self, filename):
         """Wrapper for ncclient.manger.rollback
         Args:
-            element: etree.Element sent to ncclient.manager.rollback
+            filename: file name
         Returns:
             The etree.Element returned from ncclient.manager.rollback
         """
@@ -190,8 +192,6 @@ class Netconf(NetconfBase):
 
         if isinstance(command, list):
             command = '\n'.join(command)
-        elif isinstance(command, str):
-            command = command
         CLI = "<CLI><Execution>%s</Execution></CLI>" % command
         rsp = self.execute(self.dispatch, [CLI])
         return rsp
@@ -206,8 +206,6 @@ class Netconf(NetconfBase):
         """
         if isinstance(command, list):
             command = '\n'.join(command)
-        elif isinstance(command, str):
-            command = command
 
         CLI = "<CLI><Configuration>%s</Configuration></CLI>" % command
         rsp = self.execute(self.dispatch, [CLI])

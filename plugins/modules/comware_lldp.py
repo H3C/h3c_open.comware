@@ -1,17 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_lldp
 short_description: Manage lacp fast-Interval, tx-interval,hold-multplier on Comware 7 devices
-author: gongqianyu
+author: gongqianyu(@gongqianyu)
 description:
     - the default fast Interval is 1 and tx-interval is 30,hold-multplier is 4.Using this module ,\
       you must be use comware_lldp_global to enable global
-
 version_added: 1.0.0
-category: Feature (RW)
 options:
     fast_intervalId:
         description:
@@ -23,7 +27,7 @@ options:
             - lldp fast Interval
         required: false
         type: str
-    multiplierlId:
+    multiplierId:
         description:
             - lldp hold-muliplierlid
         required: false
@@ -31,8 +35,7 @@ options:
     state:
         description:
             - Desired state for the interface configuration
-        required: true
-        default: present
+        required: false
         choices: ['present', 'default']
         type: str
 """

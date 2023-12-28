@@ -45,4 +45,3 @@
           that:
             - data.end_state == 'standard'
             - data.changed == true
-

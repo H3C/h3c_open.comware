@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,7 @@ short_description: Manage VXLAN to VSI mappings and Tunnel mappings to VXLAN
 description:
     - Manage VXLAN to VSI mappings and Tunnel mappings to VXLAN
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - VXLAN tunnels should be created before using this module.
     - state=absent removes the vsi and associated vxlan mapping if they both
@@ -28,13 +34,14 @@ options:
     descr:
         description:
             - description of the VSI
-        required: true
+        required: false
         type: str
     tunnels:
         description:
             - Desired Tunnel interface ID or a list of IDs.
               Any tunnel not in the list will be removed if it exists
         required: false
+        elements: str
         type: list
     state:
         description:
@@ -47,16 +54,16 @@ options:
 EXAMPLES = """
 
 # ensure VXLAN and VSI do not exist
-- comware_vxlan: 
-    vxlan: 100 
-    vsi: VSI_VXLAN_100 
-    tunnels: [20] 
-    state: absent 
+- comware_vxlan:
+    vxlan: 100
+    vsi: VSI_VXLAN_100
+    tunnels: [20]
+    state: absent
 
 # ensure VXLAN 100 exists and is mapped to VSI VSI_VXLAN_100 with only tunnel interface 20
-- comware_vxlan: 
-    vxlan: 100 
-    vsi: VSI_VXLAN_100 
+- comware_vxlan:
+    vxlan: 100
+    vsi: VSI_VXLAN_100
     tunnels: [20]
 
 # ensure 3 tunnels mapped to the vxlan
@@ -69,7 +76,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.l2vpn import L2VPN
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vxlan import Tunnel
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vxlan import Vxlan
@@ -96,7 +103,7 @@ def main():
         argument_spec=dict(
             vxlan=dict(required=True, type='str'),
             vsi=dict(required=True, type='str'),
-            tunnels=dict(required=False, type='list'),
+            tunnels=dict(required=False, type='list', elements='str'),
             descr=dict(required=False),
             state=dict(choices=['present', 'absent'], default='present'),
         ),

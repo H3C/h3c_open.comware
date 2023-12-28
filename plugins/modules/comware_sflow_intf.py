@@ -1,13 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_sflow_intf
 short_description: Manage sflow interface flow collector and sampling_rate on Comware 7 devices.
+description:
+    - Manage sflow interface flow collector and sampling_rate on Comware 7 devices.
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 notes:
     - cli.  Netconf net surport.
 options:
@@ -23,7 +30,7 @@ options:
         type: int
     collector:
         description:
-            -  sflow flow collector(1~4). 
+            -  sflow flow collector(1~4).
         required: false
         default: 1
         choices: [1, 2, 3, 4]
@@ -53,7 +60,7 @@ EXAMPLES = """
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.sflow_intf import Sflow
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )

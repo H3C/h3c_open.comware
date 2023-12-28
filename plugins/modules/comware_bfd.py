@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,15 +14,14 @@ short_description: Management configuration bfd function
 description:
     - Manage bfd config
 version_added: 1.0.0
-category: Feature (RW)
-author: null
+author: h3c (@h3c_open)
 notes:
-    - This module is currently only used to enable BFD session flapping suppression , 
+    - This module is currently only used to enable BFD session flapping suppression ,
       other functions depend on other protocols and are not yet available.
     - Bfd dampening maximum delay and initial delay are required , also the second interval.
     - The initial interval and second interval must be shorter than the maximum interval.
-    - Maximum , initial and second interval are required in 1-3600 seconds. 
-    
+    - Maximum , initial and second interval are required in 1-3600 seconds.
+
 options:
     damp_max_wait_time:
         description:
@@ -37,12 +42,13 @@ options:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'default'] 
         default: present
         type: str
 
 """
 EXAMPLES = """
-     
+
       - name: config bfd
         h3c_open.comware.comware_bfd:
           damp_max_wait_time: 100
@@ -55,13 +61,13 @@ EXAMPLES = """
           damp_init_wait_time: 10
           secondary: 8
           state: default
-     
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.bfd import Bfd
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):

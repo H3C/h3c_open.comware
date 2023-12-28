@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 
@@ -9,8 +15,7 @@ short_description: Manage patch
 description:
     - Manage patch
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 notes:
     - This modules rollback the config to startup.cfg, or the supplied
       filename, in flash. It is not
@@ -19,18 +24,18 @@ options:
     patchname:
         description:
             - Name of patch that will be used .
-        required: false
+        required: true
         type: str
     activate:
         description:
             - active patch or not.
         required: false
-        default: false
+        choices: ['true', 'false']
         type: bool
     check_result:
         description: check patch active success or not .
         required: false
-        default: false
+        choices: ['true', 'false']
         type: bool
 
 '''
@@ -56,9 +61,9 @@ EXAMPLES = '''
 
 '''
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.patch import Patch
 
 
@@ -73,9 +78,9 @@ def safe_exit(module, **kwargs):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            patchname=dict(required=True),
-            activate=dict(required=False, choices=['true', 'false']),
-            check_result=dict(required=False, choices=['true', 'false']),
+            patchname=dict(required=True, type='str'),
+            activate=dict(required=False, choices=['true', 'false'], type='bool'),
+            check_result=dict(required=False, choices=['true', 'false'], type='bool'),
         ),
         supports_check_mode=True
     )

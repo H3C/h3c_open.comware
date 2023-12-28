@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2023 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,11 +14,10 @@ short_description: Manage mtu and jumboframe of the interface
 description:
     - Manage mtu and jumboframe of the interface
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - mtu can be set in interface type of ['GigabitEthernet','Ten-GigabitEthernet','FortyGigE',
-      'Vlan-interface','Route-Aggregation','TwentyGigE','Twenty-FiveGigE','HundredGigE'] and 
+      'Vlan-interface','Route-Aggregation','TwentyGigE','Twenty-FiveGigE','HundredGigE'] and
       some of these must be set as route mode.
     - jumboframe can be set in interface type of ['GigabitEthernet','Ten-GigabitEthernet',
       'FortyGigE','Bridge-Aggregation','Route-Aggregation','TwentyGigE','Twenty-FiveGigE','HundredGigE']
@@ -26,12 +31,12 @@ options:
         description:
             - Specify Maximum Transmission Unit(MTU) of the interface
         required: false
-        type: int
+        type: str
     jumboframe:
         description:
             - Specify Maximum jumbo frame size allowed of the interface
         required: false
-        type: int
+        type: str
     state:
         description:
             - Desired state for the interface configuration
@@ -47,6 +52,7 @@ EXAMPLES = """
       jumboframe: 1537
       mtu: 1600
 """
+
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (

@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manage administrative state and physical attributes of the in
 description:
     - Manage administrative state and physical attributes of the interface
 version_added: 1.0.0
-category: Feature (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
     - Only logical interfaces can be removed with state=absent.
     - If you want to configure type (bridged or routed),
@@ -32,7 +37,7 @@ options:
         description:
             - Admin state of the interface
         required: false
-        default: up
+        choices: ['up', 'down']
         type: str
     description:
         description:
@@ -43,11 +48,13 @@ options:
         description:
             - Type of interface, i.e. L2 or L3
         required: false
+        choices: ['bridged', 'routed']
         type: str
     duplex:
         description:
             - Duplex of the interface
         required: false
+        choices: ['auto', 'full']
         type: str
     speed:
         description:
@@ -58,6 +65,7 @@ options:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'absent', 'default']
         default: present
         type: str
 
@@ -87,7 +95,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import InterfaceError
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 

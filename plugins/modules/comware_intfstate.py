@@ -1,18 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 
 module: comware_intfstate
-short_description: Check the port status. If there are undo shutdown ports but the field ports are down, 
+short_description: Check the port status. If there are undo shutdown ports but the field ports are down,
                    list these inconsistent ports. If not, return OK.
 description:
     - .
 version_added: 1.0.0
-category: System (RW)
-author: gongqianyu
-options:
+author: gongqianyu(@gongqianyu)
 
 '''
 EXAMPLES = '''
@@ -22,9 +25,9 @@ EXAMPLES = '''
 
 '''
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.intfstate import IntfState
 
 
@@ -43,7 +46,6 @@ def main():
     )
 
     device = get_device(module)
-    # proposed = dict((k, v) for k, v in args.items() if v is not None)
 
     changed = False
     commands = []
@@ -54,7 +56,7 @@ def main():
     if not check:
         module.fail_json(msg=check)
     else:
-        print('ok')
+        pass
 
     if device.staged:
 
@@ -71,7 +73,6 @@ def main():
             changed = True
 
     results = {'commands': commands, 'changed': changed}
-    # results['proposed'] = proposed
 
     safe_exit(module, **results)
 

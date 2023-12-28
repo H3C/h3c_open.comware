@@ -1,39 +1,45 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_dldp
 short_description: Manage dldp authentication,interface,timeout and mode  on Comware 7 devices.
-author: gongqianyu                  
+description:
+    - Manage dldp authentication,interface,timeout and mode  on Comware 7 devices.
+author: gongqianyu(@gongqianyu)
 version_added: 1.0.0
-category: Feature (RW)
 notes:
     - To enable the dldp feature, the dldp feature must be enabled on both the global and the interface.
     - when config interface_enable,init_delay and port_shutdown,name must be exit.
 options:
     global_enable:
         description:
-            -  global dldp enable or disable
+            - Global dldp enable or disable
         required: False
-        default: disable
         choices: [enable, disable]
         type: str
     auth_mode:
         description:
-            -  Configure dldp authentication mode between current device and neighbor device.
+            - Configure dldp authentication mode between current device and neighbor device.
         required: false
         choices: [md5, none, simple]
         type: str
     pwd_mode:
         description:
-            -  Configure the dldp authentication password mode between the current device and the neighbor device.
+            - Configure the dldp authentication password mode between the current device and the neighbor device.
         required: false
         choices: [cipher, simple]
         type: str
     pwd:
         description:
-            -  Configure the dldp authentication password between the current device and the neighbor device
+            - Configure the dldp authentication password between the current device and the neighbor device
         required: false
         type: str
 
@@ -45,31 +51,30 @@ options:
         type: int
     shutdown_mode:
         description:
-            -  Global configuration of interface shutdown mode after dldp discovers unidirectional link.
+            - Global configuration of interface shutdown mode after dldp discovers unidirectional link.
         required: false
-        default: auto
         choices: [auto, hybrid, manual]
         type: str
     name:
         description:
-            -  The full name of the interface.
+            - The full name of the interface.
         required: false
         type: str
     interface_enable:
         description:
-            -  Enable dldp function on the interface.
+            - Enable dldp function on the interface.
         required: false
         choices: [enable, disable]
         type: str
     init_delay:
         description:
-            -  Delay time of dldp blocking interface from initial state to single pass state.(1~5)
+            - Delay time of dldp blocking interface from initial state to single pass state.(1~5)
         required: false
-        type: int
+        type: str
 
     port_shutdown:
         description:
-            -  The interface shutdown mode after dldp discovers one-way link is configured on the interface.
+            - The interface shutdown mode after dldp discovers one-way link is configured on the interface.
         required: false
         choices: [auto, hybrid, manual]
         type: str
@@ -151,7 +156,7 @@ def main():
             timeout=dict(required=False, default='5', type='int'),
             name=dict(required=False, type='str'),
             interface_enable=dict(required=False, choices=['enable', 'disable'], type='str'),
-            init_delay=dict(required=False, ),
+            init_delay=dict(required=False, type='str'),
             shutdown_mode=dict(required=False, choices=['auto', 'hybrid', 'manual'], type='str'),
             port_shutdown=dict(required=False, choices=['auto', 'hybrid', 'manual'], type='str'),
             state=dict(choices=['present', 'absent'], default='present'),
@@ -180,8 +185,17 @@ def main():
     DLDP = None
 
     try:
-        DLDP = Dldp(device, global_enable, auth_mode, timeout, pwd_mode, port_shutdown, init_delay, pwd, name,
-                    interface_enable, shutdown_mode)
+        DLDP = Dldp(device,
+                    global_enable,
+                    auth_mode,
+                    timeout,
+                    port_shutdown,
+                    pwd_mode,
+                    init_delay,
+                    pwd,
+                    name,
+                    interface_enable,
+                    shutdown_mode)
     except PYCW7Error as e:
         module.fail_json(msg=str(e))
 

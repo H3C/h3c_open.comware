@@ -1,7 +1,11 @@
 """Manage FTP on COM7 devices.
 author: liudongxue
 """
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    nc_element_maker, config_element_maker)
 
 
 class Ftp(object):

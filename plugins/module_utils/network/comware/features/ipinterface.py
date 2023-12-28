@@ -1,9 +1,15 @@
 """Manage layer 3 interfaces on COM7 devices.
 """
-import ipaddr
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+import ipaddress
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import IpIfaceMissingData
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    config_params, operation_kwarg)
 
 V4 = 'v4'
 V6 = 'v6'
@@ -217,7 +223,7 @@ class IpInterface(object):
         if not address or not mask:
             raise IpIfaceMissingData
 
-        ip_obj = ipaddr.IPNetwork(address + '/' + mask)
+        ip_obj = ipaddress.ip_network(address + '/' + mask)
 
         if self.version == V4:
             addr_tag = 'Ipv4Address'

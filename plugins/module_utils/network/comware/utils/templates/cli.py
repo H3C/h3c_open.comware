@@ -13,16 +13,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
 import io
 
-import textfsm
+try:
+    import textfsm
+    HAS_TEXTFSM = True
+except ImportError:
+    HAS_TEXTFSM = False
 
 
 def get_structured_data(template_str, rawtxt):
     """Returns structured data given raw text using
     TextFSM templates
     """
+    if not HAS_TEXTFSM:
+        raise ImportError('textfsm')
     fsm = textfsm.TextFSM(io.StringIO(template_str))
 
     # an object is what is being extracted

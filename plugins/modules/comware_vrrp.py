@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,9 +14,8 @@ module: comware_vrrp
 short_description: Manage VRRP configurations on a Comware v7 device
 description:
     - Manage VRRP configurations on a Comware v7 device
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 version_added: 1.0.0
-category: Feature (RW)
 notes:
     - When state is set to absent, the vrrp group for a specific
       interface will be removed (if it exists)
@@ -44,7 +49,8 @@ options:
         description:
             - Determine preempt mode for the device
         required: false
-        type: bool
+        choices: ['yes', 'no']
+        type: str
     auth_mode:
         description:
             - authentication mode for vrrp
@@ -74,7 +80,7 @@ options:
         type: str
     switch:
         description:
-            - when the status of the monitored track item changes to negative, 
+            - when the status of the monitored track item changes to negative,
               if the router is in backup status in the backup group, it will immediately switch to master router
         required: false
         type: str
@@ -90,16 +96,16 @@ options:
 EXAMPLES = """
 
   - name: Ensure vrid 100 on vlan 100 does not existing before testing
-    h3c_open.comware.comware_vrrp: 
-      vrid: 100 
-      interface: vlan100 
-      state: absent 
+    h3c_open.comware.comware_vrrp:
+      vrid: 100
+      interface: vlan100
+      state: absent
 
   - name: Ensure vrid and vrip are configured
-    h3c_open.comware.comware_vrrp: 
-      vrid: 100 
-      vip: 100.100.100.1 
-      interface: vlan100 
+    h3c_open.comware.comware_vrrp:
+      vrid: 100
+      vip: 100.100.100.1
+      interface: vlan100
     register: data
 
   - assert:
@@ -109,10 +115,10 @@ EXAMPLES = """
         - data.end_state.preempt == 'yes'
 
   - name: Same config - idempotency check
-    h3c_open.comware.comware_vrrp: 
-      vrid: 100 
-      vip: 100.100.100.1 
-      interface: vlan100 
+    h3c_open.comware.comware_vrrp:
+      vrid: 100
+      vip: 100.100.100.1
+      interface: vlan100
     register: data
 
   - assert:
@@ -120,10 +126,10 @@ EXAMPLES = """
         - data.changed == false
 
   - name: Ensure preempt is no
-    h3c_open.comware.comware_vrrp: 
-      vrid: 100 
-      vip: 100.100.100.1 
-      interface: vlan100 
+    h3c_open.comware.comware_vrrp:
+      vrid: 100
+      vip: 100.100.100.1
+      interface: vlan100
       preempt: false
     register: data
 
@@ -135,9 +141,9 @@ EXAMPLES = """
         - data.end_state.vrid == '100'
 
   - name: Ensure vrid 100 is down
-    h3c_open.comware.comware_vrrp: 
-      vrid: 100 
-      interface: vlan100 
+    h3c_open.comware.comware_vrrp:
+      vrid: 100
+      interface: vlan100
       state: shutdown
     register: data
 
@@ -168,8 +174,8 @@ def main():
             priority=dict(required=False, type='str'),
             auth_mode=dict(required=False, choices=['simple', 'md5'], type='str'),
             key_type=dict(required=False, choices=['cipher', 'plain'], type='str'),
-            key=dict(required=False, type='str'),
-            preempt=dict(required=False, choices=['yes', 'no']),
+            key=dict(required=False, no_log=True, type='str'),
+            preempt=dict(required=False, choices=['yes', 'no'], type='str'),
             delay=dict(required=False, type='str'),
             track=dict(required=False, type='str'),
             switch=dict(required=False, type='str'),

@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 
@@ -9,8 +15,7 @@ short_description: Rollback the running configuration
 description:
     - Rollback theconfiguration to the file
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 notes:
     - This modules rollback the config to startup.cfg, or the supplied
       filename, in flash. It is not
@@ -24,7 +29,7 @@ options:
         type: str
     comparefile:
         description:
-            - Name of file that will be used when compared with filename file. 
+            - Name of file that will be used when compared with filename file.
               if not set, no compared action executed.
         required: false
         type: str
@@ -32,8 +37,9 @@ options:
         description:
             - delete the rollback point
         required: false
-        default: false
-        type: bool
+        choices: ['true', 'false']
+        default: 'false'
+        type: str
     diff_file:
         description:
             - File that will be used to store the diffs.  Relative path is

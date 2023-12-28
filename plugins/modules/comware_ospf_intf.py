@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,15 +14,14 @@ short_description: Manage ospf in interface
 description:
     - Manage ospf in interface
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - The module is used to config interface ospf setting , before using the module , please
-      ensure the interface exists and is able to make ospf setting . 
+      ensure the interface exists and is able to make ospf setting .
     - Interface ospf auth mode can config as simple or md5 , however these two mode can not be
       set at the same time.
     - Some of the setting must be set together e.g. ospfname must together with area.
-    - state default or absent will delete all the ospf settings , 
+    - state default or absent will delete all the ospf settings ,
 options:
     name:
         description:
@@ -42,6 +47,7 @@ options:
         description:
             - Specify the password type of ospf auth_mode simple
         required: false
+        choices: ['cipher', 'plain']
         type: str
     simplepwd:
         description:
@@ -57,11 +63,13 @@ options:
         description:
             - Specify the ospf auth_mode md5 type
         required: false
+        choices: ['md5', 'hwac-md5']
         type: str
     md5pwdtype:
         description:
             - Specify the password type of ospf auth_mode md5
         required: false
+        choices: ['cipher', 'plain']
         type: str
     md5pwd:
         description:
@@ -72,12 +80,14 @@ options:
         description:
             - Specify OSPF network type
         required: false
+        choices: ['broadcast', 'nbma','p2p','p2mp']
         type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
         default: present
+        choices: ['present', 'absent','default']
         type: str
 """
 EXAMPLES = """
@@ -100,14 +110,14 @@ EXAMPLES = """
           name: HundredGigE1/0/27
           state: default
         register: results
-   
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (get_device)
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.ospf_intf import Ospf
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -125,15 +135,16 @@ def main():
             ospfname=dict(required=False, type='str'),
             ospfcost=dict(required=False, type='str'),
             area=dict(required=False, type='str'),
-            simplepwdtype=dict(choices=['cipher', 'plain']),
+            simplepwdtype=dict(choices=['cipher', 'plain'], type='str'),
             simplepwd=dict(type='str'),
-            keyid=dict(type='str'),
-            md5type=dict(choices=['md5', 'hwac-md5']),
-            md5pwdtype=dict(choices=['cipher', 'plain']),
+            keyid=dict(no_log=True, type='str'),
+            md5type=dict(choices=['md5', 'hwac-md5'], type='str'),
+            md5pwdtype=dict(choices=['cipher', 'plain'], type='str'),
             md5pwd=dict(type='str'),
-            network_type=dict(choices=['broadcast', 'nbma', 'p2p', 'p2mp']),
+            network_type=dict(choices=['broadcast', 'nbma', 'p2p', 'p2mp'], type='str'),
             state=dict(choices=['present', 'absent', 'default'],
-                       default='present'),
+                       default='present',
+                       type='str'),
         ),
         supports_check_mode=True
     )
@@ -244,7 +255,7 @@ def main():
                 elif md5pwd:
                     ospf.build_auth_md5(stage=True, state='present', **proposed_md5)
 
-    elif state == 'absent' or 'default':
+    elif state == 'absent' or state == 'default':
         if existing:
             ospf.default_ospf(stage=True)
 

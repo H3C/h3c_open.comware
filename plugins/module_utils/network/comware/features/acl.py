@@ -1,13 +1,13 @@
 """Manage ACL on COM7 devices.
 author: liudongxue
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-# from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import reverse_value_map
-# from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import *
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     InterfaceTypeError, InterfaceAbsentError)
-# from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.vlan import Vlan
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import reverse_value_map, \
+    nc_element_maker, config_element_maker, config_params, operation_kwarg
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 
 

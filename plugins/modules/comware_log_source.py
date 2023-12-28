@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manage output rules for log information on V7 devices
 description:
     - Manage output rules for log information on V7 devices
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 notes:
     - If state=default, the config will be removed
 options:
@@ -17,7 +22,7 @@ options:
         description:
             - Specifies syslog output destination
         required: True
-        choices: ['1', '2', '3', '4', '5'] 
+        choices: ['1', '2', '3', '4', '5']
                  # 1:Console 2:Monitor terminal 3:Log buffer 4:Log host 5:Log file
         type: str
     channelName:
@@ -27,10 +32,10 @@ options:
         type: str
     level:
         description:
-            - A log output rule specifies the source modules and severity level of logs 
+            - A log output rule specifies the source modules and severity level of logs
               that can be output to a destination. Logs matching the output rule are output to the destination.
         required: False
-        choices: ['emergency', 'alert', 'critical', 'error', 'warning', 
+        choices: ['emergency', 'alert', 'critical', 'error', 'warning',
                   'notification', 'informational', 'debugging', 'deny']
         type: str
     state:
@@ -45,15 +50,15 @@ EXAMPLES = """
 
   - name: Basic config
     h3c_open.comware.comware_log_source:
-      channelID=1 
-      channelName=ARP 
+      channelID=1
+      channelName=ARP
       level=critical
-  
+
   - name: Delete config
     h3c_open.comware.comware_log_source:
-      channelID=1 
-      channelName=ARP 
-      level=critical 
+      channelID=1
+      channelName=ARP
+      level=critical
       state=absent
 """
 

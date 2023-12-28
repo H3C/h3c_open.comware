@@ -1,7 +1,10 @@
 """Gather LLDP neighbor information from COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, find_in_data)
 
 
 class Neighbors(object):
@@ -18,6 +21,7 @@ class Neighbors(object):
         cdp (cdp): dictionary containing CDP neighbors
 
     """
+
     def __init__(self, device):
 
         self.device = device

@@ -1,8 +1,11 @@
 """Manage telemetry stream collector on COM7 devices.
 """
-# from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    operation_kwarg, config_params)
 
 
 class Telemetry(object):

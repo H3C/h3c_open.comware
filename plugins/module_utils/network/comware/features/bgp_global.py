@@ -1,7 +1,10 @@
 """Manage interfaces on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker, config_params)
 
 
 class Bgp(object):
@@ -103,9 +106,11 @@ class Bgp(object):
         if advertise_rib_active == 'true':
             commands.append(CMDS.get('advertise_rib_active'))
         if timer_connect_retry:
-            commands.append(CMDS.get('timer_connect_retry').format(timer_connect_retry))
+            commands.append(
+                CMDS.get('timer_connect_retry').format(timer_connect_retry))
         if timer_hold:
-            commands.append(CMDS.get('timer_keepalive_hold').format(timer_keepalive, timer_hold))
+            commands.append(CMDS.get('timer_keepalive_hold').format(
+                timer_keepalive, timer_hold))
         if compare_as_med == 'true':
             commands.append(CMDS.get('compare_as_med'))
         if peer_ip and peer_as_num:
@@ -113,7 +118,8 @@ class Bgp(object):
         if peer_ignore == 'true' and peer_ip:
             commands.append(CMDS.get('peer_ignore').format(peer_ip))
         if peer_connect_intf:
-            commands.append(CMDS.get('peer_connect_intf').format(peer_ip, peer_connect_intf))
+            commands.append(CMDS.get('peer_connect_intf').format(
+                peer_ip, peer_connect_intf))
         if address_family and evpn == 'false':
             commands.append(CMDS.get('address_family').format(address_family))
         if evpn == 'true':

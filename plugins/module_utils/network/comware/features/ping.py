@@ -1,8 +1,12 @@
 """Ping another device from COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import InvalidIPAddress
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.validate import valid_ip_network
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    action_element_maker, find_in_action, findall_in_action)
 
 
 class Ping(object):

@@ -1,17 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_license
 short_description: loading device license
 description:
-    - loading device license
+    - Loading device license
 version_added: 1.0.0
-category: Feature (RW)
-author: null
+author: h3c (@h3c_open)
 notes:
-    - 
 options:
     license:
         description:
@@ -25,7 +29,7 @@ options:
         type: str
     license_chk:
         description:
-            - check the license 
+            - check the license
         required: false
         default: true
         type: bool
@@ -41,13 +45,13 @@ EXAMPLES = """
 
 - name: License activate
   h3c_open.comware.comware_license:
-    license: H3CVS7002023122010560173160.ak
+    license: 'H3CVS7002023122010560173160.ak'
     license_chk: false
     slot: 1
 
 - name: License activate check
   h3c_open.comware.comware_license:
-    license: H3CVS7002023122010560173160.ak
+    license: 'H3CVS7002023122010560173160.ak'
     license_chk: true
     slot : 1
   register: results

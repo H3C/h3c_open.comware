@@ -1,37 +1,56 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_netconf
 short_description: Manage netconf log and xml function on Comware 7 devices.XML cfg not support enter xml view now,
                    This is not normally done.
+description:
+    - Manage netconf log and xml function on Comware 7 devices.XML cfg not support enter xml view now,
+      This is not normally done.
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 notes:
 options:
     source:
         description:
             - NETCONF operation source requiring log output.Option 'all' means all source.
         required: False
+        choices: ['all', 'agent', 'soap', 'web']
         type: str
-    operation: 
+    operation:
         description:
             - Netconf operation option.If you chose protocol-operation,the opera_type option must be config.
         required: False
+        choices: ['protocol-operation', 'row-operation', 'verbose']
         type: str
-    opera_type: 
+    opera_type:
         description:
             - Protocol-operation option.
         required: False
+        choices: ['all', 'action', 'config', 'get', 'session', 'set', 'syntax', 'others']
+        type: str
+    soap:
+        description:
+            - Desired state for the interface configuration
+        required: false
+        choices: ['http', 'https']
         type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'absent']
         default: present
         type: str
+    
 """
 
 EXAMPLES = """
@@ -48,13 +67,13 @@ EXAMPLES = """
           operation: protocol-operation
           opera_type: action
           state: absent
-         
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.netconf import Netconf
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):

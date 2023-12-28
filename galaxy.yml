@@ -38,16 +38,16 @@ tags: [h3c, comware, netconf, networking]
 dependencies: {}
 
 # The URL of the originating SCM repository
-repository: http://example.com/repository
+repository: https://github.com/H3C/h3c_open.comware
 
 # The URL to any online docs
-documentation: http://docs.example.com
+documentation: https://github.com/H3C/h3c_open.comware/blob/main/README.md
 
 # The URL to the homepage of the collection/project
-homepage: http://example.com
+homepage: https://github.com/H3C/h3c_open.comware
 
 # The URL to the collection issue tracker
-issues: http://example.com/issue/tracker
+issues: https://github.com/H3C/h3c_open.comware/issues
 
 # A list of file glob-like patterns used to filter any files or directories that should not be included in the build
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
@@ -61,4 +61,3 @@ build_ignore: []
 # 'omit_default_directives' is a boolean that controls whether the default directives are used. Mutually exclusive
 # with 'build_ignore'
 # manifest: null
-

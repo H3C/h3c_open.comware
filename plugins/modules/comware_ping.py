@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -9,7 +15,7 @@ description:
     - Ping remote destinations *from* the Comware 7 device.  Really helpful
       for reachability testing.
 version_added: 1.0.0
-category: Read-Only
+author: h3c (@h3c_open)
 options:
     host:
         description:
@@ -26,7 +32,7 @@ options:
             -  Whether the IP is IPV6
         required: false
         default: false
-        type: bool   
+        type: bool
 """
 EXAMPLES = """
 
@@ -55,7 +61,7 @@ def main():
         argument_spec=dict(
             host=dict(required=True, type='str'),
             vrf=dict(required=False, type='str'),
-            v6=dict(default=False, choices=BOOLEANS, type='bool'),
+            v6=dict(default=False, type='bool'),
         ),
         supports_check_mode=False
     )

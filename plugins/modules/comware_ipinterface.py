@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 module: comware_ipinterface
@@ -7,7 +13,7 @@ short_description: Manage IPv4/IPv6 addresses on interfaces
 description:
     - Manage IPv4/IPv6 addresses on interfaces
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - If the interface is not configured to be a layer 3 port,
       the module will fail and the user should use the interface
@@ -36,15 +42,17 @@ options:
         description:
             - v4 for IPv4, v6 for IPv6
         required: false
+        choices: ['v4', 'v6']
         default: v4
         type: str
     state:
         description:
             - Desired state of the switchport
         required: false
+        choices: ['present', 'absent']
         default: present
         type: str
-    
+
 """
 
 EXAMPLES = """
@@ -72,19 +80,18 @@ EXAMPLES = """
             - "results.end_state.mask == '255.255.255.0'"
 
 """
-import ipaddr
-from ansible.module_utils.basic import *
+import ipaddress
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.ipinterface import IpInterface
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.validate import valid_ip_network
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def compare_ips(net1, net2):
-    x = ipaddr.IPNetwork(net1)
-    y = ipaddr.IPNetwork(net2)
-    return x.ip == y.ip \
-        and x.prefixlen == y.prefixlen
+    x = ipaddress.ip_network(net1)
+    y = ipaddress.ip_network(net2)
+    return 0 == x.compare_networks(y)
 
 
 def ip_stringify(**kwargs):

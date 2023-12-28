@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,7 @@ short_description: Manage IRF membership configuration
 description:
     - Manage IRF member configuration.
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - This module should be used before the comware_irf_ports module.
     - The process is as follows 1) Use comware_irf_members to change
@@ -39,6 +45,7 @@ options:
         description:
             - Whether software autoupdate should be enabled for the fabric.
         required: false
+        choices: ['enable', 'disable']
         type: str
     domain_id:
         description:
@@ -61,21 +68,20 @@ options:
         description:
             - The text description of the IRF member switch.
         required: false
-        default: false
         type: str
     reboot:
         description:
             - Whether to reboot the switch after member id changes are made.
         required: true
-        default: false
         type: bool
     state:
         description:
             - Desired state of the interfaces listed in mad_exclude
         required: false
         default: 'present'
+        choices: ['present', 'absent']
         type: str
-    
+
 """
 
 EXAMPLES = """
@@ -95,13 +101,15 @@ EXAMPLES = """
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule, BOOLEANS
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.irf import IrfMember
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.reboot import Reboot
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import *
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import \
+    IRFMemberDoesntExistError, InterfaceError
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import (
+    PYCW7Error, NCTimeoutError, ConnectionClosedError)
 
 
 def convert_iface_list(device, iface_list):
@@ -127,16 +135,16 @@ def main():
             member_id=dict(type='str',
                            required=True),
             new_member_id=dict(type='str'),
-            auto_update=dict(choices=['enable', 'disable']),
+            auto_update=dict(choices=['enable', 'disable'], type='str'),
             domain_id=dict(type='str'),
-            mad_exclude=dict(),
+            mad_exclude=dict(type='str'),
             priority=dict(type='str'),
-            descr=dict(),
+            descr=dict(type='str'),
             reboot=dict(type='bool',
-                        choices=BOOLEANS,
                         required=True),
             state=dict(choices=['present', 'absent'],
-                       default='present'),
+                       default='present',
+                       type='str'),
         ),
         supports_check_mode=True
     )

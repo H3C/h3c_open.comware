@@ -1,27 +1,30 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 
 ---
-
-
 
 module: comware_config
 short_description: Back uo current configuration to the specified file
 description:
     - Back uo current configuration to the specified file
 version_added: 1.0.0
-category: System (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
-    - This modules backup the config to specified file in specified flash. 
+    - This modules backup the config to specified file in specified flash.
     - You can use the specified file for configuration distribution.
 options:
     filefolder:
         description:
             - Full specified backup path on Comware v7 device, e.g. flash:/mypath/.
         required: false
-        default: 
+        default:
         type: str
     arcstate:
         description:
@@ -126,7 +129,7 @@ def main():
             filename=dict(required=False, default='my_file', type='str'),
             replacefile=dict(required=False, type='str'),
             repswitch=dict(required=False, type='bool'),
-            y_or_no=dict(required=False, type='bool'),
+            y_or_no=dict(required=False, choices=['y', 'n'],type='str'),
         ),
         supports_check_mode=True
     )
@@ -145,8 +148,7 @@ def main():
     if not file_copy.remote_dir_exists:
         file_copy.create_remote_dir()
         filefolder = filefolder.strip('/')
-    if filefolder == 'flash:/':
-        filefolder = filefolder
+
     falsh_space = file_copy._get_flash_size()
 
     rollback_file = File(device, '')

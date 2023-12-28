@@ -1,17 +1,31 @@
 """Manage file transfer to COM7 devices.
 author: liudongxue
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import hashlib
 import os
 import re
 from ftplib import FTP
 
-import paramiko
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import \
     FileNotEnoughSpaceError, \
     FileNotReadableError, FileRemoteDirDoesNotExist, FileTransferError, FileHashMismatchError
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
-from scp import SCPClient
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, find_in_data, action_element_maker, find_in_action)
+
+try:
+    import paramiko
+    HAS_PARAMIKO = True
+except ImportError:
+    HAS_PARAMIKO = False
+
+try:
+    from scp import SCPClient
+    HAS_SCP = True
+except ImportError:
+    HAS_SCP = False
 
 
 class FileCopy(object):
@@ -81,7 +95,7 @@ class FileCopy(object):
 
         try:
             return int(match.group(1)) * 1000
-        except:
+        except (ValueError, Exception):
             return 0
 
     def _enough_space(self):
@@ -109,7 +123,7 @@ class FileCopy(object):
         dst_hash = None
         try:
             dst_hash = self._get_remote_md5()
-        except:
+        except (ValueError, Exception):
             pass
 
         if dst_hash is not None:
@@ -251,6 +265,10 @@ class FileCopy(object):
             FileNotEnoughSpaceError: if there isn't enough space on the device.
             FileRemoteDirDoesNotExist: if the remote directory doesn't exist.
         """
+        if not HAS_PARAMIKO:
+            raise ImportError('paramiko')
+        if not HAS_SCP:
+            raise ImportError('scp')
         self._safety_checks()
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -307,8 +325,8 @@ class FileCopy(object):
         fp = open(self.src, 'rb')
         try:
             ftp.storbinary('STOR ' + self.ftp_dst, fp, buffer_size)
-        except:
-            raise FileTransferError
+        except FileTransferError:
+            raise Exception("There was an error while the file was in transit.")
         fp.close()
         ftp.quit()
 
@@ -347,8 +365,8 @@ class FileCopy(object):
         ftp.set_debuglevel(2)
         try:
             ftp.retrbinary('RETR ' + str(self.ftp_dst), open(str(self.src), 'wb').write)
-        except:
-            raise FileTransferError
+        except FileTransferError:
+            raise Exception("There was an error while the file was in transit.")
         ftp.quit()
 
         src_hash = self._get_local_md5()

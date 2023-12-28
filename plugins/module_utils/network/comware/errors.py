@@ -7,6 +7,8 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
     remove_namespaces, get_text
 )
@@ -87,11 +89,6 @@ class UnlockConflictError(PYCW7Error):
     __str__ = __repr__
 
 
-##################################
-#       TIMEOUT ERRORS         #
-##################################
-
-
 class NCTimeoutError(PYCW7Error):
     """When there is no response from the device within the timeout range.
     """
@@ -101,11 +98,6 @@ class NCTimeoutError(PYCW7Error):
             self.__class__.__name__)
 
     __str__ = __repr__
-
-
-##################################
-#       CONNECTION ERRORS        #
-##################################
 
 
 class ConnectionError(PYCW7Error):

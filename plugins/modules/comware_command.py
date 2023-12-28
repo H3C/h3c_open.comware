@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Execute CLI commands on Comware 7 devices
 description:
     - Execute CLI commands on Comware 7 devices
 version_added: 1.0.0
-author: liudongxue
-category: Feature (RW)
+author: liudongxue(@liudongxue)
 notes:
     - This module is not idempotent
 options:
@@ -18,7 +23,7 @@ options:
             - State whether the commands are display (user view)
               or configure (system view) commands.  Display and
               show are the same thing.
-        required: true
+        required: false
         choices: ['display', 'config', 'show']
         type: str
     command:
@@ -26,7 +31,7 @@ options:
             - String (single command) or list of commands to be
               executed on the device.  Sending a list requires
               YAML format to be used in the playbook.
-        required: true
+        required: false
         type: list
         elements: str
     file_txt:
@@ -88,7 +93,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             type=dict(required=False, choices=['display', 'show', 'config'], type='str'),
-            command=dict(required=False, type='list'),
+            command=dict(required=False, type='list', elements='str'),
             file_txt=dict(required=False, type='str'),
         ),
         supports_check_mode=True
@@ -101,8 +106,8 @@ def main():
     if capabilities.get("network_api") == "cliconf":
         if any(
                 (
-                        module.params['type'],
-                        module.params['file_txt'],
+                    module.params['type'],
+                    module.params['file_txt'],
                 ),
         ):
             module.warn(

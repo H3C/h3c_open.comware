@@ -1,14 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_isis_global
 short_description: Manage isis for Comware 7 devices
-author: gongqianyu
+description:
+    - Manage isis for Comware 7 devices
+author: gongqianyu(@gongqianyu)
 version_added: 1.0.0
-category: Feature (RW)
 options:
     isisID:
         description:
@@ -19,22 +26,23 @@ options:
         description:
             - Configure the level of the router,the default value is Level-1-2.
         required: false
-        default: Level-1-2
+        default: 'level-1-2'
+        choices: ['level-1', 'level-1-2', 'level-2']
         type: str
     cost_style:
         description:
-            - Configure the type of IS-IS overhead value, that is, 
+            - Configure the type of IS-IS overhead value, that is,
               the type of destination path overhead value in the message received and sent by IS-IS.
         required: false
-        default: narrow
+        choices: ['narrow', 'wide', 'wide-compatible', 'compatible', 'narrow-compatible']
         type: str
     spf_limit:
         description:
-            - Indicates that it is allowed to receive a message with a destination path overhead value 
-              greater than 1023. If this parameter is not specified, a message with an overhead value greater than 
+            - Indicates that it is allowed to receive a message with a destination path overhead value
+              greater than 1023. If this parameter is not specified, a message with an overhead value greater than
               1023 will be discarded. This parameter is optional only when compatible or narrow compatible is specified.
         required: false
-        default: false
+        choices: ['true', 'false']
         type: bool
     network:
         description:
@@ -46,14 +54,20 @@ options:
             - Create IS-IS IPv4 or IPV6 address family and enter IS-IS IPv4 address family view
         required: false
         choices: ['ipv4', 'ipv6']
+        type: str
     preference:
         description:
-            - Configure routing priority of IS-IS protocol(1~225),before config it,you need to 
+            - Configure routing priority of IS-IS protocol(1~225),before config it,you need to
               config add_family first.
         required: false
-        default: 15
         type: str
-
+    state:
+        description:
+            - Desired state of the vlan
+        required: false
+        default: present
+        choices: ['present', 'absent']
+        type: str
 """
 EXAMPLES = """
 
@@ -79,15 +93,15 @@ EXAMPLES = """
           add_family: ipv4
           preference: 25
           state: absent
-        register: results 
+        register: results
 
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.isis_global import Isis
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.isis_global import ISis
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):
@@ -102,13 +116,14 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             isisID=dict(required=True, type='str'),
-            level=dict(required=False, choices=['level-1', 'level-1-2', 'level-2'], default='level-1-2'),
+            level=dict(required=False, choices=['level-1', 'level-1-2', 'level-2'], default='level-1-2', type='str'),
             cost_style=dict(required=False,
-                            choices=['narrow', 'wide', 'wide-compatible', 'compatible', 'narrow-compatible']),
-            spf_limit=dict(required=False, choices=['true', 'false']),
-            network=dict(required=False),
-            add_family=dict(required=False, choices=['ipv4', 'ipv6']),
-            preference=dict(required=False),
+                            choices=['narrow', 'wide', 'wide-compatible', 'compatible', 'narrow-compatible'],
+                            type='str'),
+            spf_limit=dict(required=False, choices=['true', 'false'], type='bool'),
+            network=dict(required=False, type='str'),
+            add_family=dict(required=False, choices=['ipv4', 'ipv6'], type='str'),
+            preference=dict(required=False, type='str'),
             state=dict(choices=['present', 'absent'], default='present'),
         ),
         supports_check_mode=True

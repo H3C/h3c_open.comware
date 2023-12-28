@@ -1,7 +1,11 @@
 """Install an operating system on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, action_element_maker)
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.namespaces import NCDATA_C
 
 
 class SetStartup(object):
@@ -65,7 +69,9 @@ class SetStartup(object):
                 './/{0}{1}'.format(NCDATA_C, 'BootType'))
             image_iter = boot_list.iterfind(
                 './/{0}{1}'.format(NCDATA_C, 'FileName'))
-            test = sum(1 for _ in image_iter)
+            test = 0
+            while next(image_iter):
+                test += 1
             image_iter = boot_list.iterfind(
                 './/{0}{1}'.format(NCDATA_C, 'FileName'))
             patch_file = ''

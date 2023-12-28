@@ -1,6 +1,12 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 
@@ -9,7 +15,7 @@ short_description: Save the running configuration
 description:
     - Save the running configuration
 version_added: 1.0.0
-category: System (RW)
+author: h3c (@h3c_open)
 notes:
     - This modules saves the running config as startup.cfg, or the supplied
       filename, in flash. It is not

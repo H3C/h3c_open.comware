@@ -1,15 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_ntp
 short_description: Configure the ntp issue to be applied to the device.
 description:
-    -Configure the ntp issue to be applied to the device.
+    - Configure the ntp issue to be applied to the device.
 version_added: 1.0.0
-category: Feature (RW)
-author: liudongxue
+author: liudongxue(@liudongxue)
 notes:
     - When configurating clients, IPv6 does not support.
     - The keyid is unsigned integer,and the value range is 1 to 4294967295.
@@ -25,20 +30,21 @@ options:
         description:
             - The status of NTP
         required: false
-        default: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
         default: present
+        choices: ['present', 'absent']
         type: str
     ntpauthenable:
         description:
             - The status of NTP authentication
         required: false
-        default: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     stratum:
         description:
             -  The stratum level of the local clock
@@ -46,8 +52,9 @@ options:
         type: str
     service:
         description:
-            - The service of NTP 
+            - The service of NTP
         required: false
+        choices: ['ntp', 'sntp']
         type: str
     keyid:
         description:
@@ -58,6 +65,7 @@ options:
         description:
             - Authentication mode
         required: false
+        choices: ['md5', 'hmac_sha_1', 'hmac_sha_256', 'hmac_sha_384', 'hmac_sha_384']
         type: str
     authkey:
         description:
@@ -68,8 +76,9 @@ options:
         description:
             - Whether the key is a trusted key.
         required: false
-        default: false
-        type: bool
+        default: 'false'
+        choices: ['true', 'false']
+        type: str
     ipadd:
         description:
             - Remote IPv4 or IPv6 address
@@ -78,22 +87,27 @@ options:
     addrtype:
         description:
             - Address type
-        required: ipv4
+        required: false
+        default: 'ipv4'
+        choices: ['ipv4', 'ipv6']
         type: str
     del_rel_alone:
         description:
             - Whether delete trusted key alone
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     del_auth_all:
         description:
             - Whether delete all trusted key configurations
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     hostmode:
         description:
             - Client mode
         required: false
+        choices: ['symactive', 'client']
         type: str
 """
 EXAMPLES = """
@@ -120,13 +134,13 @@ EXAMPLES = """
           ipadd: 10.1.1.1
           name: HundredGigE1/0/25
         register: results
-        
+
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (get_device)
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.ntp import Ntp
 
 
@@ -141,24 +155,28 @@ def safe_exit(module, **kwargs):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(required=False),
-            ntpenable=dict(choices=['true', 'false'], ),
-            ntpauthenable=dict(choices=['true', 'false'], ),
+            name=dict(required=False, type='str'),
+            ntpenable=dict(choices=['true', 'false'], type='str'),
+            ntpauthenable=dict(choices=['true', 'false'], type='str'),
             state=dict(choices=['present', 'absent'],
-                       default='present'),
+                       default='present',
+                       type='str'),
             stratum=dict(type='str'),
-            service=dict(choices=['ntp', 'sntp']),
-            keyid=dict(type='str'),
-            authmode=dict(choices=['md5', 'hmac_sha_1', 'hmac_sha_256', 'hmac_sha_384', 'hmac_sha_384']),
-            authkey=dict(type='str'),
+            service=dict(choices=['ntp', 'sntp'], type='str'),
+            keyid=dict(no_log=True, type='str'),
+            authmode=dict(choices=['md5', 'hmac_sha_1', 'hmac_sha_256', 'hmac_sha_384', 'hmac_sha_384'],
+                          type='str'),
+            authkey=dict(no_log=True, type='str'),
             reliable=dict(choices=['true', 'false'],
-                          default='false'),
+                          default='false',
+                          type='str'),
             ipadd=dict(type='str'),
             addrtype=dict(choices=['ipv4', 'ipv6'],
-                          default='ipv4'),
-            del_rel_alone=dict(choices=['true', 'false']),
-            del_auth_all=dict(choices=['true', 'false']),
-            hostmode=dict(choices=['symactive', 'client']),
+                          default='ipv4',
+                          type='str'),
+            del_rel_alone=dict(choices=['true', 'false'], type='str'),
+            del_auth_all=dict(choices=['true', 'false'], type='str'),
+            hostmode=dict(choices=['symactive', 'client'], type='str'),
         ),
         supports_check_mode=True
     )

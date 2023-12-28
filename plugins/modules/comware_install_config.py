@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,7 @@ short_description: Activate a new current-running config in realtime
 description:
     - Activate a new current-running config in realtime
 version_added: 1.0.0
-category: System (RW)
+author: h3c (@h3c_open)
 notes:
     - Check mode copies config file to device and still generates diffs
     - diff_file must be specified to write diffs to a file, otherwise,
@@ -53,7 +59,7 @@ options:
     password:
         description:
             - Password used to login to the switch
-        required: true
+        required: false
         type: str
     look_for_keys:
         description:
@@ -78,11 +84,10 @@ EXAMPLES = """
 import os
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.parsing.convert_bool import BOOLEANS
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error, NCError
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.config import Config
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.file_copy import FileCopy
 
@@ -108,10 +113,10 @@ def main():
         argument_spec=dict(
             config_file=dict(required=True, type='str'),
             diff_file=dict(required=False, type='str'),
-            commit_changes=dict(required=True, choices=BOOLEANS, type='bool'),
+            commit_changes=dict(required=True, type='bool'),
             hostname=dict(required=True),
             username=dict(required=True),
-            password=dict(required=False, default=None),
+            password=dict(required=False, default=None, no_log=True),
             look_for_keys=dict(default=False, type='bool'),
         ),
         supports_check_mode=True

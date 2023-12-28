@@ -22,4 +22,3 @@
         h3c_open.comware.comware_vsi:
           vsi: vpna
           state: absent
-

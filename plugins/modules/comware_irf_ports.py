@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,7 +14,7 @@ short_description: Manage IRF port creation and removal for Comware v7 devices
 description:
     - Manage IRF port creation and removal for Comware v7 devices
 version_added: 1.0.0
-category: Feature (RW)
+author: h3c (@h3c_open)
 notes:
     - This module is meant to be run after the comware_irf_members module.
     - The process is as follows 1) Use comware_irf_members to change
@@ -37,6 +43,7 @@ options:
               be removed from the IRF port. An empty list removes all interfaces.
         required: true
         type: list
+        elements: str
     irf_p2:
         description:
             - Physical Interface or List of Physical Interfaces that will be
@@ -44,6 +51,7 @@ options:
               be removed from the IRF port. An empty list removes all interfaces.
         required: true
         type: list
+        elements: str
     filename:
         description:
             - Where to save the current configuration. Default is startup.cfg.
@@ -68,23 +76,23 @@ options:
 
 EXAMPLES = """
 
-       - name: irf ports
-        h3c_open.comware.comware_irf_ports:
-          member_id: 1
-          irf_p1: GigabitEthernet1/0/3
-          irf_p2: GigabitEthernet1/0/5
-          removal_override: yes
+- name: irf ports
+  h3c_open.comware.comware_irf_ports:
+    member_id: 1
+    irf_p1: GigabitEthernet1/0/3
+    irf_p2: GigabitEthernet1/0/5
+    removal_override: yes
 
-      - name: irf ports
-        h3c_open.comware.comware_irf_ports:
-          member_id: 1
-          irf_p1:
-            - GigabitEthernet1/0/25
-            - GigabitEthernet1/0/30
-          irf_p2: GigabitEthernet1/0/26
-          removal_override: yes
-          activate: false
-        tags: '1'
+- name: irf ports
+  h3c_open.comware.comware_irf_ports:
+    member_id: 1
+    irf_p1:
+      - GigabitEthernet1/0/25
+      - GigabitEthernet1/0/30
+    irf_p2: GigabitEthernet1/0/26
+    removal_override: yes
+    activate: false
+  tags: '1'
 
 """
 
@@ -120,14 +128,12 @@ def main():
         argument_spec=dict(
             member_id=dict(type='str',
                            required=True),
-            irf_p1=dict(required=True, type='list'),
-            irf_p2=dict(required=True, type='list'),
+            irf_p1=dict(required=True, type='list', elements='str'),
+            irf_p2=dict(required=True, type='list', elements='str'),
             filename=dict(default='startup.cfg'),
             activate=dict(type='bool',
-                          choices=BOOLEANS,
                           default='true'),
             removal_override=dict(type='bool',
-                                  choices=BOOLEANS,
                                   default='false'),
         ),
         supports_check_mode=True

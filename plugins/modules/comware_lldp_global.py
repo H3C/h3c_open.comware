@@ -1,17 +1,22 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_lldp_global
 short_description: Manage global config state for LLDP.this funtion can be take effect only global \
-                   and interface LLDP all open. 
+                   and interface LLDP all open.
                    The interface LLDP is open default.
 description:
     - Enable or Disable global LLDP on a Comware 7 device
-author: gongqianyu
+author: gongqianyu(@gongqianyu)
 version_added: 1.0.0
-category: Feature (RW)
 options:
     state:
         description:

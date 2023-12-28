@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -9,7 +15,7 @@ description:
     - Offers ability to reboot Comware 7 devices instantly
       at a scheduled time, or after a given period of time
 version_added: 1.0.0
-category: System (RW)
+author: h3c (@h3c_open)
 notes:
     - Time/date and delay are mutually exclusive parameters
     - Time is required when specifying date
@@ -78,7 +84,6 @@ EXAMPLES = """
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.basic import BOOLEANS
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
@@ -92,7 +97,7 @@ from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.f
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            reboot=dict(required=True, choices=BOOLEANS, type='bool'),
+            reboot=dict(required=True, type='bool'),
             delay=dict(required=False, type='str'),
             date=dict(required=False, type='str'),
             time=dict(required=False, type='str'),

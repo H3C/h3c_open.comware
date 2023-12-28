@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,11 +14,10 @@ short_description: Manage local_user
 description:
     - Manage local_user
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - Before using ftp_dir , ensure it already exist in the device.
-    - Local user group specify the user group , if the device has the group then do the config, 
+    - Local user group specify the user group , if the device has the group then do the config,
         if not, create group and config
 options:
     localusername:
@@ -30,48 +35,54 @@ options:
             - enable or disable local user service-type ftp
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_http:
         description:
             - enable or disable local user service-type http
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_https:
         description:
             - enable or disable local user service-type https
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_pad:
         description:
             - enable or disable local user service-type pad
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_ssh:
         description:
             - enable or disable local user service-type ssh
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_telnet:
         description:
             - enable or disable local user service-type telnet
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     server_Terminal:
         description:
             - enable or disable local user service-type terminal
         required: false
         choices: ['true', 'false']
+        default: 'false'
         type: str
     ftp_dir:
         description:
             - Specify work directory of local user
         required: false
-        choices: ['true', 'false']
         type: str
     local_user_level:
         description:
@@ -88,7 +99,7 @@ options:
             - Desired state for the interface configuration
         required: false
         default: present
-        choices: ['present', 'absent', 'default']
+        choices: ['present', 'default']
         type: str
 """
 EXAMPLES = """
@@ -102,7 +113,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import (
     get_device
 )
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.localuser import LocalUser
 
 
@@ -120,7 +131,7 @@ def main():
             server_Terminal=dict(type='str', choices=['true', 'false'], default='false'),
             ftp_dir=dict(type='str'),
             local_user_level=dict(type='str'),
-            localspassword=dict(type='str'),
+            localspassword=dict(type='str', no_log=True),
             state=dict(type='str', choices=['present', 'default'],
                        default='present')
         ),

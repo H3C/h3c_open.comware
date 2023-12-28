@@ -1,9 +1,13 @@
 """Manage VXLAN configurations on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.templates import cli
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
-
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    operation_kwarg, reverse_value_map)
 tunnel_tmpl = r"""Value MODE (\w+)
 Value SRC (((\d+.){3}\d+))
 Value DEST (((\d+.){3}\d+))

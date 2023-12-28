@@ -1,5 +1,7 @@
 """Manage syslog_global on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
 
 class Syslog(object):

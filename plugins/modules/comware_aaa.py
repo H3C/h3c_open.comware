@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,13 +14,12 @@ short_description: This module provides AAA related management configuration and
 description:
     - This module provides AAA related management configuration and applications
 version_added: 1.0.0
-category: Feature (RW)
-author: null
-notes: 
+author: h3c (@h3c_open)
+notes:
     - When the state is present, all options are required.
     - This module support access type include 'LANaccess','login','super','PPP','default','portal',
        other types to be updated.
-    -  Scheme list include 'HWTACACS','RADIUS','local' are permitted. 
+    -  Scheme list include 'HWTACACS','RADIUS','local' are permitted.
     -  If the aaa_type is authentication , access_type can't be super.
     -  If the access_type is super , scheme_list not support for local.
 
@@ -28,28 +33,33 @@ options:
         description:
             - Safety certification method.
         required: false
+        choices: ['authentication', 'authorization', 'accounting']
         type: str
     access_type:
         description:
             - Configure authorization methods for LAN access users.
         required: false
+        choices: ['LANaccess', 'login', 'super', 'PPP', 'default', 'portal']
         type: str
     scheme_list:
         description:
             - AAA method types
         required: false
+        choices: ['radius', 'hwtacacs', 'local']
         type: str
     scheme_name_list:
         description:
             - Scheme name list.
         required: false
+        type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'absent', 'default']
         default: present
         type: str
-    
+
 """
 EXAMPLES = """
 
@@ -68,10 +78,10 @@ EXAMPLES = """
         state: default
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.aaa import Aaa
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
 
 
 def safe_fail(module, **kwargs):
@@ -154,7 +164,7 @@ def main():
             aaa.build(stage=True, **delta_domain)
             aaa.build_aaa(stage=True, **proposed)
 
-    elif state == 'default' or 'absent':
+    elif state == 'default' or state == 'absent':
         if domain_name in existing_domain:
             delta = dict(domain_name=domain_name)
             aaa.default(stage=True, **delta)

@@ -1,7 +1,11 @@
 """Manage L2VPN on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, data_elem_to_dict, nc_element_maker, config_element_maker,
+    operation_kwarg)
 
 
 class LLDP(object):
@@ -16,6 +20,7 @@ class LLDP(object):
             object.
 
     """
+
     def __init__(self, device):
         self.device = device
 

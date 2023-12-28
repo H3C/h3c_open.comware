@@ -1,14 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_isis_interface
 short_description: Manage isis for Comware 7 devices
-author: gongqianyu
+description:
+    - Manage isis for Comware 7 devices
+author: gongqianyu(@gongqianyu)
 version_added: 1.0.0
-category: Feature (RW)
 options:
     name:
         description:

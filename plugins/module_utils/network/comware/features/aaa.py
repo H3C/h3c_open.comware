@@ -1,9 +1,13 @@
 """Manage interfaces on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     AaaConfigAbsentError, AaaSuperError)
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import reverse_value_map, \
+    data_element_maker, findall_in_data, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker, \
+    config_params, operation_kwarg
 
 
 class Aaa(object):
@@ -103,7 +107,7 @@ class Aaa(object):
             else:
                 return self.device.edit_config(config)
 
-        if state == 'default' or 'absent':
+        if state == 'default' or state == 'absent':
             EN = nc_element_maker()
             EC = config_element_maker()
             operation = 'delete'

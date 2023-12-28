@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manage address family configs
 description:
     - Manage address family configs such as ipv4 ipv6 .
 version_added: 1.0.0
-category: Feature (RW)
-author: hanyangyang
+author: hanyangyang (@hanyangyang)
 notes:
     - Address family vpnv4 and vpnv6 has no parameter 'local_pref','frr_policy','policy_target'
       and 'allow_invalid_as'.
@@ -31,6 +36,7 @@ options:
         description:
             - Specify an address family
         required: false
+        choices: ['ipv4', 'ipv6', 'vpnv4', 'vpnv6']
         type: str
     local_pref:
         description:
@@ -41,14 +47,14 @@ options:
         description:
             - Configure fast reroute policy
         required: false
-        default: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     policy_target:
         description:
             - Filter VPN4 routes with VPN-Target attribute
         required: false
-        default: true
-        type: bool
+        choices: ['true', 'false']
+        type: str
     route_select_delay:
         description:
             - Set the delay time for optimal route selection
@@ -58,39 +64,40 @@ options:
         description:
             - Apply the origin AS validation state to optimal route selection
         required: false
-        type: bool
+        choices: ['true', 'false']
+        type: str
     state:
         description:
             - Desired state for the interface configuration
         required: false
+        choices: ['present', 'default']
         default: present
         type: str
 """
 EXAMPLES = """
-       - name: Configue bgp ipv4 address family
-        h3c_open.comware.comware_bgp_af:
-          bgp_as: 10
-          bgp_instance: test
-          address_familys: ipv4
-          local_pref: 20
-          frr_policy: true
-        register: results
+- name: Configue bgp ipv4 address family
+  h3c_open.comware.comware_bgp_af:
+    bgp_as: 10
+    bgp_instance: test
+    address_familys: ipv4
+    local_pref: 20
+    frr_policy: true
+  register: results
 
-      - name: Configue bgp vpnv4 address family
-        h3c_open.comware.comware_bgp_af:
-          bgp_as: 10
-          bgp_instance: test
-          address_familys: vpnv4
-          route_select_delay: 20
-
+- name: Configue bgp vpnv4 address family
+  h3c_open.comware.comware_bgp_af:
+    bgp_as: 10
+    bgp_instance: test
+    address_familys: vpnv4
+    route_select_delay: 20
 """
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.bgp_af import Bgp
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     BgpAfParamsError, BgpAfConfigError)
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import *
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.errors import PYCW7Error
 
 
 def safe_fail(module, **kwargs):

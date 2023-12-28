@@ -5,12 +5,16 @@ can force a reboot. The ``IRFPort`` class is used to
 bind physical ports to IRF ports. ``IRFMember`` should
 be used first and the ``IRFPort``.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     InterfaceAbsentError,
     IRFMemberDoesntExistError)
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    data_element_maker, findall_in_data, find_in_data, data_elem_to_dict, nc_element_maker, config_element_maker,
+    operation_kwarg, action_element_maker)
 
 
 class IrfPort(object):

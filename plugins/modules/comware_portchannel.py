@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -9,9 +15,7 @@ description:
     - Manage routed and bridged aggregation configurations on Comware 7
       devices.  This includes physical interface configs for LACP.
 version_added: 1.0.0
-author: wangliang, gongqianyu
-category: Feature (RW)
-
+author: wangliang (@wangliang)
 notes:
     - When configuring a LAGG, the members param must be included
     - Members is ALL members - it is ensuring that the members sent
@@ -34,12 +38,12 @@ options:
               as fortygige1/0/1.  This is for safety.
         required: false
         type: list
+        elements: str
     mode:
         description:
-            - Mode of the Aggregate interface.If you want to Configure the port rate as a condition for selecting the 
+            - Mode of the Aggregate interface.If you want to Configure the port rate as a condition for selecting the
               reference port first, require it.
         required: false
-        default: dynamic
         choices: ['static', 'dynamic']
         type: str
     type:
@@ -53,7 +57,6 @@ options:
             - If mode is set to LACP, the type operating mode can be selected.
               This  mode will then be set for all members in the group.
         required: false
-        default: active
         choices: ['active', 'passive']
         type: str
     hash_mode:
@@ -89,7 +92,7 @@ options:
     speed:
         description:
             - Configure the port rate as a condition for selecting the reference port first.The default state is port ID
-               as a condition for selecting the reference port first.Before configure it, the agg group interface must 
+               as a condition for selecting the reference port first.Before configure it, the agg group interface must
                be dynamic agg interface.
         required: false
         choices: ['enabled', 'disabled']
@@ -215,7 +218,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             group=dict(required=True, type='str'),
-            members=dict(required=False, type='list'),
+            members=dict(required=False, type='list', elements='str'),
             mode=dict(required=False, choices=['static', 'dynamic'], type='str'),
             type=dict(required=True, choices=['bridged', 'routed'], type='str'),
             lacp_mode=dict(required=False, choices=['active', 'passive'], type='str'),

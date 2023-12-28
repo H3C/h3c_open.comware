@@ -5,7 +5,6 @@
     gather_facts: no
     connection: local
 
-
     tasks:
       - name: config port to be L2
         h3c_open.comware.comware_interface:

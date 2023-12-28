@@ -1,13 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
 module: comware_lacp
 short_description: Manage lacp system priority, system mac on Comware 7 devices
+description:
+    - Manage lacp system priority, system mac on Comware 7 devices
 version_added: 1.0.0
-author: gongqianyu
-category: Feature (RW)
+author: gongqianyu(@gongqianyu)
 options:
     priorityID:
         description:
@@ -22,8 +29,7 @@ options:
     state:
         description:
             - Desired state for the interface configuration
-        required: true
-        default: present
+        required: false
         choices: ['present', 'default']
         type: str
 """
@@ -57,7 +63,7 @@ def main():
         argument_spec=dict(
             priorityID=dict(required=False, type='str'),
             sysmac=dict(required=False, type='str'),
-            state=dict(choices=['present', 'default'], default=None),
+            state=dict(choices=['present', 'default'], default=None, type='str'),
         ),
         supports_check_mode=True
     )

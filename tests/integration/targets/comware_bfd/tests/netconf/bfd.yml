@@ -21,4 +21,3 @@
           secondary: 8
           state: default
         register: result
-

@@ -1,9 +1,13 @@
 """Manage ntp on COM7 devices.
 author: liudongxue
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import *
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface
+from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.utils.xml.lib import (
+    nc_element_maker, config_element_maker,
+    operation_kwarg, reverse_value_map, config_params)
 
 
 class Ntp(object):

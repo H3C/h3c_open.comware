@@ -1,5 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright 2020 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 DOCUMENTATION = """
 ---
 
@@ -8,8 +14,7 @@ short_description: Manages SNMP community configuration on H3C switches.
 description:
     - Manages SNMP community configuration on H3C switches.
 version_added: 1.0.0
-category: System (RW)
-author: wangliang
+author: wangliang (@wangliang)
 options:
     acl_number:
         description:
@@ -31,6 +36,7 @@ options:
         description:
             - Mib view name.
         required: false
+        default: ViewDefault
         type: str
     state:
         description:
@@ -44,19 +50,19 @@ options:
 
 EXAMPLES = """
 - name: "Config SNMP community"
-  h3c_open.comware.comware_snmp_community: 
-    state=present 
-    access_right=read 
-    community_mib_view=view 
-    community_name=ansible_gqy 
+  h3c_open.comware.comware_snmp_community:
+    state=present
+    access_right=read
+    community_mib_view=view
+    community_name=ansible_gqy
     acl_number=3000
 
 - name: "Undo SNMP community"
-  h3c_open.comware.comware_snmp_community: 
-    state=absent 
-    access_right=write 
-    community_mib_view=view 
-    community_name=ansible_gqy 
+  h3c_open.comware.comware_snmp_community:
+    state=absent
+    access_right=write
+    community_mib_view=view
+    community_name=ansible_gqy
     acl_number=3000
 """
 

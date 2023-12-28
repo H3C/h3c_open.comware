@@ -1,5 +1,8 @@
 """Manage interfaces on COM7 devices.
 """
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import re
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.errors import (
     BgpParamsError, InstanceParamsError, GroupParamsError, PeerParamsError, BgpMissParamsError)
