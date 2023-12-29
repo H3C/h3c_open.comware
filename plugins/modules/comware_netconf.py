@@ -50,7 +50,7 @@ options:
         choices: ['present', 'absent']
         default: present
         type: str
-    
+
 """
 
 EXAMPLES = """

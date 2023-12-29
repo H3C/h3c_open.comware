@@ -49,7 +49,7 @@ options:
         description:
             - If you want to download by FTP, change the params to true
         required: false
-        choices: ['true', 'false'] 
+        choices: ['true', 'false']
         default: 'false'
         type: str
     hostname:

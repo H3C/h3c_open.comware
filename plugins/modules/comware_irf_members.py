@@ -101,7 +101,7 @@ EXAMPLES = """
 
 """
 
-from ansible.module_utils.basic import AnsibleModule, BOOLEANS
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.comware import get_device
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.irf import IrfMember
 from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.features.interface import Interface

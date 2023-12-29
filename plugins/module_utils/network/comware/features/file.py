@@ -103,7 +103,7 @@ class File(object):
     def _get__content_fie(self):
         """show the content for the rollbackfile
         """
-        cmds = 'more {}'.format(self.filename)
+        cmds = 'more {0}'.format(self.filename)
 
         # raw string output taken directly from the switch showing the diff
         self._show_response = self.device.cli_display(cmds)

@@ -42,7 +42,7 @@ options:
         description:
             - Desired state for the interface configuration
         required: false
-        choices: ['present', 'default'] 
+        choices: ['present', 'default']
         default: present
         type: str
 

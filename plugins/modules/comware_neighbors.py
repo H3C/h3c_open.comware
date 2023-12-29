@@ -20,7 +20,7 @@ options:
         description:
             - type of neighbors
         required: false
-        choices: ['cdp', 'lldp'] 
+        choices: ['cdp', 'lldp']
         default: lldp
         type: str
 """

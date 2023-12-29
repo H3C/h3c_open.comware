@@ -78,7 +78,7 @@ options:
         description:
             - Configure bgp.
         required: false
-        choices: ['origin-as', 'peer-as', 'bgp-nexthop'] 
+        choices: ['origin-as', 'peer-as', 'bgp-nexthop']
         type: str
     inactive:
         description:
@@ -107,7 +107,7 @@ options:
         description:
             - manage interface netstream enable.To config this, name parameter must be exit.
         required: false
-        choices: ['inbound', 'outbound'] 
+        choices: ['inbound', 'outbound']
         type: str
     interface_sampler:
         description:
@@ -133,7 +133,7 @@ options:
         description:
             - Desired state for the interface configuration.
         required: false
-        choices: ['present', 'absent'] 
+        choices: ['present', 'absent']
         default: present
         type: str
 """
@@ -192,8 +192,8 @@ def main():
             sampler_rate=dict(required=False),
             aggregation=dict(required=False,
                              choices=['as', 'destination-prefix', 'prefix', 'prefix-port', 'protocol-port',
-                                     'source-prefix', 'tos-as', 'tos-bgp-nexthop', 'tos-destination-prefix',
-                                     'tos-prefix', 'tos-protocol-port', 'tos-source-prefix']),
+                                      'source-prefix', 'tos-as', 'tos-bgp-nexthop', 'tos-destination-prefix',
+                                      'tos-prefix', 'tos-protocol-port', 'tos-source-prefix']),
             version=dict(required=False, choices=['5', '9', '10'], default='9'),
             BGP=dict(required=False, choices=['origin-as', 'peer-as', 'bgp-nexthop']),
             inactive=dict(required=False),

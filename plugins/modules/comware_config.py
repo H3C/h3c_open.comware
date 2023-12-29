@@ -129,7 +129,7 @@ def main():
             filename=dict(required=False, default='my_file', type='str'),
             replacefile=dict(required=False, type='str'),
             repswitch=dict(required=False, type='bool'),
-            y_or_no=dict(required=False, choices=['y', 'n'],type='str'),
+            y_or_no=dict(required=False, choices=['y', 'n'], type='str'),
         ),
         supports_check_mode=True
     )

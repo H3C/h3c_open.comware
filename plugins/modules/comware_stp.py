@@ -28,7 +28,7 @@ options:
         description:
             - Configure the working mode of the spanning tree.
         required: false
-        choices: ['MSTP', 'PVST', 'RSTP', 'STP'] 
+        choices: ['MSTP', 'PVST', 'RSTP', 'STP']
         type: str
     tc:
         description:
@@ -40,7 +40,7 @@ options:
         description:
             - Desired state for the interface configuration
         required: false
-        choices: ['present', 'absent', 'default'] 
+        choices: ['present', 'absent', 'default']
         default: present
         type: str
 
