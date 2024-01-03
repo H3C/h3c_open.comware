@@ -5,6 +5,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 DOCUMENTATION = """
 ---
@@ -168,7 +169,6 @@ def main():
         safe_fail(module,
                   descr='Error getting the existing configuration.',
                   msg=str(exe))
-
 
     proposed = dict((k, v) for k, v in module.params.items()
                     if v is not None and k not in filtered_keys)

@@ -1,6 +1,7 @@
 """Manage layer 3 interfaces on COM7 devices.
 """
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
 import ipaddress
@@ -35,6 +36,7 @@ class IpInterface(object):
         is_routed (bool): ``True`` if the interface is in layer 3
             mode, ``False`` otherwise.
     """
+
     def __init__(self, device, interface_name, version=V4):
         self.device = device
         self.interface = Interface(device, interface_name)
@@ -142,7 +144,6 @@ class IpInterface(object):
 
         nc_get_reply = self.device.get(('subtree', top))
         reply_data = findall_in_data(search_tag, nc_get_reply)
-
 
         existing_list = []
         for match in reply_data:

@@ -23,18 +23,18 @@ __metaclass__ = type
 DOCUMENTATION = """
 author: Ansible Networking Team (@ansible-network)
 name: comware
-short_description: Use comware netconf plugin to run netconf commands on Juniper JUNOS
+short_description: Use comware netconf plugin to run netconf commands on H3C comware
   platform
 description:
 - This comware plugin provides low level abstraction apis for sending and receiving
-  netconf commands from Juniper JUNOS network devices.
+  netconf commands from H3C comware network devices.
 version_added: 1.0.0
 options:
   ncclient_device_handler:
     type: str
     default: h3c
     description:
-    - Specifies the ncclient device handler name for Juniper comware network os. To
+    - Specifies the ncclient device handler name for H3C comware network os. To
       identify the ncclient device handler name refer ncclient library documentation.
 """
 import json

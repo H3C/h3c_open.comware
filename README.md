@@ -2,7 +2,7 @@
 
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/h3c_open.comware) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/h3c_open.comware)-->
 [![Codecov](https://codecov.io/gh/ansible-collections/h3c_open.comware/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/h3c_open.comware)
-[![CI](https://github.com/ansible-collections/h3c_open.comware/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/h3c_open.comware/actions/workflows/tests.yml)
+[![CI](https://github.com/H3C/h3c_open.comware/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/H3C/h3c_open.comware/actions/workflows/tests.yml)
 
 The Ansible H3C OPEN comware collection includes a variety of Ansible content to help automate the management of H3C comware network appliances.
 

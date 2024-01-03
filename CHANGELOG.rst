@@ -14,7 +14,7 @@ New Plugins
 Netconf
 ~~~~~~~
 
-- h3c_open.comware.comware - Use comware netconf plugin to run netconf commands on Juniper JUNOS platform
+- h3c_open.comware.comware - Use comware netconf plugin to run netconf commands on H3C comware platform
 
 New Modules
 -----------
