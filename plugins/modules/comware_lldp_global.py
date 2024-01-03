@@ -10,9 +10,7 @@ DOCUMENTATION = """
 ---
 
 module: comware_lldp_global
-short_description: Manage global config state for LLDP.this funtion can be take effect only global \
-                   and interface LLDP all open.
-                   The interface LLDP is open default.
+short_description: Manage global config state for LLDP.
 description:
     - Enable or Disable global LLDP on a Comware 7 device
 author: gongqianyu(@gongqianyu)

@@ -10,10 +10,7 @@ DOCUMENTATION = """
 ---
 
 module: comware_netstream
-short_description: Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream
-                aggregation destination-prefix enable,
-                netstream statistics output message destination address and destination UDP port number configurationon
-                Comware 7 devices
+short_description: Manage ip netstream on Comware 7 devices
 description:
     - Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream
       aggregation destination-prefix enable, netstream statistics output message destination address and

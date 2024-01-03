@@ -96,8 +96,7 @@ releases:
       - description: Manage lacp fast-Interval, tx-interval,hold-multplier on Comware 7 devices
         name: comware_lldp
         namespace: ""
-      - description: Manage global config state for LLDP.this funtion can be take effect only global                    and interface LLDP all open. The interface
-          LLDP is open default.
+      - description: Manage global config state for LLDP.
         name: comware_lldp_global
         namespace: ""
       - description: Manage lldp enable on interfaces.The default state is enable.
@@ -124,8 +123,7 @@ releases:
       - description: Manage netconf log and xml function on Comware 7 devices.XML cfg not support enter xml view now, This is not normally done.
         name: comware_netconf
         namespace: ""
-      - description: Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream aggregation destination-prefix enable, netstream
-          statistics output message destination address and destination UDP port number configurationon Comware 7 devices
+      - description: Manage ip netstream configurationon on Comware 7 devices
         name: comware_netstream
         namespace: ""
       - description: Configure the ntp issue to be applied to the device.
@@ -188,8 +186,7 @@ releases:
       - description: Manage system log timestamps and  terminal logging level on Comware 7 devices
         name: comware_syslog_global
         namespace: ""
-      - description: Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id on Comware 7 devices.Before config device-id,the
-          timestamp must be enable.
+      - description: Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id on Comware 7 devices.
         name: comware_tele_stream
         namespace: ""
       - description: Manage telemetry flow group agingtime on Comware 7 devices.The default value is Varies by device.

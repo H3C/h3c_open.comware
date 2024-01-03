@@ -11,7 +11,7 @@ DOCUMENTATION = """
 
 module: comware_tele_stream
 short_description: Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id
-                   on Comware 7 devices.Before config device-id,the timestamp must be enable.
+                   on Comware 7 devices.
 description:
     - Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id
       on Comware 7 devices.Before config device-id,the timestamp must be enable.
