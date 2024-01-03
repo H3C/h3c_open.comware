@@ -1,33 +1,24 @@
 ---
+- name: Create and config ip vpn-instance
+  h3c_open.comware.comware_vpn_instance:
+    vpn_instance: vpna
+    vpn_instance_rd: 1:1
+    address_family: ipv4
+    vpn_target: 2:2
+    vpn_target_mode: both
+  register: results
 
-- name: Comware vpn instance automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Create and config ip vpn-instance
+  h3c_open.comware.comware_vpn_instance:
+    vpn_instance: vpna
+    vpn_instance_rd: 1:1
+    address_family: evpn
+    vpn_target: 1:1
+    vpn_target_mode: both
+  register: results
 
-
-  tasks:
-
-    - name: Create and config ip vpn-instance
-      h3c_open.comware.comware_vpn_instance:
-        vpn_instance: vpna
-        vpn_instance_rd: '1:1'
-        address_family: ipv4
-        vpn_target: '2:2'
-        vpn_target_mode: both
-      register: results
-
-    - name: Create and config ip vpn-instance
-      h3c_open.comware.comware_vpn_instance:
-        vpn_instance: vpna
-        vpn_instance_rd: '1:1'
-        address_family: evpn
-        vpn_target: '1:1'
-        vpn_target_mode: both
-      register: results
-
-    - name: Create and config ip vpn-instance
-      h3c_open.comware.comware_vpn_instance:
-        vpn_instance: vpna
-        state: default
-      register: results
+- name: Create and config ip vpn-instance
+  h3c_open.comware.comware_vpn_instance:
+    vpn_instance: vpna
+    state: default
+  register: results

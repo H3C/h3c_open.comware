@@ -1,43 +1,36 @@
 ---
+- name: Config SNMP v3 User
+  h3c_open.comware.comware_snmp_user:
+    state: present
+    usm_user_name: gtest_w_ansible
+    security_model: v3
+    user_group: gtest_w_ansible
+    auth_protocol: sha
+    priv_protocol: 3des
+    auth_key: gtest_w_ansible
+    priv_key: gtest_w_ansible
 
-  - name: Comware snmp_user
-    hosts: comware
-    gather_facts: no
-    connection: local
+- name: Undo SNMP v3 User
+  h3c_open.comware.comware_snmp_user:
+    state: absent
+    usm_user_name: gtest_w_ansible
+    security_model: v3
+    user_group: gtest_w_ansible
+    auth_protocol: sha
+    priv_protocol: 3des
+    auth_key: gtest_w_ansible
+    priv_key: gtest_w_ansible
 
-    tasks:
-      - name: Config SNMP v3 User
-        h3c_open.comware.comware_snmp_user:
-          state: present 
-          usm_user_name: gtest_w_ansible 
-          security_model: v3 
-          user_group: gtest_w_ansible 
-          auth_protocol: sha 
-          priv_protocol: 3des 
-          auth_key: gtest_w_ansible 
-          priv_key: gtest_w_ansible
-  
-      - name: Undo SNMP v3 User
-        h3c_open.comware.comware_snmp_user:
-          state: absent 
-          usm_user_name: gtest_w_ansible 
-          security_model: v3 
-          user_group: gtest_w_ansible 
-          auth_protocol: sha 
-          priv_protocol: 3des 
-          auth_key: gtest_w_ansible 
-          priv_key: gtest_w_ansible
-      
-      - name: Config SNMP v2c User
-        h3c_open.comware.comware_snmp_user:
-          state: present 
-          usm_user_name: gtest_w_ansible 
-          security_model: v2c 
-          user_group: gtest_w_ansible
+- name: Config SNMP v2c User
+  h3c_open.comware.comware_snmp_user:
+    state: present
+    usm_user_name: gtest_w_ansible
+    security_model: v2c
+    user_group: gtest_w_ansible
 
-      - name: Undo SNMP v2c User
-        h3c_open.comware.comware_snmp_user:
-          state: absent 
-          usm_user_name: gtest_w_ansible 
-          security_model: v2c 
-          user_group: gtest_w_ansible
+- name: Undo SNMP v2c User
+  h3c_open.comware.comware_snmp_user:
+    state: absent
+    usm_user_name: gtest_w_ansible
+    security_model: v2c
+    user_group: gtest_w_ansible

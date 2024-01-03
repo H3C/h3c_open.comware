@@ -1,25 +1,17 @@
 ---
-
-  - name: Comware tele_stream automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-      - name: telemetry config
-        h3c_open.comware.comware_tele_stream:
-          glo_enable: enable
-          timestamp: enable
-          deviceID: 10.10.10.1
-          state: present
-        register: results
+- name: Telemetry config
+  h3c_open.comware.comware_tele_stream:
+    glo_enable: enable
+    timestamp: enable
+    deviceID: 10.10.10.1
+    state: present
+  register: results
 
 
-      - name: remove telemetry
-        h3c_open.comware.comware_tele_stream:
-          glo_enable: enable
-          timestamp: enable
-          deviceID: 10.10.10.1
-          state: default
-        register: results
+- name: Remove telemetry
+  h3c_open.comware.comware_tele_stream:
+    glo_enable: enable
+    timestamp: enable
+    deviceID: 10.10.10.1
+    state: default
+  register: results

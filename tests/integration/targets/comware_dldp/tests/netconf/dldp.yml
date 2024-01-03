@@ -1,55 +1,46 @@
 ---
+- name: Config dldp
+  h3c_open.comware.comware_dldp:
+    global_enable: enable
+    auth_mode: md5
+    shutdown_mode: auto
+    pwd_mode: cipher
+    pwd: 123456
+    timeout: 10
+    name: HundredGigE1/0/27
+    interface_enable: disable
+    state: present
+  register: results
 
-- name: Comware dldp automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Delete dldp configuration
+  h3c_open.comware.comware_dldp:
+    global_enable: enable
+    auth_mode: md5
+    shutdown_mode: auto
+    pwd_mode: cipher
+    pwd: 123456
+    timeout: 10
+    name: HundredGigE1/0/27
+    interface_enable: disable
+    state: absent
+  register: results
 
+- name: Config dldp
+  h3c_open.comware.comware_dldp:
+    global_enable: disable
+    auth_mode: simple
+    shutdown_mode: manual
+    pwd_mode: simple
+    pwd: 123456
+    timeout: 20
+    name: HundredGigE1/0/25
+    interface_enable: enable
+    port_shutdown: manual
+    state: present
+  register: results
 
-  tasks:
-
-    - name: Config dldp
-      h3c_open.comware.comware_dldp:
-        global_enable: enable
-        auth_mode: md5
-        shutdown_mode: auto
-        pwd_mode: cipher
-        pwd: 123456
-        timeout: 10
-        name: HundredGigE1/0/27
-        interface_enable: disable
-        state: present
-      register: results
-
-    - name: Delete dldp configuration
-      h3c_open.comware.comware_dldp:
-        global_enable: enable
-        auth_mode: md5
-        shutdown_mode: auto
-        pwd_mode: cipher
-        pwd: 123456
-        timeout: 10
-        name: HundredGigE1/0/27
-        interface_enable: disable
-        state: absent
-      register: results
-
-    - name: Config dldp
-      h3c_open.comware.comware_dldp:
-        global_enable: disable
-        auth_mode: simple
-        shutdown_mode: manual
-        pwd_mode: simple
-        pwd: 123456
-        timeout: 20
-        name: HundredGigE1/0/25
-        interface_enable: enable
-        port_shutdown: manual
-        state: present
-      register: results
-
-    - name: Delete dldp
-      h3c_open.comware.comware_dldp:
-        name: HundredGigE1/0/25
-        state: absent
-      register: results
+- name: Delete dldp
+  h3c_open.comware.comware_dldp:
+    name: HundredGigE1/0/25
+    state: absent
+  register: results

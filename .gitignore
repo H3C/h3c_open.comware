@@ -1,2 +1,3 @@
 .tox
 __pycache__
+tests/output

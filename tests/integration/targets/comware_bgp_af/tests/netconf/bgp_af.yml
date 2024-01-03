@@ -1,24 +1,16 @@
 ---
+- name: Configue bgp ipv4 address family
+  h3c_open.comware.comware_bgp_af:
+    bgp_as: 10
+    bgp_instance: test
+    address_familys: ipv4
+    local_pref: 20
+    frr_policy: true
+  register: results
 
-  - name: Comware bgp_af automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-      - name: Configue bgp ipv4 address family
-        h3c_open.comware.comware_bgp_af:
-          bgp_as: 10
-          bgp_instance: test
-          address_familys: ipv4
-          local_pref: 20
-          frr_policy: true
-        register: results
-
-      - name: Configue bgp vpnv4 address family
-        h3c_open.comware.comware_bgp_af:
-          bgp_as: 10
-          bgp_instance: test
-          address_familys: vpnv4
-          route_select_delay: 20
+- name: Configue bgp vpnv4 address family
+  h3c_open.comware.comware_bgp_af:
+    bgp_as: 10
+    bgp_instance: test
+    address_familys: vpnv4
+    route_select_delay: 20

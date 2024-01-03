@@ -1,62 +1,53 @@
 ---
+- name: Configure evpn rd
+  h3c_open.comware.comware_evpn:
+    vrf: 100
+    rd: '2:1'
+  register: results
 
-- name: Comware evpn automation testing
-  hosts: comware
-  gather_facts: false
-  connection: local
+- name: Delete evpn rd
+  h3c_open.comware.comware_evpn:
+    vrf: 100
+    state: absent
+  register: results
 
+- name: Configure evpn rt
+  h3c_open.comware.comware_evpn:
+    vrf: ali1
+    addrfamily: ipv4
+    rttype: export
+    rtentry: '30:2'
+  register: results
 
-  tasks:
+- name: Delete evpn rt
+  h3c_open.comware.comware_evpn:
+    vrf: ali1
+    addrfamily: ipv4
+    rttype: export
+    rtentry: '30:2'
+    state: absent
+  register: results
 
-    - name: Configure evpn rd
-      h3c_open.comware.comware_evpn:
-        vrf: 100
-        rd: '2:1'
-      register: results
+- name: Create bgp ipv6
+  h3c_open.comware.comware_evpn:
+    bgp_name: 10
+    vrf: 200
+    asnum: 120
+    mask: 128
+    ipaddr: 1:1::1:1
+    sessaf: ipv6
+    state: present
+  register: results
 
-    - name: Delete evpn rd
-      h3c_open.comware.comware_evpn:
-        vrf: 100
-        state: absent
-      register: results
+- name: Create bgp 100
+  h3c_open.comware.comware_evpn:
+    bgp_name: 100
+    asnum: 130
+    state: present
+  register: results
 
-    - name: Configure evpn rt
-      h3c_open.comware.comware_evpn:
-        vrf: ali1
-        addrfamily: ipv4
-        rttype: export
-        rtentry: '30:2'
-      register: results
-
-    - name: Delete evpn rt
-      h3c_open.comware.comware_evpn:
-        vrf: ali1
-        addrfamily: ipv4
-        rttype: export
-        rtentry: '30:2'
-        state: absent
-      register: results
-
-    - name: Create bgp ipv6
-      h3c_open.comware.comware_evpn:
-        bgp_name: 10
-        vrf: 200
-        asnum: 120
-        mask: 128
-        ipaddr: 1:1::1:1
-        sessaf: ipv6
-        state: present
-      register: results
-
-    - name: Create bgp 100
-      h3c_open.comware.comware_evpn:
-        bgp_name: 100
-        asnum: 130
-        state: present
-      register: results
-
-    - name: Delete bgp
-      h3c_open.comware.comware_evpn:
-        del_bgp: true
-        state: absent
-      register: results
+- name: Delete bgp
+  h3c_open.comware.comware_evpn:
+    del_bgp: true
+    state: absent
+  register: results

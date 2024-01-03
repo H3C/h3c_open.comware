@@ -69,9 +69,8 @@ class SetStartup(object):
                 './/{0}{1}'.format(NCDATA_C, 'BootType'))
             image_iter = boot_list.iterfind(
                 './/{0}{1}'.format(NCDATA_C, 'FileName'))
-            test = 0
-            while next(image_iter):
-                test += 1
+
+            test = len(list(image_iter))
             image_iter = boot_list.iterfind(
                 './/{0}{1}'.format(NCDATA_C, 'FileName'))
             patch_file = ''

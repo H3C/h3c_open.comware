@@ -4,4 +4,7 @@
 # and should not be used as examples of how to write Ansible roles #
 ####################################################################
 
-- { include: netconf.yaml, tags: ['netconf'] }
+- name: Execute netconf tasks
+  ansible.builtin.include_tasks: netconf.yaml
+  tags:
+    - "netconf"

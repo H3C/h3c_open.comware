@@ -1,24 +1,17 @@
 ---
+- name: basic config
+  h3c_open.comware.comware_loghost:
+    loghost: 3.3.3.7
+    VRF: vpn2
+    hostport: 512
+    facility: 128
+    sourceID: LoopBack0
 
-  - name: Comware loghost
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-    tasks:
-      - name: basic config
-        h3c_open.comware.comware_loghost:
-          loghost: 3.3.3.7 
-          VRF: vpn2 
-          hostport: 512 
-          facility: 128 
-          sourceID: LoopBack0
-      
-      - name: delete config
-        h3c_open.comware.comware_loghost:
-          loghost: 3.3.3.7 
-          VRF: vpn2 
-          hostport: 512 
-          facility: 128 
-          sourceID: LoopBack0 
-          state: absent
+- name: delete config
+  h3c_open.comware.comware_loghost:
+    loghost: 3.3.3.7
+    VRF: vpn2
+    hostport: 512
+    facility: 128
+    sourceID: LoopBack0
+    state: absent

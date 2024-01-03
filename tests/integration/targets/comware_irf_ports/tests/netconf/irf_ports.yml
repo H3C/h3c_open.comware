@@ -1,36 +1,29 @@
 ---
+- name: irf ports
+  h3c_open.comware.comware_irf_ports:
+    member_id: 1
+    irf_p1: GigabitEthernet1/0/3
+    irf_p2: GigabitEthernet1/0/5
+    removal_override: true
 
-  - name: Comware irf ports automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
+- name: irf ports
+  h3c_open.comware.comware_irf_ports:
+    member_id: 1
+    irf_p1:
+      - GigabitEthernet1/0/25
+      - GigabitEthernet1/0/30
+    irf_p2: GigabitEthernet1/0/26
+    removal_override: true
+    activate: false
+  tags: "1"
 
-    tasks:
-      - name: irf ports
-        h3c_open.comware.comware_irf_ports:
-          member_id: 1
-          irf_p1: GigabitEthernet1/0/3
-          irf_p2: GigabitEthernet1/0/5
-          removal_override: yes
-
-      - name: irf ports
-        h3c_open.comware.comware_irf_ports:
-          member_id: 1
-          irf_p1:
-            - GigabitEthernet1/0/25
-            - GigabitEthernet1/0/30
-          irf_p2: GigabitEthernet1/0/26
-          removal_override: yes
-          activate: false
-        tags: '1'
-
-      - name: irf ports
-        h3c_open.comware.comware_irf_ports:
-          member_id: 2
-          irf_p1: GigabitEthernet1/0/27
-          irf_p2:
-            - GigabitEthernet1/0/28
-            - GigabitEthernet1/0/29
-          removal_override: yes
-          activate: false
-        tags: '2'
+- name: irf ports
+  h3c_open.comware.comware_irf_ports:
+    member_id: 2
+    irf_p1: GigabitEthernet1/0/27
+    irf_p2:
+      - GigabitEthernet1/0/28
+      - GigabitEthernet1/0/29
+    removal_override: true
+    activate: false
+  tags: "2"

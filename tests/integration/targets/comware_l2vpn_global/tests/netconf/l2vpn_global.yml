@@ -1,45 +1,40 @@
 ---
+- name: Enable l2vpn globally
+  h3c_open.comware.comware_l2vpn_global:
+    state: enabled
+  register: results
 
-- name: Comware l2vpn_global automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Test 1 assert
+  assert:
+    that:
+      - results.end_state == 'enabled'
 
+- name: Ensure L2VPN is enabled
+  h3c_open.comware.comware_l2vpn_global:
+    state: enabled
+  register: results
 
-  tasks:
+- name: Test 2 assert
+  assert:
+    that:
+      - results.changed == false
 
-    - name: Enable l2vpn globally
-      h3c_open.comware.comware_l2vpn_global:
-        state: enabled
-      register: results
+- name: Disable l2vpn globally
+  h3c_open.comware.comware_l2vpn_global:
+    state: disabled
+  register: results
 
-    - assert:
-        that:
-          - results.end_state == 'enabled'
+- name: Test 3 assert
+  assert:
+    that:
+      - results.end_state == 'disabled'
 
-    - name: Ensure L2VPN is enabled
-      h3c_open.comware.comware_l2vpn_global:
-        state: enabled
-      register: results
+- name: Ensure L2VPN is enabled
+  h3c_open.comware.comware_l2vpn_global:
+    state: enabled
+  register: results
 
-    - assert:
-        that:
-          - results.changed == false
-
-    - name: Disable l2vpn globally
-      h3c_open.comware.comware_l2vpn_global:
-        state: disabled
-      register: results
-
-    - assert:
-        that:
-          - results.end_state == 'disabled'
-
-    - name: Ensure L2VPN is enabled
-      h3c_open.comware.comware_l2vpn_global:
-        state: enabled
-      register: results
-
-    - assert:
-        that:
-          - results.end_state == 'enabled'
+- name: Test 4 assert
+  assert:
+    that:
+      - results.end_state == 'enabled'

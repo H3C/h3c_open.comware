@@ -89,9 +89,9 @@ from ansible_collections.h3c_open.comware.plugins.module_utils.network.comware.e
 
 
 def compare_ips(net1, net2):
-    x = ipaddress.ip_network(net1)
-    y = ipaddress.ip_network(net2)
-    return 0 == x.compare_networks(y)
+    x = ipaddress.ip_interface(net1)
+    y = ipaddress.ip_interface(net2)
+    return x == y
 
 
 def ip_stringify(**kwargs):
@@ -169,6 +169,7 @@ def main():
                   descr='Error getting the existing configuration.',
                   msg=str(exe))
 
+
     proposed = dict((k, v) for k, v in module.params.items()
                     if v is not None and k not in filtered_keys)
 
@@ -187,7 +188,6 @@ def main():
 
     commands = None
     end_state = existing
-
     if device.staged:
         commands = device.staged_to_string()
         if module.check_mode:

@@ -1,19 +1,10 @@
 ---
+- name: Manage lldp global enable
+  h3c_open.comware.comware_lldp_global:
+    state: enabled
+  register: results
 
-- name: Comware lldp_global automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
-
-
-  tasks:
-
-    - name: Manage lldp global enable
-      h3c_open.comware.comware_lldp_global:
-        state: enabled
-      register: results
-
-    - name: Manage lldp global disable
-      h3c_open.comware.comware_lldp_global:
-        state: disabled
-      register: results
+- name: Manage lldp global disable
+  h3c_open.comware.comware_lldp_global:
+    state: disabled
+  register: results

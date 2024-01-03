@@ -1,59 +1,51 @@
 ---
+- name: deploy advanced ACL (IPv4 advanced ACL 3000 to 3999)
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    groupcg: advanced
+  register: results
 
-  - name: Comware acl automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
+- name: deploy basic ACL (IPv4 basic ACL 2000 to 2999)
+  h3c_open.comware.comware_acl:
+    aclid: 2010
+    groupcg: basic
+  register: results
 
+- name: delete advanced ACL
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    groupcg: advanced
+    state: absent
+  register: results
 
-    tasks:
-      - name: deploy advanced ACL (IPv4 advanced ACL 3000 to 3999)
-        h3c_open.comware.comware_acl:
-          aclid: 3010
-          groupcg: advanced
-        register: results
+- name: create rule
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    groupcg: advanced
+    ruleid: 0
+    action: deny
+    scripaddr: 10.1.1.1
+  register: results
 
-      - name: deploy basic ACL (IPv4 basic ACL 2000 to 2999)
-        h3c_open.comware.comware_acl:
-          aclid: 2010
-          groupcg: basic
-        register: results
+- name: apply ACL to interface
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    groupcg: advanced
+    name: HundredGigE1/0/25
+    appdirec: inbound
+  register: results
 
-      - name: delete advanced ACL
-        h3c_open.comware.comware_acl:
-          aclid: 3010
-          groupcg: advanced
-          state: absent
-        register: results
+- name: delete rule
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    ruleid: 0
+    state: absent
+  register: results
 
-      - name: create rule
-        h3c_open.comware.comware_acl:
-          aclid: 3010
-          groupcg: advanced
-          ruleid: 0
-          action: deny
-          scripaddr: 10.1.1.1
-        register: results
-
-      - name: apply ACL to interface
-        h3c_open.comware.comware_acl:
-         aclid: 3010
-         groupcg: advanced
-         name: HundredGigE1/0/25
-         appdirec: inbound
-        register: results
-
-      - name: delete rule
-        h3c_open.comware.comware_acl:
-          aclid: 3010
-          ruleid: 0
-          state: absent
-        register: results
-
-      - name: delete interface ACL application
-        h3c_open.comware.comware_acl:
-          aclid: 3010
-          name: HundredGigE1/0/25
-          appdirec: inbound
-          state: absent
-        register: results
+- name: delete interface ACL application
+  h3c_open.comware.comware_acl:
+    aclid: 3010
+    name: HundredGigE1/0/25
+    appdirec: inbound
+    state: absent
+  register: results

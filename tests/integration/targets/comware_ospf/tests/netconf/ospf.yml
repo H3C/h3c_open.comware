@@ -1,28 +1,20 @@
 ---
+- name: Basic Ethernet config1
+  h3c_open.comware.comware_ospf:
+    ospfname: 4
+    area: 2.2.2.2
+    areatype: NSSA
+    lsa_generation_max: 20
+    lsa_generation_min: 20
+    lsa_generation_inc: 20
+  register: results
 
-  - name: Comware ospf automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-      - name: Basic Ethernet config1
-        h3c_open.comware.comware_ospf:
-          ospfname: 4
-          area: 2.2.2.2
-          areatype: NSSA
-          lsa_generation_max: 20
-          lsa_generation_min: 20
-          lsa_generation_inc: 20
-        register: results
-
-      - name: Basic Ethernet config2
-        h3c_open.comware.comware_ospf:
-          ospfname: 5
-          area: 2.2.2.2
-          areatype: Stub
-          lsa_generation_max: 20
-          lsa_generation_min: 20
-          lsa_generation_inc: 20
-        register: results
+- name: Basic Ethernet config2
+  h3c_open.comware.comware_ospf:
+    ospfname: 5
+    area: 2.2.2.2
+    areatype: Stub
+    lsa_generation_max: 20
+    lsa_generation_min: 20
+    lsa_generation_inc: 20
+  register: results

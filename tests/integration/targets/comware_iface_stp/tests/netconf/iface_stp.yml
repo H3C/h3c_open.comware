@@ -1,31 +1,24 @@
 ---
+- name: config port to be L2
+  h3c_open.comware.comware_interface:
+    name: Twenty-FiveGigE1/0/22
+    type: bridged
 
-  - name: Comware iface_stp
-    hosts: comware
-    gather_facts: no
-    connection: local
+- name: Basic interface stp config
+  h3c_open.comware.comware_iface_stp:
+    name: Twenty-FiveGigE1/0/22
+    tc_restriction: true
+    transmit_limit: 200
 
-    tasks:
-      - name: config port to be L2
-        h3c_open.comware.comware_interface:
-          name=Twenty-FiveGigE1/0/22 
-          type=bridged
+- name: Delete interface stp config
+  h3c_open.comware.comware_iface_stp:
+    name: Twenty-FiveGigE1/0/22
+    state: default
 
-      - name: Basic interface stp config
-        h3c_open.comware.comware_iface_stp: 
-          name: Twenty-FiveGigE1/0/22 
-          tc_restriction: true 
-          transmit_limit: 200
-
-      - name: Delete interface stp config
-        h3c_open.comware.comware_iface_stp: 
-          name: Twenty-FiveGigE1/0/22  
-          state: default
-
-      - name: Interface stp full configuration
-        h3c_open.comware.comware_iface_stp: 
-          name: Twenty-FiveGigE1/0/22
-          edgedport: true 
-          root: true 
-          tc_restriction: true 
-          transmit_limit: 200
+- name: Interface stp full configuration
+  h3c_open.comware.comware_iface_stp:
+    name: Twenty-FiveGigE1/0/22
+    edgedport: true
+    root: true
+    tc_restriction: true
+    transmit_limit: 200

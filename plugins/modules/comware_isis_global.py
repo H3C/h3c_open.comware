@@ -43,7 +43,7 @@ options:
               1023 will be discarded. This parameter is optional only when compatible or narrow compatible is specified.
         required: false
         choices: ['true', 'false']
-        type: bool
+        type: str
     network:
         description:
             - Network entity name of the configuration IS-IS process(X...X.XXXX....XXXX.00)
@@ -120,7 +120,7 @@ def main():
             cost_style=dict(required=False,
                             choices=['narrow', 'wide', 'wide-compatible', 'compatible', 'narrow-compatible'],
                             type='str'),
-            spf_limit=dict(required=False, choices=['true', 'false'], type='bool'),
+            spf_limit=dict(required=False, choices=['true', 'false'], type='str'),
             network=dict(required=False, type='str'),
             add_family=dict(required=False, choices=['ipv4', 'ipv6'], type='str'),
             preference=dict(required=False, type='str'),

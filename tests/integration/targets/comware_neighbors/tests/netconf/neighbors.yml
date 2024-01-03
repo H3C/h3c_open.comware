@@ -1,15 +1,7 @@
 ---
+- name: get lldp neighbors
+  h3c_open.comware.comware_neighbors:
+  register: response
 
-  - name: Comware neighbors automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-        - name: get lldp neighbors
-          h3c_open.comware.comware_neighbors:
-          register: response
-
-        - name: dump all of results
-          debug: var=response.neighbors
+- name: dump all of results
+  debug: var=response.neighbors

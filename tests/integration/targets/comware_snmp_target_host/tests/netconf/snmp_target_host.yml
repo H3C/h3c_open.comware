@@ -1,59 +1,52 @@
 ---
+- name: Config SNMP v3 TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: present
+    target_type: trap
+    server_address: 10.1.1.1
+    usm_user_name: Uv3
+    security_model: v3
+    security_level: authentication
+    vpnname: testvpn
 
-  - name: Comware snmp_target_host
-    hosts: comware
-    gather_facts: no
-    connection: local
+- name: Undo SNMP v3 TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: absent
+    target_type: trap
+    server_address: 10.1.1.1
+    usm_user_name: Uv3
+    vpnname: testvpn
 
-    tasks:
-      - name: Config SNMP v3 TagetHost
-        h3c_open.comware.comware_snmp_target_host:
-          state: present 
-          target_type: trap 
-          server_address: 10.1.1.1
-          usm_user_name: Uv3
-          security_model: v3 
-          security_level: authentication 
-          vpnname: testvpn
-            
-      - name: Undo SNMP v3 TagetHost
-        h3c_open.comware.comware_snmp_target_host:
-          state: absent 
-          target_type: trap 
-          server_address: 10.1.1.1 
-          usm_user_name: Uv3 
-          vpnname: testvpn
-      
-      - name: Config SNMP v2c TagetHost
-        h3c_open.comware.comware_snmp_target_host:
-          state: present 
-          target_type: trap 
-          server_address: 100.1.1.1 
-          usm_user_name: testuv2c 
-          security_model: v2c
-                
-      - name: Undo SNMP v2c TagetHost
-        h3c_open.comware.comware_snmp_target_host:
-          state: absent 
-          target_type: trap 
-          server_address: 100.1.1.1 
-          usm_user_name: testuv2c 
-          security_model: v2c 
-          vpnname: testvpn
-        
-      - name: Config SNMP TagetHost
-        h3c_open.comware.comware_snmp_target_host: 
-          state: present 
-          target_type: inform 
-          server_address: 100.1.1.1 
-          usm_user_name: testuv2c 
-          security_model: v2c
-                
-      - name: Undo SNMP TagetHost
-        h3c_open.comware.comware_snmp_target_host: 
-          state: absent 
-          target_type: inform 
-          server_address: 100.1.1.1 
-          usm_user_name: testuv2c 
-          security_model: v2c 
-          vpnname: testvpn
+- name: Config SNMP v2c TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: present
+    target_type: trap
+    server_address: 100.1.1.1
+    usm_user_name: testuv2c
+    security_model: v2c
+
+- name: Undo SNMP v2c TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: absent
+    target_type: trap
+    server_address: 100.1.1.1
+    usm_user_name: testuv2c
+    security_model: v2c
+    vpnname: testvpn
+
+- name: Config SNMP TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: present
+    target_type: inform
+    server_address: 100.1.1.1
+    usm_user_name: testuv2c
+    security_model: v2c
+
+- name: Undo SNMP TagetHost
+  h3c_open.comware.comware_snmp_target_host:
+    state: absent
+    target_type: inform
+    server_address: 100.1.1.1
+    usm_user_name: testuv2c
+    security_model: v2c
+    vpnname: testvpn

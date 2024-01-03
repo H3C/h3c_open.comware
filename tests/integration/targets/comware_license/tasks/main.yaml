@@ -7,4 +7,4 @@
 - name: Execute netconf tasks
   ansible.builtin.include_tasks: netconf.yaml
   tags:
-    - "netconf"
+    - netconf

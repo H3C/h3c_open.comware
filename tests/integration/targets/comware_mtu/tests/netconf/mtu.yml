@@ -1,18 +1,11 @@
 ---
+- name: config port to be L3
+  h3c_open.comware.comware_interface:
+    name: HundredGigE1/0/32
+    type: routed
 
-  - name: Comware mtu
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-    tasks:
-      - name: config port to be L3
-        h3c_open.comware.comware_interface:
-          name=HundredGigE1/0/32
-          type=routed
-
-      - name: Basic Ethernet config
-        h3c_open.comware.comware_mtu:
-          name: HundredGigE1/0/32
-          jumboframe: 2000
-          mtu: 1400
+- name: Basic Ethernet config
+  h3c_open.comware.comware_mtu:
+    name: HundredGigE1/0/32
+    jumboframe: 2000
+    mtu: 1400

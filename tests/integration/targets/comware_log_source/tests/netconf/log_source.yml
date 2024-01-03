@@ -1,20 +1,13 @@
 ---
+- name: Basic config
+  h3c_open.comware.comware_log_source:
+    channelID: 1
+    channelName: ARP
+    level: critical
 
-  - name: Comware log_source
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-    tasks:
-      - name: Basic config
-        h3c_open.comware.comware_log_source:
-          channelID=1 
-          channelName=ARP 
-          level=critical
-      
-      - name: Delete config
-        h3c_open.comware.comware_log_source:
-          channelID=1 
-          channelName=ARP 
-          level=critical 
-          state=absent
+- name: Delete config
+  h3c_open.comware.comware_log_source:
+    channelID: 1
+    channelName: ARP
+    level: critical
+    state: absent

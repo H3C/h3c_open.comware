@@ -31,12 +31,12 @@ options:
             - active patch or not.
         required: false
         choices: ['true', 'false']
-        type: bool
+        type: str
     check_result:
         description: check patch active success or not .
         required: false
         choices: ['true', 'false']
-        type: bool
+        type: str
 
 '''
 EXAMPLES = '''
@@ -79,8 +79,8 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             patchname=dict(required=True, type='str'),
-            activate=dict(required=False, choices=['true', 'false'], type='bool'),
-            check_result=dict(required=False, choices=['true', 'false'], type='bool'),
+            activate=dict(required=False, choices=['true', 'false'], type='str'),
+            check_result=dict(required=False, choices=['true', 'false'], type='str'),
         ),
         supports_check_mode=True
     )

@@ -1,11 +1,4 @@
 ---
-
-  - name: Comware ftp
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-    tasks:
-    - name: Enabling FTP
-      h3c_open.comware.comware_ftp:
-        state: enable
+- name: Enabling FTP
+  h3c_open.comware.comware_ftp:
+    state: enable

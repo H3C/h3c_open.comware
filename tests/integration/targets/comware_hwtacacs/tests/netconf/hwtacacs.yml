@@ -1,19 +1,12 @@
 ---
+- name: config hwtacacs scheme
+  h3c_open.comware.comware_hwtacacs:
+    hwtacacs_scheme_name: test
+    priority: primary
+    auth_host_ip: 192.168.1.186
+    auth_host_port: 48
 
-  - name: Comware hwtacacs
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-    tasks:
-      - name: config hwtacacs scheme
-        h3c_open.comware.comware_hwtacacs:
-          hwtacacs_scheme_name: test
-          priority: primary
-          auth_host_ip: 192.168.1.186
-          auth_host_port: 48
-
-      - name: delete hwtacacs scheme
-        h3c_open.comware.comware_hwtacacs:
-          hwtacacs_scheme_name: test
-          state: absent
+- name: delete hwtacacs scheme
+  h3c_open.comware.comware_hwtacacs:
+    hwtacacs_scheme_name: test
+    state: absent

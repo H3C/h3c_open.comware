@@ -1,0 +1,28 @@
+---
+- name: Display vlan 5 passing in a string
+  h3c_open.comware.comware_command:
+    command: display vlan 5
+    type: display
+  register: results
+
+- name: Execute command by using file
+  h3c_open.comware.comware_command:
+    file_txt: /root/test.txt
+    type: config
+  register: results
+
+- name: Display vlans passing in a list
+  h3c_open.comware.comware_command:
+    command:
+      - display vlan 10
+      - display vlan 5
+    type: display
+  register: results
+
+- name: Passing in config commands as a list
+  h3c_open.comware.comware_command:
+    command:
+      - vlan 5
+      - name web_vlan
+    type: config
+  register: results

@@ -1,28 +1,19 @@
 ---
+- name: Manage lldp interface enable
+  h3c_open.comware.comware_lldp_interface:
+    name: HundredGigE1/0/28
+    interface_enable: enabled
+  register: results
 
-- name: Comware lldp_interface automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Manage lldp global disable
+  h3c_open.comware.comware_lldp_interface:
+    name: HundredGigE1/0/28
+    interface_enable: disabled
+  register: results
 
-
-  tasks:
-
-    - name: Manage lldp interface enable
-      h3c_open.comware.comware_lldp_interface:
-        name: HundredGigE1/0/28
-        interface_enable: enabled
-      register: results
-
-    - name: Manage lldp global disable
-      h3c_open.comware.comware_lldp_interface:
-        name: HundredGigE1/0/28
-        interface_enable: disabled
-      register: results
-
-    - name: Manage lldp global default
-      h3c_open.comware.comware_lldp_interface:
-        name: HundredGigE1/0/28
-        interface_enable: enabled
-        state: default
-      register: results
+- name: Manage lldp global default
+  h3c_open.comware.comware_lldp_interface:
+    name: HundredGigE1/0/28
+    interface_enable: enabled
+    state: default
+  register: results

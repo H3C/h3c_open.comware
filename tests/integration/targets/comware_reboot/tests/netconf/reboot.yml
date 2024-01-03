@@ -1,88 +1,81 @@
 ---
+# USE THIS AS GUIDANCE ONLY
+# YOUR DEVICES WILL BE REBOOTED AT SOME POINT BY RUNNING THIS PLAYBOOK
 
-- name: Comware reboot testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Fail when reboot param isnt included
+  h3c_open.comware.comware_reboot:
+  ignore_errors: true
+  register: results
 
-  # USE THIS AS GUIDANCE ONLY
-  # YOUR DEVICES WILL BE REBOOTED AT SOME POINT BY RUNNING THIS PLAYBOOK
-  tasks:
+- name: Validate fail TEST 1
+  assert:
+    that:
+      - results.failed == true
 
-    - name: Fail when reboot param isnt included
-      h3c_open.comware.comware_reboot:
-      ignore_errors: true
-      register: results
+- name: Reboot at 5:00
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    time: "05:00"
 
-    - name: Validate fail TEST 1
-      assert:
-        that:
-          - results.failed == true
+- name: Reboot in 5 minutes
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    delay: 5
 
-    - name: Reboot at 5:00
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        time: "05:00"
+- name: Reboot at 22:00 on Dec 21 2023
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    time: "22:00"
+    date: "12/21/2023"
 
-    - name: Reboot in 5 minutes
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        delay: 5
-
-    - name: Reboot at 22:00 on Dec 21 2023
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        time: "22:00"
-        date: "12/21/2023"
-
-     # uncomment to reboot!!!
+# uncomment to reboot!!!
 #    - name: Reboot immedidately
 #      h3c_open.comware.comware_reboot:
 #        reboot:true
 #      tags: now
 
 
-    ### FAIL CONDITIONS
+### FAIL CONDITIONS
 
-    # PROPER FORMAT FOR TIME
-    - name: Proper format is HH:MM
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        time: "5:00"
-      register: data
-      ignore_errors: true
-      tags: f1
+# PROPER FORMAT FOR TIME
+- name: Proper format is HH:MM
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    time: "5:00"
+  register: data
+  ignore_errors: true
+  tags: f1
 
-    - assert:
-        that:
-          - data.failed == true
-      tags: f1
+- assert:
+    that:
+      - data.failed == true
+  tags: f1
 
-    # PROPER FORMAT FOR DATE
-    - name: Test invalid data entry
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        time: "22:00"
-        date: "1/2015"
-      register: data
-      ignore_errors: true
-      tags: f2
+# PROPER FORMAT FOR DATE
+- name: Test invalid data entry
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    time: "22:00"
+    date: "1/2015"
+  register: data
+  ignore_errors: true
+  tags: f2
 
-    - assert:
-        that:
-          - data.failed == true
-      tags: f2
+- assert:
+    that:
+      - data.failed == true
+  tags: f2
 
-    # ENSURE TIME IS REQUIRED WHEN DATE IS USED
-    - name: Ensure time is required when date is set
-      h3c_open.comware.comware_reboot:
-        reboot: true
-        date: "7/1/2015"
-      register: data
-      ignore_errors: true
-      tags: f3
+# ENSURE TIME IS REQUIRED WHEN DATE IS USED
+- name: Ensure time is required when date is set
+  h3c_open.comware.comware_reboot:
+    reboot: true
+    date: "7/1/2015"
+  register: data
+  ignore_errors: true
+  tags: f3
 
-    - assert:
-        that:
-          - data.failed == true
-      tags: f3
+- assert:
+    that:
+      - data.failed == true
+  tags: f3

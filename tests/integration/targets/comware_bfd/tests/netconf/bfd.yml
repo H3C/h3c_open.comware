@@ -1,23 +1,15 @@
 ---
+- name: config bfd
+  h3c_open.comware.comware_bfd:
+    damp_max_wait_time: 100
+    damp_init_wait_time: 10
+    secondary: 8
+  register: results
 
-  - name: Comware bfd automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-      - name: config bfd
-        h3c_open.comware.comware_bfd:
-          damp_max_wait_time: 100
-          damp_init_wait_time: 10
-          secondary: 8
-        register: results
-
-      - name: delete bfd related
-        h3c_open.comware.comware_bfd:
-          damp_max_wait_time: 100
-          damp_init_wait_time: 10
-          secondary: 8
-          state: default
-        register: result
+- name: delete bfd related
+  h3c_open.comware.comware_bfd:
+    damp_max_wait_time: 100
+    damp_init_wait_time: 10
+    secondary: 8
+    state: default
+  register: result

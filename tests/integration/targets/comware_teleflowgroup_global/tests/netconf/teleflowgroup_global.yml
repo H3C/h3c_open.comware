@@ -1,19 +1,11 @@
 ---
+- name: Telemetry Flow Group aging time config
+  h3c_open.comware.comware_teleflowgroup_global:
+    agtime: 20
+  register: results
 
-  - name: Comware telefollow group global automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-      - name: telemetry Flow Group aging time config
-        h3c_open.comware.comware_teleflowgroup_global:
-          agtime: 20
-        register: results
-
-      - name: config aging time into default state
-        h3c_open.comware.comware_teleflowgroup_global:
-          agtime: 20
-          state: default
-        register: results
+- name: Config aging time into default state
+  h3c_open.comware.comware_teleflowgroup_global:
+    agtime: 20
+    state: default
+  register: results

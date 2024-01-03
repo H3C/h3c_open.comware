@@ -1,14 +1,5 @@
 ---
-
-  - name: Comware ping automation testing
-    hosts: comware
-    gather_facts: no
-    connection: local
-
-
-    tasks:
-
-      - name: test reachability to 8.8.8.8
-        h3c_open.comware.comware_ping:
-          host: 8.8.8.8
-        register: results
+- name: Test reachability to 8.8.8.8
+  h3c_open.comware.comware_ping:
+    host: 8.8.8.8
+  register: results

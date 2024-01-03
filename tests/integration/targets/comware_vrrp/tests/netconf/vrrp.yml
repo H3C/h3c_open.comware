@@ -1,186 +1,173 @@
 ---
+# PREP FOR VRRP TESTING
+- name: Ensure VLAN 100 exists
+  h3c_open.comware.comware_vlan:
+    vlanid: 100
+    name: VLAN100_VRRP_TEST
 
-- name: Comware vrrp automation testing
-  hosts: comware
-  gather_facts: no
-  connection: local
+- name: Ensure vlan 100 is up
+  h3c_open.comware.comware_interface:
+    name: vlan100
+    admin: up
 
+# BEGING VRRP TESTING
+- name: Ensure vrid 100 on vlan 100 does not existing before testing
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    state: absent
 
-  tasks:
-      # PREP FOR VRRP TESTING
-      - name: Ensure VLAN 100 exists
-        h3c_open.comware.comware_vlan:
-          vlanid: 100
-          name: VLAN100_VRRP_TEST
+- name: Ensure vrid and vrip are configured
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    vip: 100.100.100.1
+    interface: vlan100
+  register: data
 
-      - name: Ensure vlan 100 is up
-        h3c_open.comware.comware_interface:
-          name: vlan100
-          admin: up
+- assert:
+    that:
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
+      - data.end_state.preempt == 'yes'
 
+- name: Same config - idempotency check
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    vip: 100.100.100.1
+    interface: vlan100
+  register: data
 
-      # BEGING VRRP TESTING
-      - name: Ensure vrid 100 on vlan 100 does not existing before testing
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          state: absent
+- assert:
+    that:
+      - data.changed == false
 
-      - name: Ensure vrid and vrip are configured
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          vip: 100.100.100.1
-          interface: vlan100
-        register: data
+- name: Ensure preempt is no
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    vip: 100.100.100.1
+    interface: vlan100
+    preempt: false
+  register: data
 
-      - assert:
-          that:
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
-            - data.end_state.preempt == 'yes'
+- assert:
+    that:
+      - data.end_state.preempt == 'no'
+      - data.end_state.vrid == '100'
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
 
-      - name: Same config - idempotency check
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          vip: 100.100.100.1
-          interface: vlan100
-        register: data
+- name: Ensure vrid 100 is down
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    state: shutdown
+  register: data
 
-      - assert:
-          that:
-            - data.changed == false
+- assert:
+    that:
+      - data.end_state.admin == 'Down'
+      - data.end_state.preempt == 'no'
+      - data.end_state.vrid == '100'
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
 
-      - name: Ensure preempt is no
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          vip: 100.100.100.1
-          interface: vlan100
-          preempt: false
-        register: data
+- name: Ensure vrid 100 is up
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    state: undoshutdown
+  register: data
 
-      - assert:
-          that:
-            - data.end_state.preempt == 'no'
-            - data.end_state.vrid == '100'
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
+- assert:
+    that:
+      - data.end_state.admin == 'Up'
+      - data.end_state.preempt == 'no'
+      - data.end_state.vrid == '100'
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
 
-      - name: Ensure vrid 100 is down
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          state: shutdown
-        register: data
+- name: Simple auth
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    auth_mode: simple
+    key_type: plain
+    key: testkey
+  register: data
 
-      - assert:
-          that:
-            - data.end_state.admin == 'Down'
-            - data.end_state.preempt == 'no'
-            - data.end_state.vrid == '100'
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
+- assert:
+    that:
+      - data.end_state.admin == 'Up'
+      - data.end_state.preempt == 'no'
+      - data.end_state.vrid == '100'
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
+      - data.end_state.auth_mode == 'simple'
+      - data.end_state.key_type == 'cipher'
 
+- name: Md5 auth
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    auth_mode: md5
+    key_type: cipher
+    key: $c$3$d+Pc2DO3clxSA2tC6pe3UBzDEDl1dkE+voI=
+  register: data
 
-      - name: Ensure vrid 100 is up
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          state: undoshutdown
-        register: data
+- assert:
+    that:
+      - data.end_state.admin == 'Up'
+      - data.end_state.preempt == 'no'
+      - data.end_state.vrid == '100'
+      - data.end_state.vip == '100.100.100.1'
+      - data.end_state.vrid == '100'
+      - data.end_state.auth_mode == 'md5'
+      - data.end_state.key_type == 'cipher'
 
-      - assert:
-          that:
-            - data.end_state.admin == 'Up'
-            - data.end_state.preempt == 'no'
-            - data.end_state.vrid == '100'
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
+- name: Ensure vrid 100 on vlan 100 is removed
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    interface: vlan100
+    state: absent
+  register: data
 
+- assert:
+    that:
+      - data.end_state == {}
+      - data.changed == true
 
-      - name: Simple auth
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          auth_mode: simple
-          key_type: plain
-          key: testkey
-        register: data
+# TEST FAIL CASES
 
-      - assert:
-          that:
-            - data.end_state.admin == 'Up'
-            - data.end_state.preempt == 'no'
-            - data.end_state.vrid == '100'
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
-            - data.end_state.auth_mode == 'simple'
-            - data.end_state.key_type == 'cipher'
+- name: Ensure fail since interface vlan45 doesn not exist
+  h3c_open.comware.comware_vrrp:
+    vrid: 100
+    vip: 100.100.100.1
+    interface: vlan45
+  register: data
+  ignore_errors: true
+  tags: f1
 
-      - name: Md5 auth
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          auth_mode: md5
-          key_type: cipher
-          key: '$c$3$d+Pc2DO3clxSA2tC6pe3UBzDEDl1dkE+voI='
-        register: data
+- assert:
+    that:
+      - data.failed == true
+  tags: f1
 
-      - assert:
-          that:
-            - data.end_state.admin == 'Up'
-            - data.end_state.preempt == 'no'
-            - data.end_state.vrid == '100'
-            - data.end_state.vip == '100.100.100.1'
-            - data.end_state.vrid == '100'
-            - data.end_state.auth_mode == 'md5'
-            - data.end_state.key_type == 'cipher'
+- name: Ensure Twenty-FiveGigE1/0/8 is a L2 interface
+  h3c_open.comware.comware_interface:
+    name: Twenty-FiveGigE1/0/8
+    type: bridged
+  tags: f2
 
+- name: Ensure fail since interface is a L2 interface
+  h3c_open.comware.comware_vrrp:
+    vrid: 5
+    vip: 5.5.5.5
+    interface: Twenty-FiveGigE1/0/8
+  register: data
+  ignore_errors: true
+  tags: f2
 
-      - name: Ensure vrid 100 on vlan 100 is removed
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          interface: vlan100
-          state: absent
-        register: data
-
-      - assert:
-          that:
-            - data.end_state == {}
-            - data.changed == true
-
-
-      # TEST FAIL CASES
-
-      - name: Ensure fail since interface vlan45 doesn not exist
-        h3c_open.comware.comware_vrrp:
-          vrid: 100
-          vip: 100.100.100.1
-          interface: vlan45
-        register: data
-        ignore_errors: true
-        tags: f1
-
-      - assert:
-          that:
-            - data.failed == true
-        tags: f1
-
-      - name: Ensure Twenty-FiveGigE1/0/8 is a L2 interface
-        h3c_open.comware.comware_interface:
-          name: Twenty-FiveGigE1/0/8
-          type: bridged
-        tags: f2
-
-      - name: Ensure fail since interface is a L2 interface
-        h3c_open.comware.comware_vrrp:
-          vrid: 5
-          vip: 5.5.5.5
-          interface: Twenty-FiveGigE1/0/8
-        register: data
-        ignore_errors: true
-        tags: f2
-
-      - assert:
-          that:
-            - data.failed == true
-        tags: f2
+- assert:
+    that:
+      - data.failed == true
+  tags: f2

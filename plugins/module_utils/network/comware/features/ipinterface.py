@@ -143,6 +143,7 @@ class IpInterface(object):
         nc_get_reply = self.device.get(('subtree', top))
         reply_data = findall_in_data(search_tag, nc_get_reply)
 
+
         existing_list = []
         for match in reply_data:
             to_dict = data_elem_to_dict(match, key_map)
@@ -223,7 +224,7 @@ class IpInterface(object):
         if not address or not mask:
             raise IpIfaceMissingData
 
-        ip_obj = ipaddress.ip_network(address + '/' + mask)
+        ip_obj = ipaddress.ip_network(address + '/' + mask, strict=False)
 
         if self.version == V4:
             addr_tag = 'Ipv4Address'

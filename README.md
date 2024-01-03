@@ -140,11 +140,11 @@ The following example task replaces configuration changes in the existing config
 ---
 - name: Basic Ethernet config
   h3c_open.comware.comware_interface: 
-    name=FortyGigE1/0/5 
-    admin=up 
-    description=mydesc 
-    duplex=auto 
-    speed=40000 
+    name: FortyGigE1/0/5 
+    admin: up 
+    description: mydesc 
+    duplex: auto 
+    speed: 40000 
 ```
 
 ### See Also:
