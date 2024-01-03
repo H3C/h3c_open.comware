@@ -1,0 +1,249 @@
+ancestor: null
+releases:
+  1.0.0:
+    modules:
+    - description: This module provides AAA related management configuration and applications
+      name: comware_aaa
+      namespace: ''
+    - description: Configure the acl issue to be applied to the interface.
+      name: comware_acl
+      namespace: ''
+    - description: Management configuration bfd function
+      name: comware_bfd
+      namespace: ''
+    - description: Manage address family configs
+      name: comware_bgp_af
+      namespace: ''
+    - description: config bgp configs in the bgp instance view such as routerid
+      name: comware_bgp_global
+      namespace: ''
+    - description: create and config bgp group
+      name: comware_bgp_group
+      namespace: ''
+    - description: Factory default Comware 7 device
+      name: comware_clean_erase
+      namespace: ''
+    - description: Execute CLI commands on Comware 7 devices
+      name: comware_command
+      namespace: ''
+    - description: Enter the configuration command and compare it with the expected
+        result.
+      name: comware_compare
+      namespace: ''
+    - description: Back uo current configuration to the specified file
+      name: comware_config
+      namespace: ''
+    - description: Manage dldp authentication,interface,timeout and mode  on Comware
+        7 devices.
+      name: comware_dldp
+      namespace: ''
+    - description: Configure the EVPN issue to be applied to the device.
+      name: comware_evpn
+      namespace: ''
+    - description: Gather facts of Comware 7 devices
+      name: comware_facts
+      namespace: ''
+    - description: Copy a local file to a remote Comware v7 device
+      name: comware_file_copy
+      namespace: ''
+    - description: Configure device FTP function.
+      name: comware_ftp
+      namespace: ''
+    - description: Manage hwtacacs scheme
+      name: comware_hwtacacs
+      namespace: ''
+    - description: Manage stp config in interface
+      name: comware_iface_stp
+      namespace: ''
+    - description: Configure the igmp issue to be applied to the interface.
+      name: comware_igmp
+      namespace: ''
+    - description: Activate a new current-running config in realtime
+      name: comware_install_config
+      namespace: ''
+    - description: Copy (if necessary) and install a new operating system on Comware
+        v7 device
+      name: comware_install_os
+      namespace: ''
+    - description: Manage administrative state and physical attributes of the interface
+      name: comware_interface
+      namespace: ''
+    - description: Check the port status. If there are undo shutdown ports but the
+        field ports are down, list these inconsistent ports. If not, return OK.
+      name: comware_intfstate
+      namespace: ''
+    - description: Manage IPv4/IPv6 addresses on interfaces
+      name: comware_ipinterface
+      namespace: ''
+    - description: Manage IRF membership configuration
+      name: comware_irf_members
+      namespace: ''
+    - description: Manage IRF port creation and removal for Comware v7 devices
+      name: comware_irf_ports
+      namespace: ''
+    - description: Manage isis for Comware 7 devices
+      name: comware_isis_global
+      namespace: ''
+    - description: Manage isis for Comware 7 devices
+      name: comware_isis_interface
+      namespace: ''
+    - description: Manage global config state for L2VPN
+      name: comware_l2vpn_global
+      namespace: ''
+    - description: Manage lacp system priority, system mac on Comware 7 devices
+      name: comware_lacp
+      namespace: ''
+    - description: loading device license
+      name: comware_license
+      namespace: ''
+    - description: Manage lacp fast-Interval, tx-interval,hold-multplier on Comware
+        7 devices
+      name: comware_lldp
+      namespace: ''
+    - description: Manage global config state for LLDP.this funtion can be take effect
+        only global                    and interface LLDP all open. The interface
+        LLDP is open default.
+      name: comware_lldp_global
+      namespace: ''
+    - description: Manage lldp enable on interfaces.The default state is enable.
+      name: comware_lldp_interface
+      namespace: ''
+    - description: Manage local_user
+      name: comware_local_user
+      namespace: ''
+    - description: get the device diagnostic information and upload to file server
+      name: comware_log
+      namespace: ''
+    - description: Manage output rules for log information on V7 devices
+      name: comware_log_source
+      namespace: ''
+    - description: Manage info-center log host and related parameters on V7 devices
+      name: comware_loghost
+      namespace: ''
+    - description: Manage mtu and jumboframe of the interface
+      name: comware_mtu
+      namespace: ''
+    - description: Retrieve active LLDP neighbors (read-only)
+      name: comware_neighbors
+      namespace: ''
+    - description: Manage netconf log and xml function on Comware 7 devices.XML cfg
+        not support enter xml view now, This is not normally done.
+      name: comware_netconf
+      namespace: ''
+    - description: Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and
+        interface enable and ip netstream aggregation destination-prefix enable, netstream
+        statistics output message destination address and destination UDP port number
+        configurationon Comware 7 devices
+      name: comware_netstream
+      namespace: ''
+    - description: Configure the ntp issue to be applied to the device.
+      name: comware_ntp
+      namespace: ''
+    - description: Manage ospf
+      name: comware_ospf
+      namespace: ''
+    - description: Manage ospf in interface
+      name: comware_ospf_intf
+      namespace: ''
+    - description: Manage patch
+      name: comware_patch
+      namespace: ''
+    - description: Ping remote destinations *from* the Comware 7 switch
+      name: comware_ping
+      namespace: ''
+    - description: Manage port-channel (LAG) on Comware 7 devices
+      name: comware_portchannel
+      namespace: ''
+    - description: create radius scheme
+      name: comware_radius
+      namespace: ''
+    - description: Perform a reboot of a Comware 7 device
+      name: comware_reboot
+      namespace: ''
+    - description: Rollback the running configuration
+      name: comware_rollback
+      namespace: ''
+    - description: Save the running configuration
+      name: comware_save
+      namespace: ''
+    - description: Manage sflow attributes for Comware 7 devices
+      name: comware_sflow
+      namespace: ''
+    - description: Manage sflow interface flow collector and sampling_rate on Comware
+        7 devices.
+      name: comware_sflow_intf
+      namespace: ''
+    - description: Manages SNMP community configuration on H3C switches.
+      name: comware_snmp_community
+      namespace: ''
+    - description: Manages SNMP group configuration on H3C switches.
+      name: comware_snmp_group
+      namespace: ''
+    - description: Manages SNMP user configuration on H3c switches.
+      name: comware_snmp_target_host
+      namespace: ''
+    - description: Manages SNMP user configuration on H3c switches.
+      name: comware_snmp_user
+      namespace: ''
+    - description: config the next restart file or ipe .   patch function not available,please
+        use patch module
+      name: comware_startup
+      namespace: ''
+    - description: Manage stp global BPDU enable, working mode and tc-bpdu attack
+        protection function.
+      name: comware_stp
+      namespace: ''
+    - description: Manage Layer 2 parameters on switchport interfaces
+      name: comware_switchport
+      namespace: ''
+    - description: Manage system log timestamps and  terminal logging level on Comware
+        7 devices
+      name: comware_syslog_global
+      namespace: ''
+    - description: Manage telemetry global enable(disable) and telemetry stream timestamp
+        enable(disable) and device-id on Comware 7 devices.Before config device-id,the
+        timestamp must be enable.
+      name: comware_tele_stream
+      namespace: ''
+    - description: Manage telemetry flow group agingtime on Comware 7 devices.The
+        default value is Varies by device.
+      name: comware_teleflowgroup_global
+      namespace: ''
+    - description: Manage Package information of the message sent to the collector
+        on V7 devices
+      name: comware_telemetryflowtrace
+      namespace: ''
+    - description: Manage VLAN attributes for Comware 7 devices
+      name: comware_vlan
+      namespace: ''
+    - description: config instance rely ensure some instance configs can be set
+      name: comware_vpn_instance
+      namespace: ''
+    - description: Manage VRRP configurations on a Comware v7 device
+      name: comware_vrrp
+      namespace: ''
+    - description: Manage VRRP global configuration mode
+      name: comware_vrrp_global
+      namespace: ''
+    - description: Configure some command functions of vsi view
+      name: comware_vsi
+      namespace: ''
+    - description: Configure some functions of vsi-interface
+      name: comware_vsi_intf
+      namespace: ''
+    - description: Manage VXLAN to VSI mappings and Tunnel mappings to VXLAN
+      name: comware_vxlan
+      namespace: ''
+    - description: Manage mapping of an Ethernet Service to a VSI (VXLAN ID)
+      name: comware_vxlan_svc_instance
+      namespace: ''
+    - description: Manage VXLAN tunnels on Comware 7 devices
+      name: comware_vxlan_tunnel
+      namespace: ''
+    plugins:
+      netconf:
+      - description: Use comware netconf plugin to run netconf commands on Juniper
+          JUNOS platform
+        name: comware
+        namespace: null
+    release_date: '2024-01-03'
