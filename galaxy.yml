@@ -9,7 +9,7 @@ namespace: h3c_open
 name: comware
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.0.0
+version: 1.0.2
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
