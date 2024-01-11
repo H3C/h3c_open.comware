@@ -5,6 +5,9 @@ H3C_Open.Comware Release Notes
 .. contents:: Topics
 
 
+v1.0.2
+======
+
 v1.0.0
 ======
 
@@ -50,7 +53,7 @@ New Modules
 - h3c_open.comware.comware_lacp - Manage lacp system priority, system mac on Comware 7 devices
 - h3c_open.comware.comware_license - loading device license
 - h3c_open.comware.comware_lldp - Manage lacp fast-Interval, tx-interval,hold-multplier on Comware 7 devices
-- h3c_open.comware.comware_lldp_global - Manage global config state for LLDP.this funtion can be take effect only global                    and interface LLDP all open. The interface LLDP is open default.
+- h3c_open.comware.comware_lldp_global - Manage global config state for LLDP.
 - h3c_open.comware.comware_lldp_interface - Manage lldp enable on interfaces.The default state is enable.
 - h3c_open.comware.comware_local_user - Manage local_user
 - h3c_open.comware.comware_log - get the device diagnostic information and upload to file server
@@ -59,7 +62,7 @@ New Modules
 - h3c_open.comware.comware_mtu - Manage mtu and jumboframe of the interface
 - h3c_open.comware.comware_neighbors - Retrieve active LLDP neighbors (read-only)
 - h3c_open.comware.comware_netconf - Manage netconf log and xml function on Comware 7 devices.XML cfg not support enter xml view now, This is not normally done.
-- h3c_open.comware.comware_netstream - Manage ip netstream,rate,timeout, max_entry,vxlan udp-port,and interface enable and ip netstream aggregation destination-prefix enable, netstream statistics output message destination address and destination UDP port number configurationon Comware 7 devices
+- h3c_open.comware.comware_netstream - Manage ip netstream configurationon on Comware 7 devices
 - h3c_open.comware.comware_ntp - Configure the ntp issue to be applied to the device.
 - h3c_open.comware.comware_ospf - Manage ospf
 - h3c_open.comware.comware_ospf_intf - Manage ospf in interface
@@ -80,7 +83,7 @@ New Modules
 - h3c_open.comware.comware_stp - Manage stp global BPDU enable, working mode and tc-bpdu attack protection function.
 - h3c_open.comware.comware_switchport - Manage Layer 2 parameters on switchport interfaces
 - h3c_open.comware.comware_syslog_global - Manage system log timestamps and  terminal logging level on Comware 7 devices
-- h3c_open.comware.comware_tele_stream - Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id on Comware 7 devices.Before config device-id,the timestamp must be enable.
+- h3c_open.comware.comware_tele_stream - Manage telemetry global enable(disable) and telemetry stream timestamp enable(disable) and device-id on Comware 7 devices.
 - h3c_open.comware.comware_teleflowgroup_global - Manage telemetry flow group agingtime on Comware 7 devices.The default value is Varies by device.
 - h3c_open.comware.comware_telemetryflowtrace - Manage Package information of the message sent to the collector on V7 devices
 - h3c_open.comware.comware_vlan - Manage VLAN attributes for Comware 7 devices

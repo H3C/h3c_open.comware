@@ -228,3 +228,5 @@ releases:
           name: comware
           namespace:
     release_date: "2024-01-03"
+  1.0.2:
+    release_date: "2024-01-11"
