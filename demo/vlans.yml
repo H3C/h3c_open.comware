@@ -1,0 +1,86 @@
+---
+- name: Comware VLAN Test
+  hosts: comware
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: Ensure VLAN 10 exists
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        name: VLAN10_WEB
+        descr: LOCALSEGMENT
+        state: present
+      register: results
+
+    - name: TEST 1
+      assert:
+        that:
+          - results.end_state.vlanid == '10'
+          - results.end_state.name == 'VLAN10_WEB'
+          - results.end_state.descr == 'LOCALSEGMENT'
+
+    - name: Ensure VLAN 10 exists
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        name: VLAN10_WEB
+        descr: LOCALSEGMENT
+        state: present
+      register: results
+
+    - name: TEST 2 - IDEMPOTENCTY
+      assert:
+        that:
+          - results.changed == false
+
+    - name: Ensure VLAN 10 does not exist
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        state: absent
+      register: results
+
+    - name: TEST 3
+      assert:
+        that:
+          - results.changed == true
+          - results.end_state == {}
+
+    - name: Re-configure VLAN 10
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        name: VLAN10_WEB
+        state: present
+      register: results
+
+    - name: TEST 4
+      assert:
+        that:
+          - results.end_state.vlanid == '10'
+          - results.end_state.name == 'VLAN10_WEB'
+          - results.end_state.descr == 'VLAN 0010'
+
+    - name: Update name and descr
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        name: WEB10
+        descr: WEBDESCR
+        state: present
+      register: results
+
+    - name: TEST 5
+      assert:
+        that:
+          - results.end_state.vlanid == '10'
+          - results.end_state.name == 'WEB10'
+          - results.end_state.descr == 'WEBDESCR'
+
+    - name: Ensure VLAN 10 does not exist
+      h3c_open.comware.comware_vlan:
+        vlanid: 10
+        state: absent
+      register: results
+
+    - name: TEST 6
+      assert:
+        that:
+          - results.changed == true
+          - results.end_state == {}
