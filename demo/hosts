@@ -1,0 +1,16 @@
+[all:vars]
+# these defaults can be overridden for any group in the [group:vars] section
+ansible_connection=ansible.netcommon.netconf
+ansible_user=ansible
+
+[switches:children]
+comware
+
+[comware]
+vcomware01 ansible_host=192.168.10.206
+
+[comware:vars]
+ansible_connection=ansible.netcommon.netconf
+ansible_network_os=h3c_open.comware.comware
+ansible_user=test
+ansible_password=admin123456
