@@ -25,10 +25,7 @@ import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils.common.text.converters import to_bytes
-from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
-
-display = Display()
 
 
 class TerminalModule(TerminalBase):
@@ -48,18 +45,6 @@ class TerminalModule(TerminalBase):
 
     def on_open_shell(self):
         try:
-            prompt = self._get_prompt()
-            if prompt.strip().endswith(b"%"):
-                display.vvv(
-                    "starting cli",
-                    self._connection._play_context.remote_addr,
-                )
-                self._exec_cli_command(b"cli")
-            for c in (
-                    b"set cli timestamp disable",
-                    b"set cli screen-length 0",
-                    b"set cli screen-width 1024",
-            ):
-                self._exec_cli_command(c)
+            self._exec_cli_command(b"screen-length disable")
         except AnsibleConnectionFailure:
             raise AnsibleConnectionFailure("unable to set terminal parameters")
