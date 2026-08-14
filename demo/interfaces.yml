@@ -1,0 +1,20 @@
+---
+- name: Comware INTERFACE Test
+  hosts: comware
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: ensure these interfaces are routed
+      h3c_open.comware.comware_interface: name={{ item }} type=routed
+      with_items:
+        - GigabitEthernet0/2
+        - GigabitEthernet0/3
+
+    - name: ensure the description for 0/3 is set
+      h3c_open.comware.comware_interface: name=GigabitEthernet0/3 description='ANSIBLE CONFIGURED THIS'
+
+    - name: ensure these interfaces are bridged
+      h3c_open.comware.comware_interface: name={{ item }} type=bridged
+      with_items:
+        - GigabitEthernet0/4
+        - GigabitEthernet0/5
