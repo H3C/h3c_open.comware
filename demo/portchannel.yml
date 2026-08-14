@@ -1,0 +1,23 @@
+---
+- name: Comware PORTCHANNELS Test
+  hosts: comware
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: ensure these interfaces are bridged
+      h3c_open.comware.comware_interface: name={{ item }} type=bridged
+      with_items:
+        - GigabitEthernet0/3
+        - GigabitEthernet0/4
+
+    - h3c_open.comware.comware_portchannel:
+        group: 1
+        members:
+          - GigabitEthernet0/3
+          - GigabitEthernet0/4
+        type: bridged
+        mode: dynamic
+        lacp_mode: active
+        min_ports: 2
+        max_ports: 4
+        state: present
