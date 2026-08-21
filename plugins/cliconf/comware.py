@@ -43,6 +43,8 @@ class Cliconf(CliconfBase):
     def get_device_info(self):
         device_info = {}
 
+        self.send_command('screen-length disable')
+        
         device_info['network_os'] = 'comware'
         reply = self.get('display version')
         data = to_text(reply, errors='surrogate_or_strict').strip()
